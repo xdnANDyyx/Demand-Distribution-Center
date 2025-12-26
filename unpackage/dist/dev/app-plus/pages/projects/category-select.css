@@ -1,0 +1,174 @@
+
+.category-select-container[data-v-0433eecd] {
+  /* 应用与首页相同的渐变背景 */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-size: 400% 400%;
+  animation: gradientBG-0433eecd 15s ease infinite; /* 可选：添加背景动画 */
+  height: 100vh;        /* 设置固定高度为视口高度 */
+  overflow: hidden;     /* 隐藏超出视口的内容，防止滚动 */
+ 
+  color: #fff; /* 默认文字颜色为白色 */
+}
+
+/* 可选：为背景添加动画效果 */
+@keyframes gradientBG-0433eecd {
+0% { background-position: 0% 50%;
+}
+50% { background-position: 100% 50%;
+}
+100% { background-position: 0% 50%;
+}
+}
+.header[data-v-0433eecd] {
+  display: flex;
+  align-items: center;
+  /* 减少顶部内边距，因为首页头部更高 */
+  padding: 0.3125rem 0; 
+  margin-bottom: 0.9375rem;
+}
+.back-button[data-v-0433eecd] {
+  width: 1.875rem;
+  height: 1.875rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* 应用玻璃态效果 */
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.back-button uni-image[data-v-0433eecd] {
+  width: 1.125rem; /* 稍微调整图标大小 */
+  height: 1.125rem;
+  /* 确保图标是白色的 */
+  filter: brightness(0) invert(1); 
+  transform: rotate(180deg);
+}
+.title[data-v-0433eecd] {
+  flex: 1;
+  text-align: center;
+  font-size: 1.125rem; /* 调整字体大小 */
+  font-weight: bold;
+  /* margin-right: 60rpx; 移除，因为我们调整了布局 */
+  color: #fff; /* 确保标题是白色 */
+  text-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.2); /* 添加轻微文字阴影 */
+}
+
+/* --- 分类步骤条样式 --- */
+.category-steps[data-v-0433eecd] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  /* 可以给步骤条也加上玻璃态背景 */
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.46875rem 0.625rem; /* 增加内边距 */
+  border-radius: 0.9375rem; /* 圆角 */
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.step[data-v-0433eecd] {
+  font-size: 0.8125rem; /* 调整字体 */
+  color: rgba(255, 255, 255, 0.7); /* 调整颜色 */
+  padding: 0.25rem 0.5rem; /* 调整内边距 */
+  border-radius: 0.625rem; /* 圆角 */
+  transition: all 0.3s ease; /* 添加过渡效果 */
+}
+.step.active[data-v-0433eecd] {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.2); /* 更明显的激活态背景 */
+  font-weight: 600;
+  /* 移除之前的下划线样式，使用背景色区分 */
+}
+.step-divider[data-v-0433eecd] {
+  width: 0.9375rem; /* 调整分隔符宽度 */
+  height: 0.0625rem;
+  background-color: rgba(255, 255, 255, 0.3); /* 调整分隔符颜色 */
+}
+/* --- 分类步骤条样式结束 --- */
+
+
+/* --- 分类列表项样式 --- */
+.category-list[data-v-0433eecd] {
+  /* 移除之前的纯白背景和圆角 */
+  /* background-color: #FFFFFF;
+  border-radius: 20rpx;
+  overflow: hidden; */
+  
+  /* 应用玻璃态卡片样式，类似于首页的 category-card */
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  -webkit-backdrop-filter: blur(0.625rem);
+          backdrop-filter: blur(0.625rem); /* 调整模糊度 */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0.25rem 1rem 0 rgba(0, 0, 0, 0.1); /* 添加阴影 */
+}
+.category-item[data-v-0433eecd] {
+  display: flex;
+  align-items: center;
+  /* 调整内边距，使其更像首页的卡片 */
+  padding: 0.9375rem; 
+  /* 移除之前的边框，使用悬停效果 */
+  /* border-bottom: 1rpx solid #EEEEEE; */
+  transition: all 0.3s ease; /* 添加过渡 */
+  cursor: pointer; /* 添加指针手势 */
+  position: relative; /* 为悬停效果做准备 */
+  overflow: hidden; /* 隐藏溢出的伪元素 */
+}
+
+/* 添加悬停和激活效果，模仿首页 category-card */
+.category-item[data-v-0433eecd]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+.category-item[data-v-0433eecd]:active::before {
+  opacity: 1;
+}
+.category-item[data-v-0433eecd]:active {
+  transform: scale(0.98); /* 轻微缩放 */
+}
+.category-item[data-v-0433eecd]:last-child {
+  /* 移除最后一个的边框 */
+  /* border-bottom: none; */
+}
+
+/* 如果需要图标，可以保留或调整 */
+/*
+.category-icon {
+  width: 60rpx;
+  height: 60rpx;
+  margin-right: 20rpx;
+}
+*/
+.category-name[data-v-0433eecd] {
+  flex: 1;
+  font-size: 0.9375rem; /* 调整字体大小 */
+  font-weight: 500; /* 调整字重 */
+  color: #fff; /* 文字颜色为白色 */
+  position: relative;
+  z-index: 1; /* 确保文字在伪元素之上 */
+  text-shadow: 0 0.03125rem 0.0625rem rgba(0, 0, 0, 0.1); /* 添加轻微文字阴影 */
+}
+
+/* 调整箭头和勾选图标样式 */
+.arrow-icon[data-v-0433eecd], .check-icon[data-v-0433eecd] {
+  width: 1rem; /* 调整图标大小 */
+  height: 1rem;
+  filter: brightness(0) invert(1); /* 确保图标是白色的 */
+  position: relative;
+  z-index: 1;
+}
+/* --- 分类列表项样式结束 --- */
+

@@ -1,0 +1,141 @@
+{
+    "name" : "国中宝软件V1.0",
+    "appid" : "__UNI__F0186A1",
+    "description" : "招投标平台前端应用",
+    "versionName" : "2.0.0",
+    "versionCode" : 200,
+    "transformPx" : false,
+    "app-plus" : {
+        "usingComponents" : true,
+        "nvueStyleCompiler" : "uni-app",
+        "compilerVersion" : 3,
+        "splashscreen" : {
+            "alwaysShowBeforeRender" : true,
+            "waiting" : true,
+            "autoclose" : true,
+            "delay" : 0
+        },
+        "modules" : {
+            "Geolocation" : {},
+            "Camera" : {},
+            "Record" : {},
+            "VideoPlayer" : {},
+            "Speech" : {}
+        },
+        "distribute" : {
+            "android" : {
+                "abiFilters" : [ "armeabi-v7a", "arm64-v8a" ],
+                "usesPermissions" : [
+                    "android.permission.ACCESS_NETWORK_STATE",
+                    "android.permission.ACCESS_WIFI_STATE",
+                    "android.permission.INTERNET",
+                    "android.permission.READ_PHONE_STATE",
+                    "android.permission.WRITE_EXTERNAL_STORAGE",
+                    "android.permission.READ_EXTERNAL_STORAGE"
+                ],
+                "unwantedPermissions" : [
+                    "android.permission.READ_CONTACTS",
+                    "android.permission.WRITE_CONTACTS",
+                    "android.permission.READ_SMS",
+                    "android.permission.SEND_SMS",
+                    "android.permission.RECEIVE_SMS",
+                    "android.permission.RECORD_AUDIO",
+                    "android.permission.CAMERA",
+                    "android.permission.ACCESS_FINE_LOCATION",
+                    "android.permission.ACCESS_COARSE_LOCATION"
+                ],
+                "minSdkVersion" : 21
+            },
+            "ios" : {
+                "dSYMs" : false
+            },
+            "sdkConfigs" : {
+                "geolocation" : {
+                    "amap" : {
+                        "name" : "amap_18842526898DQzU2LUb",
+                        "__platform__" : [ "android" ],
+                        "appkey_ios" : "",
+                        "appkey_android" : "b5ee9e1869143891359f2df5ca202083"
+                    }
+                },
+                "speech" : {
+                    "baidu" : {
+                        "appid" : "119786021",
+                        "apikey" : "JFDx2SIRq99RmFgOdFf4GSfO",
+                        "secretkey" : "m8s1M02iKpEwfXLU91nRPkRc968WF895"
+                    }
+                }
+            },
+            "icons" : {
+                "android" : {
+                    "xxxhdpi" : "C:/Users/PC/Pictures/log.png"
+                }
+            },
+            "splashscreen" : {
+                "androidStyle" : "default",
+                "android" : {
+                    "xhdpi" : "C:/Users/PC/Pictures/good.png"
+                }
+            }
+        },
+        "ad" : {
+            "baidu" : {
+                "appid" : "",
+                "appkey" : ""
+            },
+            "gdt" : {
+                "appid" : ""
+            },
+            "qq" : {
+                "appid" : ""
+            },
+            "sigmob" : {
+                "appid" : "",
+                "appkey" : ""
+            }
+        },
+        "runtimeArguments" : {
+            "aolFeature" : "false",
+            "adSdkInit" : "false",
+            "uniAd" : "false",
+            "gaid" : "false",
+            "mdid" : "false"
+        },
+        "oaid" : {
+            "enable" : false
+        },
+        "deviceInfo" : {
+            "oaid" : false,
+            "gaid" : false,
+            "imei" : false,
+            "mac" : false
+        },
+        "permissionExternalStorage" : "never",
+        "security" : {
+            "x5webview" : false,
+            "debug" : false,
+            "ad" : false
+        }
+    },
+    "quickapp" : {},
+    "mp-weixin" : {
+        "appid" : "wx123456789",
+        "setting" : {
+            "urlCheck" : false
+        },
+        "usingComponents" : true
+    },
+    "mp-alipay" : {
+        "usingComponents" : true
+    },
+    "mp-baidu" : {
+        "usingComponents" : true
+    },
+    "mp-toutiao" : {
+        "usingComponents" : true
+    },
+    "uniStatistics" : {
+        "enable" : false
+    },
+    "vueVersion" : "3"
+}

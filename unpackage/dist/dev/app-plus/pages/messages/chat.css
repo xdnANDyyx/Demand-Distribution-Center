@@ -1,0 +1,311 @@
+
+/* 基础容器和布局 */
+.chat-container[data-v-56908723] {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	background-color: #f0f2f5;
+}
+
+/* 顶部固定头部 */
+.header-fixed[data-v-56908723] {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 100;
+	background: rgba(255, 255, 255, 0.8);
+	-webkit-backdrop-filter: blur(10px);
+	        backdrop-filter: blur(10px);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.header-glass[data-v-56908723] {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 44px;
+	padding: 0 15px;
+}
+.back-icon[data-v-56908723] {
+	font-size: 24px;
+	font-weight: bold;
+	width: 30px;
+}
+.header-title[data-v-56908723] {
+	font-size: 17px;
+	font-weight: 600;
+}
+.options-icon[data-v-56908723] {
+	font-size: 24px;
+	width: 30px;
+	text-align: right;
+}
+
+/* 聊天内容区域 */
+.messages-scroll[data-v-56908723] {
+	flex: 1;
+	padding-top: 54px; /* 留出头部空间 */
+	padding-bottom: 70px; /* 留出输入框空间 */
+	box-sizing: border-box;
+}
+.scroll-content[data-v-56908723] {
+	padding: 10px;
+}
+.loading-more[data-v-56908723] {
+	text-align: center;
+	color: #999;
+	padding: 10px 0;
+}
+
+/* 消息行 */
+.message-row[data-v-56908723] {
+	display: flex;
+	margin-bottom: 20px;
+}
+.message-row.self[data-v-56908723] {
+	flex-direction: row-reverse;
+}
+.message-avatar[data-v-56908723] {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background-color: #007aff;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 16px;
+	margin: 0 10px;
+}
+.message-avatar.self[data-v-56908723] {
+	background-color: #4cd964;
+}
+.message-bubble[data-v-56908723] {
+	max-width: 70%;
+	background-color: white;
+	padding: 10px 15px;
+	border-radius: 18px;
+	position: relative;
+}
+.self .message-bubble[data-v-56908723] {
+	background-color: #a0e75a;
+}
+.message-time[data-v-56908723] {
+	font-size: 10px;
+	color: #999;
+	margin-top: 5px;
+	text-align: right;
+}
+
+/* 时间和系统消息 */
+.time-display[data-v-56908723], .system-message[data-v-56908723] {
+	text-align: center;
+	margin: 10px 0;
+}
+.time-display[data-v-56908723], .system-content[data-v-56908723] {
+	display: inline-block;
+	background: rgba(0, 0, 0, 0.1);
+	color: white;
+	font-size: 12px;
+	padding: 3px 8px;
+	border-radius: 5px;
+}
+
+/* 底部输入区域 */
+.input-area-fixed[data-v-56908723] {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: rgba(255, 255, 255, 0.8);
+	-webkit-backdrop-filter: blur(10px);
+	        backdrop-filter: blur(10px);
+	border-top: 1px solid rgba(0, 0, 0, 0.05);
+	padding-bottom: env(safe-area-inset-bottom);
+}
+.input-area-glass[data-v-56908723] {
+	display: flex;
+	align-items: flex-end;
+	padding: 10px;
+}
+.chat-input[data-v-56908723] {
+	flex: 1;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 20px;
+	padding: 8px 15px;
+	font-size: 16px;
+	max-height: 100px;
+	overflow-y: auto;
+}
+.send-btn[data-v-56908723] {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background-color: #007aff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: 10px;
+	padding: 0;
+}
+.send-btn[disabled][data-v-56908723] {
+	background-color: #ccc;
+}
+.send-icon[data-v-56908723] {
+	width: 24px;
+	height: 24px;
+}
+
+/* 语音输入相关样式 */
+.voice-icon[data-v-56908723] {
+	width: 30px;
+	height: 30px;
+	margin-right: 8px;
+	align-self: center;
+	cursor: pointer;
+}
+.voice-input[data-v-56908723] {
+	flex: 1;
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	border: 1px solid #e0e0e0;
+	border-radius: 20px;
+	background-color: #f8f8f8;
+}
+
+/* 语音识别容器 */
+.voice-recognition-container[data-v-56908723] {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+.result[data-v-56908723] {
+	color: #CCCCCC;
+	border: #00CCCC 1px solid;
+	margin: 5px auto;
+	padding: 6px;
+	width: 100%;
+	height: 60px;
+	border-radius: 8px;
+}
+.recogniz[data-v-56908723] {
+    width: 100%;
+    padding: 8px;
+    margin: 5px auto;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 16px;
+	text-align: center;
+}
+.partial[data-v-56908723] {
+    width: 100%;
+    height: 20px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #FFFFFF;
+}
+.volume[data-v-56908723] {
+	width: 10px;
+	height: 6px;
+	border-style: solid;
+	display: inline-block;
+	box-sizing: border-box;
+	border-width: 1px;
+	border-color: #CCCCCC;
+	border-radius: 50%;
+    background-color: #00CC00;
+}
+
+/* 悬浮按钮 */
+.floating-order-btn[data-v-56908723] {
+	position: fixed;
+	bottom: 80px;
+	right: 20px;
+	width: 50px;
+	height: 50px;
+	background-color: #007aff;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+.order-icon[data-v-56908723] {
+	width: 28px;
+	height: 28px;
+}
+
+/* 订单弹窗 */
+.order-modal[data-v-56908723] {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+.order-content[data-v-56908723] {
+	width: 90%;
+	max-width: 400px;
+	background: white;
+	border-radius: 15px;
+	padding: 20px;
+	max-height: 80vh;
+	overflow-y: auto;
+}
+.order-header[data-v-56908723] {
+	text-align: center;
+	margin-bottom: 20px;
+}
+.order-title[data-v-56908723] {
+	font-size: 20px;
+	font-weight: bold;
+}
+.order-subtitle[data-v-56908723] {
+	font-size: 14px;
+	color: #666;
+	margin-top: 5px;
+}
+.order-form .form-group[data-v-56908723] {
+	margin-bottom: 15px;
+}
+.form-label[data-v-56908723] {
+	display: block;
+	font-size: 14px;
+	margin-bottom: 5px;
+}
+.form-input[data-v-56908723], .form-textarea[data-v-56908723] {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	box-sizing: border-box;
+}
+.form-textarea[data-v-56908723] {
+	height: 80px;
+}
+.order-actions[data-v-56908723] {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 20px;
+}
+.btn[data-v-56908723] {
+	flex: 1;
+	padding: 12px;
+	border: none;
+	border-radius: 8px;
+	font-size: 16px;
+}
+.btn-cancel[data-v-56908723] {
+	background: #f0f0f0;
+	margin-right: 10px;
+}
+.btn-confirm[data-v-56908723] {
+	background: #007aff;
+	color: white;
+}

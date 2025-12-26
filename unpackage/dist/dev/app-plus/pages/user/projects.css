@@ -1,0 +1,369 @@
+
+/* pages/user/projects.vue 样式 (毛玻璃科技风) */
+.user-projects-page[data-v-d7d59219] {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-size: 400% 400%;
+  animation: gradientBG-d7d59219 15s ease infinite;
+  min-height: 100vh;
+  padding: 0.625rem;
+  padding-bottom: 1.25rem; /* 为可能的底部留出空间 */
+  color: #fff;
+  overflow-x: hidden; /* 防止水平滚动 */
+}
+
+/* 背景动画 */
+@keyframes gradientBG-d7d59219 {
+0% { background-position: 0% 50%;
+}
+50% { background-position: 100% 50%;
+}
+100% { background-position: 0% 50%;
+}
+}
+
+/* --- 头部区域样式 --- */
+.header[data-v-d7d59219] {
+  display: flex;
+  align-items: center;
+  padding: 0.625rem 0.3125rem; /* 减少左右padding */
+  margin-bottom: 0.625rem;
+}
+.back-icon[data-v-d7d59219] {
+  width: 1.875rem;
+  height: 1.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.625rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.back-icon-image[data-v-d7d59219] {
+  width: 1.125rem;
+  height: 1.125rem;
+  filter: brightness(0) invert(1); /* 使图片变为白色 */
+}
+.header-title[data-v-d7d59219] {
+  flex: 1;
+  text-align: center;
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.2);
+}
+/* --- 头部区域样式结束 --- */
+
+
+/* --- 通用毛玻璃效果类 --- */
+.glass-effect[data-v-d7d59219] {
+  background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(0.625rem);
+          backdrop-filter: blur(0.625rem);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0.25rem 1rem 0 rgba(0, 0, 0, 0.1);
+}
+.glass-effect-subtle[data-v-d7d59219] {
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(0.46875rem);
+          backdrop-filter: blur(0.46875rem);
+  border-radius: 0.625rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+/* --- 通用毛玻璃效果类结束 --- */
+
+
+/* --- 顶部选项卡样式 --- */
+.tab-header[data-v-d7d59219] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.9375rem;
+  padding: 0.46875rem 0.3125rem;
+}
+.tab-item[data-v-d7d59219] {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.1875rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+}
+.tab-item.active[data-v-d7d59219] {
+  color: #ffffff;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 0.5625rem;
+}
+
+/* 如果需要底部指示器，可以取消注释下面的代码 */
+/*
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 6rpx;
+  background: #ffffff;
+  border-radius: 3rpx;
+}
+*/
+/* --- 顶部选项卡样式结束 --- */
+
+
+/* --- 项目列表和卡片样式 --- */
+.project-list[data-v-d7d59219] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9375rem; /* 项目项之间的间距 */
+}
+.project-item[data-v-d7d59219] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem; /* 项目卡片和投标区域之间的间距 */
+}
+.card-glass[data-v-d7d59219] {
+  background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(0.625rem);
+          backdrop-filter: blur(0.625rem);
+  border-radius: 0.75rem;
+  padding: 0.9375rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0.25rem 1rem 0 rgba(0, 0, 0, 0.1);
+}
+.project-title[data-v-d7d59219] {
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin-bottom: 0.625rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.2);
+}
+.info-grid[data-v-d7d59219] {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.625rem;
+}
+.info-item[data-v-d7d59219] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.info-label[data-v-d7d59219] {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-bottom: 0.25rem;
+}
+.info-value[data-v-d7d59219] {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.info-value.price[data-v-d7d59219] {
+  color: #FFD700; /* 金色 */
+}
+/* --- 项目列表和卡片样式结束 --- */
+
+
+/* --- 投标情况区域样式 --- */
+.bid-status-section[data-v-d7d59219] {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 0.75rem;
+  padding: 0.625rem;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.bid-status-header[data-v-d7d59219] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.3125rem 0;
+  margin-bottom: 0.625rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.bid-status-title[data-v-d7d59219] {
+  font-size: 1rem;
+  font-weight: bold;
+}
+.bid-status-count[data-v-d7d59219] {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.625rem;
+  font-size: 0.75rem;
+}
+.bids-container[data-v-d7d59219] {
+  padding: 0.3125rem 0;
+}
+.bids-list[data-v-d7d59219] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+.bid-item[data-v-d7d59219] {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  padding: 0.625rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.46875rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.bid-info[data-v-d7d59219] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3125rem;
+}
+.bidder-avatar[data-v-d7d59219] {
+  width: 1.875rem;
+  height: 1.875rem;
+  border-radius: 50%;
+  align-self: flex-start; /* 头像靠左 */
+}
+.bidder-name[data-v-d7d59219] {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.bid-price[data-v-d7d59219] {
+  font-size: 0.9375rem;
+  font-weight: bold;
+  color: #FFD700;
+}
+.bid-delivery[data-v-d7d59219], .bid-description[data-v-d7d59219] {
+  font-size: 0.8125rem;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+/* .bid-time {
+  font-size: 24rpx;
+  opacity: 0.7;
+} */
+.bid-actions[data-v-d7d59219] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.3125rem;
+}
+.action-btn[data-v-d7d59219] {
+  flex: 1;
+  margin: 0 0.3125rem;
+  height: 2.1875rem;
+  border-radius: 1.09375rem;
+  border: none;
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.contact-bidder-btn[data-v-d7d59219] {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+}
+.select-bid-btn[data-v-d7d59219] {
+  background: linear-gradient(135deg, #27ae60, #219653);
+}
+.action-btn[data-v-d7d59219]:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+.empty-bids[data-v-d7d59219] {
+  text-align: center;
+  padding: 1.25rem 0;
+  opacity: 0.7;
+  font-size: 0.875rem;
+}
+/* --- 投标情况区域样式结束 --- */
+
+
+/* --- 状态提示样式 --- */
+.loading-state[data-v-d7d59219], .empty-state[data-v-d7d59219] {
+  text-align: center;
+  padding: 1.875rem 0.9375rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.empty-state[data-v-d7d59219] {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.empty-icon[data-v-d7d59219] {
+  width: 3.75rem;
+  height: 3.75rem;
+  margin-bottom: 0.9375rem;
+  opacity: 0.5;
+  filter: brightness(0) invert(1); /* 使图片变为白色 */
+}
+.empty-text[data-v-d7d59219] {
+  font-size: 1rem;
+  margin-bottom: 0.625rem;
+}
+.empty-subtext[data-v-d7d59219] {
+  font-size: 0.875rem;
+  opacity: 0.7;
+}
+/* --- 状态提示样式结束 --- */
+
+/* 🎯 新增：已选中投标的指示器 */
+.selected-bid-indicator[data-v-d7d59219] {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 0.375rem;
+  padding: 0.46875rem;
+  margin-top: 0.46875rem;
+  text-align: center;
+}
+.selected-text[data-v-d7d59219] {
+  color: #FFD700;
+  font-weight: bold;
+  font-size: 0.8125rem;
+}
+
+/* 🎯 新增：禁用按钮样式 */
+.btn-disabled[data-v-d7d59219] {
+  opacity: 0.6 !important;
+  background: rgba(128, 128, 128, 0.5) !important;
+  cursor: not-allowed !important;
+}
+.btn-disabled[data-v-d7d59219]:active {
+  transform: none !important;
+  opacity: 0.6 !important;
+}
+
+
+/* --- 投标附件样式 --- */
+.bid-attachments[data-v-d7d59219] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.46875rem;
+  margin-top: 0.46875rem;
+}
+.attachment-item[data-v-d7d59219] {
+  width: 6.25rem;
+  height: 6.25rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.1);
+}
+.attachment-media[data-v-d7d59219] {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

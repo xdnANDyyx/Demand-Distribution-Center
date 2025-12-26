@@ -1,0 +1,113 @@
+
+.policy-page[data-v-8d87e98c] {
+  min-height: 100vh;
+  background: #f8f9fb;
+  padding: 0.75rem;
+  box-sizing: border-box;
+}
+.header[data-v-8d87e98c] {
+  margin-bottom: 0.75rem;
+}
+.links[data-v-8d87e98c] {
+  margin-top: 0.3125rem;
+}
+.link[data-v-8d87e98c] {
+  color: #2563eb;
+  font-size: 0.8125rem;
+  text-decoration: underline;
+}
+.title[data-v-8d87e98c] {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+.subtitle[data-v-8d87e98c] {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+.policy-scroll[data-v-8d87e98c] {
+  max-height: calc(100vh - 5rem);
+}
+.section[data-v-8d87e98c] {
+  background: #ffffff;
+  border-radius: 0.5rem;
+  padding: 0.875rem;
+  margin-bottom: 0.625rem;
+  box-shadow: 0 0.25rem 0.75rem rgba(15, 23, 42, 0.08);
+}
+.section-title[data-v-8d87e98c] {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.375rem;
+}
+.section-text[data-v-8d87e98c] {
+  font-size: 0.8125rem;
+  color: #374151;
+  line-height: 1.7;
+}
+.bullet[data-v-8d87e98c] {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: #f3f4f6;
+  border-radius: 0.375rem;
+}
+.bullet-title[data-v-8d87e98c] {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+.bullet-text[data-v-8d87e98c] {
+  font-size: 0.75rem;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-top: 0.1875rem;
+}
+.primary-btn[data-v-8d87e98c] {
+  margin-top: 0.625rem;
+  width: 100%;
+  height: 2.625rem;
+  line-height: 2.625rem;
+  text-align: center;
+  border-radius: 1.3125rem;
+  background: #2563eb;
+  color: #fff;
+  font-size: 0.9375rem;
+  border: none;
+}
+.gate-actions[data-v-8d87e98c] {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.625rem 0.75rem calc(0.625rem + env(safe-area-inset-bottom));
+  background: #ffffff;
+  box-shadow: 0 -0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+}
+.gate-text[data-v-8d87e98c] {
+  font-size: 0.8125rem;
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+}
+.gate-buttons[data-v-8d87e98c] {
+  display: flex;
+  gap: 0.5rem;
+}
+.gate-btn[data-v-8d87e98c] {
+  flex: 1;
+  height: 2.875rem;
+  line-height: 2.875rem;
+  text-align: center;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  border: none;
+}
+.gate-btn.secondary[data-v-8d87e98c] {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+.gate-btn.primary[data-v-8d87e98c] {
+  background: #2563eb;
+  color: #ffffff;
+}
