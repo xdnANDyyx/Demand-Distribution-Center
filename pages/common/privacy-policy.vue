@@ -18,26 +18,37 @@
         </text>
         <view class="bullet">
           <text class="bullet-title">敏感信息及用途</text>
-          <text class="bullet-text">• OAID（开放匿名设备标识符）：仅在您点击“同意”后获取，用于统计、风控及反作弊。</text>
+          <text class="bullet-text">• OAID（开放匿名设备标识符）：仅在您点击"同意"后获取，用于统计、风控及反作弊。</text>
           <text class="bullet-text">• 位置信息：用于推荐本地项目，可在设置 > 隐私设置中关闭。</text>
-          
         </view>
       </view>
 
       <view class="section">
-        <text class="section-title">二、我们如何使用信息</text>
+        <text class="section-title">二、关于DCloud uni-app引擎</text>
         <text class="section-text">
-          我们会将收集到的信息用于提供核心交易、订单履约、客服处理、安全防护及改进产品体验。
-          
+          重要说明：我们的产品基于DCloud uni-app(5+ App/Wap2App)开发，应用运行期间需要收集您的设备唯一识别码（IMEI/android ID/DEVICE_ID/IDFA、SIM 卡 IMSI 信息、OAID）以提供统计分析服务，并通过应用启动数据及异常错误日志分析改进性能和用户体验，为用户提供更好的服务。
+        </text>
+        <view class="bullet">
+          <text class="bullet-title">特别说明：</text>
+          <text class="bullet-text">• 本SDK不会申请涉及隐私的权限，所有权限申请均由开发者的代码申请。</text>
+          <text class="bullet-text">• 收集的"匿名设备标识符"为随机生成的字符串，不包括OAID、IDFA、IMEI、Android ID等信息。</text>
+        </view>
+        <text class="section-text">
+          详情内容请访问《DCloud App引擎隐私政策》。
         </text>
       </view>
 
-      
+      <view class="section">
+        <text class="section-title">三、我们如何使用信息</text>
+        <text class="section-text">
+          我们会将收集到的信息用于提供核心交易、订单履约、客服处理、安全防护及改进产品体验。
+        </text>
+      </view>
 
       <view class="section">
-        <text class="section-title">三、账号注销</text>
+        <text class="section-title">四、账号注销</text>
         <text class="section-text">
-          您可以按照“我的-设置-账号注销”入口提交注销申请。我们将在 15 个工作日内处理，并在完成后
+          您可以按照"我的-设置-账号注销"入口提交注销申请。我们将在 15 个工作日内处理，并在完成后
           删除或匿名化您的个人信息（法律法规另有规定除外）。注销完成后，账号关联的项目、订单及
           积分等数据将无法恢复，请谨慎操作。
         </text>
@@ -45,14 +56,11 @@
       </view>
 
       <view class="section">
-        <text class="section-title">四、联系我们</text>
+        <text class="section-title">五、联系我们</text>
         <text class="section-text">
           如果您对本隐私政策有任何疑问或建议，可通过客服邮箱 763705036@qq.com 与我们联系，
           我们会在收到后 15 个工作日内答复。
-		  应用运营方：沈阳科蓝金属科技有限公司
-
-
-
+          应用运营方：沈阳科蓝金属科技有限公司
         </text>
       </view>
     </scroll-view>
@@ -250,5 +258,3 @@ onLoad((options) => {
   color: #ffffff;
 }
 </style>
-
-

@@ -30,7 +30,7 @@
 					<text v-if="phoneError" class="error-text">{{ phoneError }}</text>
 				</view>
 				
-				<view class="form-item">
+				<!-- <view class="form-item">
 					<text class="form-label">验证码</text>
 					<view class="input-container">
 						<image class="input-icon" src="/static/icons/shield.png"></image>
@@ -46,7 +46,7 @@
 						</button>
 					</view>
 					<text v-if="codeError" class="error-text">{{ codeError }}</text>
-				</view>
+				</view> -->
 				
 				<view class="form-item">
 					<text class="form-label">设置密码</text>
@@ -134,7 +134,7 @@ const registerForm = ref({
   username: '',
   password: '',
   phone: '',
-  code: ''
+  code: '000000'
 })
 
 // 计算属性
@@ -146,14 +146,14 @@ const canRegister = computed(() => {
   // 基本验证
   const isUsernameValid = registerForm.value.username.trim().length >= 3; // 用户名至少3个字符
   const isPhoneValid = validatePhone(registerForm.value.phone);
-  const isCodeValid = registerForm.value.code.length === 6;
+ // const isCodeValid = registerForm.value.code.length === 6;
   const isPasswordValid = registerForm.value.password.length >= 6;
   const isConfirmPasswordValid = confirmPassword.value === registerForm.value.password;
   const isAgreeTerms = agreeTerms.value;
   
   return isUsernameValid &&
          isPhoneValid && 
-         isCodeValid && 
+         // isCodeValid && 
          isPasswordValid && 
          isConfirmPasswordValid && 
          isAgreeTerms;
@@ -165,7 +165,7 @@ const validateUsername = () => {
   if (!username) {
     usernameError.value = '请输入用户名'
   } else if (username.length < 3) {
-    usernameError.value = '用户名至少需要6个字符'
+    usernameError.value = '用户名至少需要3个字符'
   } else if (username.length > 20) {
     usernameError.value = '用户名不能超过20个字符'
   } else {
@@ -184,16 +184,16 @@ const validatePhoneNumber = () => {
   }
 }
 
-const validateCode = () => {
-  const code = registerForm.value.code.trim()
-  if (!code) {
-    codeError.value = '请输入验证码'
-  } else if (code.length !== 6) {
-    codeError.value = '验证码为6位数字'
-  } else {
-    codeError.value = ''
-  }
-}
+// const validateCode = () => {
+//   const code = registerForm.value.code.trim()
+//   if (!code) {
+//     codeError.value = '请输入验证码'
+//   } else if (code.length !== 6) {
+//     codeError.value = '验证码为6位数字'
+//   } else {
+//     codeError.value = ''
+//   }
+// }
 
 const validatePassword = () => {
   const password = registerForm.value.password
@@ -243,32 +243,32 @@ const toggleAgreeTerms = (e) => {
   console.log('协议同意状态:', agreeTerms.value)
 }
 
-const sendCode = async () => {
-  if (!canSendCode.value || codeCountdown.value > 0) return
+// const sendCode = async () => {
+//   if (!canSendCode.value || codeCountdown.value > 0) return
   
-  try {
-    await userStore.sendSmsCode(registerForm.value.phone)
+//   try {
+//     await userStore.sendSmsCode(registerForm.value.phone)
     
-    // 开始倒计时
-    codeCountdown.value = 60
-    countdownTimer = setInterval(() => {
-      codeCountdown.value--
-      if (codeCountdown.value <= 0) {
-        clearInterval(countdownTimer)
-      }
-    }, 1000)
+//     // 开始倒计时
+//     codeCountdown.value = 60
+//     countdownTimer = setInterval(() => {
+//       codeCountdown.value--
+//       if (codeCountdown.value <= 0) {
+//         clearInterval(countdownTimer)
+//       }
+//     }, 1000)
     
-    uni.showToast({
-      title: '验证码已发送',
-      icon: 'success'
-    })
-  } catch (error) {
-    uni.showToast({
-      title: error.message || '发送验证码失败',
-      icon: 'none'
-    })
-  }
-}
+//     uni.showToast({
+//       title: '验证码已发送',
+//       icon: 'success'
+//     })
+//   } catch (error) {
+//     uni.showToast({
+//       title: error.message || '发送验证码失败',
+//       icon: 'none'
+//     })
+//   }
+// }
 
 const handleRegister = async () => {
   if (!canRegister.value || loading.value) {
@@ -288,11 +288,11 @@ const handleRegister = async () => {
         title: '请输入正确的手机号',
         icon: 'none'
       })
-    } else if (registerForm.value.code.length !== 6) {
-      uni.showToast({
-        title: '请输入6位验证码',
-        icon: 'none'
-      })
+    // } else if (registerForm.value.code.length !== 6) {
+    //   uni.showToast({
+    //     title: '请输入6位验证码',
+    //     icon: 'none'
+    //   })
     } else if (registerForm.value.password.length < 6) {
       uni.showToast({
         title: '密码至少6个字符',

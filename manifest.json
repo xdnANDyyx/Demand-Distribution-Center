@@ -44,7 +44,8 @@
                     "android.permission.ACCESS_FINE_LOCATION",
                     "android.permission.ACCESS_COARSE_LOCATION"
                 ],
-                "minSdkVersion" : 21
+                "minSdkVersion" : 21,
+                "targetSdkVersion" : 31
             },
             "ios" : {
                 "dSYMs" : false
@@ -52,17 +53,17 @@
             "sdkConfigs" : {
                 "geolocation" : {
                     "amap" : {
-                        "name" : "amap_18842526898DQzU2LUb",
+                        "name" : "",
                         "__platform__" : [ "android" ],
                         "appkey_ios" : "",
-                        "appkey_android" : "b5ee9e1869143891359f2df5ca202083"
+                        "appkey_android" : ""
                     }
                 },
                 "speech" : {
                     "baidu" : {
-                        "appid" : "119786021",
-                        "apikey" : "JFDx2SIRq99RmFgOdFf4GSfO",
-                        "secretkey" : "m8s1M02iKpEwfXLU91nRPkRc968WF895"
+                        "appid" : "",
+                        "apikey" : "",
+                        "secretkey" : ""
                     }
                 }
             },
@@ -75,7 +76,8 @@
                 "androidStyle" : "default",
                 "android" : {
                     "xhdpi" : "C:/Users/PC/Pictures/good.png"
-                }
+                },
+                "useOriginalMsgbox" : true
             }
         },
         "ad" : {

@@ -1,19 +1,19 @@
 /**
- * 环境配置 // 192.168.0.101
- *          //115.190.38.218
+ * 环境配置 // 191.168.0.101
+ *          //111.190.38.218
  */
-const IP = "115.190.38.218"
+const IP = "111.190.38.218"
 const ENV = {
   development: {
-    baseURL: 'http://'+IP+'/api/v1', // 需要加  /api
+    baseURL: 'https://'+IP+'/api/api/v1', // 需要加  /api
     socketURL: 'ws://'+IP+'/api/v1/ws',
-    staticURL: 'http://'+IP+'/static',
+    staticURL: 'https://'+IP+'/static',
     debug: true
   },
   production: {   
-    baseURL: 'http://'+IP+'/api/api/v1',
-    socketURL: 'ws://'+IP+'/api/api/v1/ws',
-    staticURL: 'http://'+IP+'/static',
+    baseURL: 'https://'+IP+'/api/api/v1',
+    socketURL: 'ws://'+IP+'/api/api/v1/ws',  
+    staticURL: 'https://'+IP+'/static',
     debug: false
   }
 }
@@ -23,9 +23,9 @@ const isMobileApp = typeof plus !== 'undefined'
 
 // 移动应用环境下使用不同的API地址
 if (isMobileApp) {
-  ENV.development.baseURL = 'http://'+IP+'/api/api/v1' // Android模拟器访问本机的地址 :8080/api/v1  切换本地需修改
+  ENV.development.baseURL = 'https://'+IP+'/api/api/v1' // Android模拟器访问本机的地址 :8080/api/v1  切换本地需修改
   ENV.development.socketURL = 'ws://'+IP+'/api/api/v1/ws'
-  ENV.production.baseURL = 'http://'+IP+'/api/api/v1'
+  ENV.production.baseURL = 'https://'+IP+'/api/api/v1'
   ENV.production.socketURL = 'ws://'+IP+'/api/api/v1/ws'
 } else {
   // 非移动应用环境（如浏览器）下，使用相对路径

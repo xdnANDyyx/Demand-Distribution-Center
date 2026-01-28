@@ -92,24 +92,24 @@ if (uni.restoreGlobal) {
   const IP = "115.190.38.218";
   const ENV = {
     development: {
-      baseURL: "http://" + IP + "/api/v1",
+      baseURL: "https://" + IP + "/api/api/v1",
       // 需要加  /api
       socketURL: "ws://" + IP + "/api/v1/ws",
-      staticURL: "http://" + IP + "/static",
+      staticURL: "https://" + IP + "/static",
       debug: true
     },
     production: {
-      baseURL: "http://" + IP + "/api/api/v1",
+      baseURL: "https://" + IP + "/api/api/v1",
       socketURL: "ws://" + IP + "/api/api/v1/ws",
-      staticURL: "http://" + IP + "/static",
+      staticURL: "https://" + IP + "/static",
       debug: false
     }
   };
   const isMobileApp = typeof plus !== "undefined";
   if (isMobileApp) {
-    ENV.development.baseURL = "http://" + IP + "/api/api/v1";
+    ENV.development.baseURL = "https://" + IP + "/api/api/v1";
     ENV.development.socketURL = "ws://" + IP + "/api/api/v1/ws";
-    ENV.production.baseURL = "http://" + IP + "/api/api/v1";
+    ENV.production.baseURL = "https://" + IP + "/api/api/v1";
     ENV.production.socketURL = "ws://" + IP + "/api/api/v1/ws";
   }
   const currentEnv = "development";
@@ -2255,8 +2255,6 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render$w(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "home-container" }, [
-      vue.createCommentVNode(" 状态栏 "),
-      vue.createCommentVNode(" 顶部标题栏 "),
       vue.createElementVNode("view", { class: "header" }, [
         vue.createElementVNode("view", { class: "header-top" }, [
           vue.createElementVNode("view", { class: "logo" }, [
@@ -2265,17 +2263,12 @@ This will fail in production if not fixed.`);
             vue.createTextVNode("！")
           ]),
           vue.createElementVNode("view", { class: "header-actions" }, [
-            vue.createElementVNode("view", { class: "gradient-text" }, "速效直达 没有中间商！"),
-            vue.createCommentVNode('  <view class="header-btn">\r\n             <text class="iconfont icon-bell"></text> \r\n            \r\n          </view> '),
-            vue.createCommentVNode(' <view class="header-btn" @click="goToUserCenter">\r\n            <text class="iconfont icon-user"></text>\r\n          </view> ')
+            vue.createElementVNode("view", { class: "gradient-text" }, "速效直达 没有中间商！")
           ])
         ])
       ]),
-      vue.createCommentVNode(" 主要内容区域 "),
       vue.createElementVNode("view", { class: "main-content" }, [
-        vue.createCommentVNode(" 类目选择 "),
         vue.createElementVNode("view", { class: "categories-section fade-in-up" }, [
-          vue.createCommentVNode(' <view class="section-title">选择发布类目</view> '),
           vue.createElementVNode("view", { class: "categories-grid" }, [
             (vue.openBlock(true), vue.createElementBlock(
               vue.Fragment,
@@ -2310,7 +2303,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesHomeIndex = /* @__PURE__ */ _export_sfc(_sfc_main$w, [["render", _sfc_render$w], ["__scopeId", "data-v-4978fed5"], ["__file", "F:/new/success/frontapp/pages/home/index.vue"]]);
+  const PagesHomeIndex = /* @__PURE__ */ _export_sfc(_sfc_main$w, [["render", _sfc_render$w], ["__scopeId", "data-v-4978fed5"], ["__file", "F:/new/success/uniappandroid/pages/home/index.vue"]]);
   const useMessageStore = defineStore("message", {
     state: () => ({
       chatList: [],
@@ -3339,8 +3332,8 @@ This will fail in production if not fixed.`);
     });
   };
   const _imports_1$7 = "/static/icons/user.png";
-  const _imports_2$5 = "/static/icons/lock.png";
-  const _imports_2$4 = "/static/icons/help.png";
+  const _imports_2$4 = "/static/icons/lock.png";
+  const _imports_2$3 = "/static/icons/help.png";
   const _imports_1$6 = "/static/icons/phone.png";
   const _sfc_main$v = {
     __name: "index",
@@ -3414,12 +3407,10 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render$v(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "login-container" }, [
-      vue.createCommentVNode(" 头部品牌 "),
       vue.createElementVNode("view", { class: "header" }, [
         vue.createElementVNode("text", { class: "brand-name" }, "国中宝"),
         vue.createElementVNode("text", { class: "brand-slogan" }, "一站式招投标服务平台")
       ]),
-      vue.createCommentVNode(" 登录表单 "),
       vue.createElementVNode("view", { class: "login-form-container" }, [
         vue.createElementVNode("view", { class: "glass-effect" }, [
           vue.createElementVNode("text", { class: "welcome-text" }, "欢迎回来"),
@@ -3451,7 +3442,7 @@ This will fail in production if not fixed.`);
             vue.createElementVNode("view", { class: "input-container" }, [
               vue.createElementVNode("image", {
                 class: "input-icon",
-                src: _imports_2$5
+                src: _imports_2$4
               }),
               vue.withDirectives(vue.createElementVNode(
                 "input",
@@ -3483,7 +3474,6 @@ This will fail in production if not fixed.`);
               onClick: $setup.goToForgetPassword
             }, "忘记密码?")
           ]),
-          vue.createCommentVNode(" 协议勾选：应用宝要求不得默认勾选 "),
           vue.createElementVNode("view", { class: "agreement-row" }, [
             vue.createElementVNode("checkbox", {
               checked: $setup.loginForm.agreePolicy,
@@ -3516,7 +3506,6 @@ This will fail in production if not fixed.`);
           ])
         ])
       ]),
-      vue.createCommentVNode(" 底部 "),
       vue.createElementVNode("view", { class: "footer" }, [
         vue.createElementVNode("view", {
           class: "footer-btn",
@@ -3524,7 +3513,7 @@ This will fail in production if not fixed.`);
         }, [
           vue.createElementVNode("image", {
             class: "footer-icon",
-            src: _imports_2$4
+            src: _imports_2$3
           }),
           vue.createElementVNode("text", { class: "footer-text" }, "帮助")
         ]),
@@ -3541,12 +3530,11 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesLoginIndex = /* @__PURE__ */ _export_sfc(_sfc_main$v, [["render", _sfc_render$v], ["__file", "F:/new/success/frontapp/pages/login/index.vue"]]);
+  const PagesLoginIndex = /* @__PURE__ */ _export_sfc(_sfc_main$v, [["render", _sfc_render$v], ["__file", "F:/new/success/uniappandroid/pages/login/index.vue"]]);
   function validatePhone(phone) {
     const reg = /^1[3-9]\d{9}$/;
     return reg.test(phone);
   }
-  const _imports_2$3 = "/static/icons/shield.png";
   const _sfc_main$u = {
     __name: "index",
     setup(__props, { expose: __expose }) {
@@ -3568,7 +3556,7 @@ This will fail in production if not fixed.`);
         username: "",
         password: "",
         phone: "",
-        code: ""
+        code: "000000"
       });
       const canSendCode = vue.computed(() => {
         return validatePhone(registerForm.value.phone);
@@ -3576,18 +3564,18 @@ This will fail in production if not fixed.`);
       const canRegister = vue.computed(() => {
         const isUsernameValid = registerForm.value.username.trim().length >= 3;
         const isPhoneValid = validatePhone(registerForm.value.phone);
-        const isCodeValid = registerForm.value.code.length === 6;
         const isPasswordValid = registerForm.value.password.length >= 6;
         const isConfirmPasswordValid = confirmPassword.value === registerForm.value.password;
         const isAgreeTerms = agreeTerms.value;
-        return isUsernameValid && isPhoneValid && isCodeValid && isPasswordValid && isConfirmPasswordValid && isAgreeTerms;
+        return isUsernameValid && isPhoneValid && // isCodeValid && 
+        isPasswordValid && isConfirmPasswordValid && isAgreeTerms;
       });
       const validateUsername = () => {
         const username = registerForm.value.username.trim();
         if (!username) {
           usernameError.value = "请输入用户名";
         } else if (username.length < 3) {
-          usernameError.value = "用户名至少需要6个字符";
+          usernameError.value = "用户名至少需要3个字符";
         } else if (username.length > 20) {
           usernameError.value = "用户名不能超过20个字符";
         } else {
@@ -3602,16 +3590,6 @@ This will fail in production if not fixed.`);
           phoneError.value = "请输入正确的手机号";
         } else {
           phoneError.value = "";
-        }
-      };
-      const validateCode = () => {
-        const code = registerForm.value.code.trim();
-        if (!code) {
-          codeError.value = "请输入验证码";
-        } else if (code.length !== 6) {
-          codeError.value = "验证码为6位数字";
-        } else {
-          codeError.value = "";
         }
       };
       const validatePassword = () => {
@@ -3652,29 +3630,6 @@ This will fail in production if not fixed.`);
         }
         formatAppLog("log", "at pages/register/index.vue:243", "协议同意状态:", agreeTerms.value);
       };
-      const sendCode = async () => {
-        if (!canSendCode.value || codeCountdown.value > 0)
-          return;
-        try {
-          await userStore.sendSmsCode(registerForm.value.phone);
-          codeCountdown.value = 60;
-          countdownTimer = setInterval(() => {
-            codeCountdown.value--;
-            if (codeCountdown.value <= 0) {
-              clearInterval(countdownTimer);
-            }
-          }, 1e3);
-          uni.showToast({
-            title: "验证码已发送",
-            icon: "success"
-          });
-        } catch (error) {
-          uni.showToast({
-            title: error.message || "发送验证码失败",
-            icon: "none"
-          });
-        }
-      };
       const handleRegister = async () => {
         if (!canRegister.value || loading.value) {
           if (!registerForm.value.username.trim()) {
@@ -3690,11 +3645,6 @@ This will fail in production if not fixed.`);
           } else if (!validatePhone(registerForm.value.phone)) {
             uni.showToast({
               title: "请输入正确的手机号",
-              icon: "none"
-            });
-          } else if (registerForm.value.code.length !== 6) {
-            uni.showToast({
-              title: "请输入6位验证码",
               icon: "none"
             });
           } else if (registerForm.value.password.length < 6) {
@@ -3757,7 +3707,7 @@ This will fail in production if not fixed.`);
         return countdownTimer;
       }, set countdownTimer(v) {
         countdownTimer = v;
-      }, usernameError, phoneError, codeError, passwordError, confirmPasswordError, registerForm, canSendCode, canRegister, validateUsername, validatePhoneNumber, validateCode, validatePassword, validateConfirmPassword, togglePassword, toggleConfirmPassword, toggleAgreeTerms, sendCode, handleRegister, goToLogin, showUserAgreement, showPrivacyPolicy, ref: vue.ref, computed: vue.computed, watch: vue.watch, get useUserStore() {
+      }, usernameError, phoneError, codeError, passwordError, confirmPasswordError, registerForm, canSendCode, canRegister, validateUsername, validatePhoneNumber, validatePassword, validateConfirmPassword, togglePassword, toggleConfirmPassword, toggleAgreeTerms, handleRegister, goToLogin, showUserAgreement, showPrivacyPolicy, ref: vue.ref, computed: vue.computed, watch: vue.watch, get useUserStore() {
         return useUserStore$1;
       }, get validatePhone() {
         return validatePhone;
@@ -3768,12 +3718,10 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render$u(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "register-container" }, [
-      vue.createCommentVNode(" 头部品牌 "),
       vue.createElementVNode("view", { class: "header" }, [
         vue.createElementVNode("text", { class: "brand-name" }, "直求"),
         vue.createElementVNode("text", { class: "brand-slogan" }, "一站式招投标服务平台")
       ]),
-      vue.createCommentVNode(" 注册表单 "),
       vue.createElementVNode("view", { class: "register-form-container" }, [
         vue.createElementVNode("view", { class: "glass-effect" }, [
           vue.createElementVNode("text", { class: "welcome-text" }, "创建账号"),
@@ -3846,63 +3794,16 @@ This will fail in production if not fixed.`);
             )) : vue.createCommentVNode("v-if", true)
           ]),
           vue.createElementVNode("view", { class: "form-item" }, [
-            vue.createElementVNode("text", { class: "form-label" }, "验证码"),
-            vue.createElementVNode("view", { class: "input-container" }, [
-              vue.createElementVNode("image", {
-                class: "input-icon",
-                src: _imports_2$3
-              }),
-              vue.withDirectives(vue.createElementVNode(
-                "input",
-                {
-                  class: "form-input",
-                  type: "number",
-                  "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => $setup.registerForm.code = $event),
-                  onBlur: $setup.validateCode,
-                  placeholder: "请输入验证码"
-                },
-                null,
-                544
-                /* NEED_HYDRATION, NEED_PATCH */
-              ), [
-                [vue.vModelText, $setup.registerForm.code]
-              ]),
-              vue.createElementVNode("button", {
-                class: vue.normalizeClass(["code-btn", { disabled: !$setup.canSendCode || $setup.codeCountdown > 0 }]),
-                disabled: !$setup.canSendCode || $setup.codeCountdown > 0,
-                onClick: $setup.sendCode
-              }, [
-                $setup.codeCountdown > 0 ? (vue.openBlock(), vue.createElementBlock(
-                  "text",
-                  { key: 0 },
-                  vue.toDisplayString($setup.codeCountdown) + "s",
-                  1
-                  /* TEXT */
-                )) : (vue.openBlock(), vue.createElementBlock("text", { key: 1 }, "获取验证码"))
-              ], 10, ["disabled"])
-            ]),
-            $setup.codeError ? (vue.openBlock(), vue.createElementBlock(
-              "text",
-              {
-                key: 0,
-                class: "error-text"
-              },
-              vue.toDisplayString($setup.codeError),
-              1
-              /* TEXT */
-            )) : vue.createCommentVNode("v-if", true)
-          ]),
-          vue.createElementVNode("view", { class: "form-item" }, [
             vue.createElementVNode("text", { class: "form-label" }, "设置密码"),
             vue.createElementVNode("view", { class: "input-container" }, [
               vue.createElementVNode("image", {
                 class: "input-icon",
-                src: _imports_2$5
+                src: _imports_2$4
               }),
               vue.withDirectives(vue.createElementVNode("input", {
                 class: "form-input",
                 type: $setup.showPassword ? "text" : "password",
-                "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $setup.registerForm.password = $event),
+                "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => $setup.registerForm.password = $event),
                 onBlur: $setup.validatePassword,
                 placeholder: "请设置密码"
               }, null, 40, ["type"]), [
@@ -3934,12 +3835,12 @@ This will fail in production if not fixed.`);
             vue.createElementVNode("view", { class: "input-container" }, [
               vue.createElementVNode("image", {
                 class: "input-icon",
-                src: _imports_2$5
+                src: _imports_2$4
               }),
               vue.withDirectives(vue.createElementVNode("input", {
                 class: "form-input",
                 type: $setup.showConfirmPassword ? "text" : "password",
-                "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => $setup.confirmPassword = $event),
+                "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $setup.confirmPassword = $event),
                 onBlur: $setup.validateConfirmPassword,
                 placeholder: "请再次输入密码"
               }, null, 40, ["type"]), [
@@ -3966,7 +3867,6 @@ This will fail in production if not fixed.`);
               /* TEXT */
             )) : vue.createCommentVNode("v-if", true)
           ]),
-          vue.createCommentVNode(" 用户协议 "),
           vue.createElementVNode("view", { class: "agreement-section" }, [
             vue.createElementVNode("view", {
               class: "agreement-wrapper",
@@ -4018,7 +3918,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesRegisterIndex = /* @__PURE__ */ _export_sfc(_sfc_main$u, [["render", _sfc_render$u], ["__file", "F:/new/success/frontapp/pages/register/index.vue"]]);
+  const PagesRegisterIndex = /* @__PURE__ */ _export_sfc(_sfc_main$u, [["render", _sfc_render$u], ["__file", "F:/new/success/uniappandroid/pages/register/index.vue"]]);
   const _imports_0$7 = "/static/icons/arrow_left.png";
   const _sfc_main$t = {
     __name: "forget-password",
@@ -4079,7 +3979,6 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render$t(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "forget-password-container" }, [
-      vue.createCommentVNode(" 头部 "),
       vue.createElementVNode("view", { class: "header" }, [
         vue.createElementVNode("view", {
           class: "back-btn",
@@ -4092,7 +3991,6 @@ This will fail in production if not fixed.`);
         ]),
         vue.createElementVNode("text", { class: "page-title" }, "找回密码")
       ]),
-      vue.createCommentVNode(" 表单 "),
       vue.createElementVNode("view", { class: "form-container" }, [
         vue.createElementVNode("view", { class: "glass-effect" }, [
           vue.createElementVNode("text", { class: "instruction-text" }, "请输入您的用户名，我们将为您重置密码"),
@@ -4127,7 +4025,7 @@ This will fail in production if not fixed.`);
             vue.createElementVNode("view", { class: "input-container" }, [
               vue.createElementVNode("image", {
                 class: "input-icon",
-                src: _imports_2$5
+                src: _imports_2$4
               }),
               vue.withDirectives(vue.createElementVNode(
                 "input",
@@ -4153,7 +4051,7 @@ This will fail in production if not fixed.`);
             vue.createElementVNode("view", { class: "input-container" }, [
               vue.createElementVNode("image", {
                 class: "input-icon",
-                src: _imports_2$5
+                src: _imports_2$4
               }),
               vue.withDirectives(vue.createElementVNode(
                 "input",
@@ -4185,7 +4083,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesLoginForgetPassword = /* @__PURE__ */ _export_sfc(_sfc_main$t, [["render", _sfc_render$t], ["__file", "F:/new/success/frontapp/pages/login/forget-password.vue"]]);
+  const PagesLoginForgetPassword = /* @__PURE__ */ _export_sfc(_sfc_main$t, [["render", _sfc_render$t], ["__file", "F:/new/success/uniappandroid/pages/login/forget-password.vue"]]);
   const projectCategories = [
     // 1. 工业标单需求（已存在）
     {
@@ -5125,7 +5023,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const ProjectCard = /* @__PURE__ */ _export_sfc(_sfc_main$s, [["render", _sfc_render$s], ["__scopeId", "data-v-05ca8cb4"], ["__file", "F:/new/success/frontapp/components/ProjectCard.vue"]]);
+  const ProjectCard = /* @__PURE__ */ _export_sfc(_sfc_main$s, [["render", _sfc_render$s], ["__scopeId", "data-v-05ca8cb4"], ["__file", "F:/new/success/uniappandroid/components/ProjectCard.vue"]]);
   const _imports_1$4 = "/static/images/empty-box.png";
   const _sfc_main$r = {
     __name: "list",
@@ -5284,9 +5182,7 @@ This will fail in production if not fixed.`);
   function _sfc_render$r(_ctx, _cache, $props, $setup, $data, $options) {
     var _a, _b, _c, _d;
     return vue.openBlock(), vue.createElementBlock("view", { class: "list-container" }, [
-      vue.createCommentVNode(" 顶部固定区域 "),
       vue.createElementVNode("view", { class: "header-fixed" }, [
-        vue.createCommentVNode(" 搜索栏 "),
         vue.createElementVNode("view", { class: "search-bar-glass" }, [
           vue.createElementVNode("text", { class: "search-icon" }, "🔍"),
           vue.withDirectives(vue.createElementVNode(
@@ -5304,11 +5200,8 @@ This will fail in production if not fixed.`);
             [vue.vModelText, $setup.queryParams.keyword]
           ])
         ]),
-        vue.createCommentVNode(" 筛选和排序 "),
         vue.createElementVNode("view", { class: "filter-sort-bar" }, [
-          vue.createCommentVNode(" 修改：使用级联分类筛选 "),
           vue.createElementVNode("view", { class: "category-cascader-wrapper" }, [
-            vue.createCommentVNode(" 一级分类 "),
             vue.createElementVNode("picker", {
               onChange: $setup.onMainCategoryChange,
               value: $setup.mainCategoryIndex,
@@ -5326,7 +5219,6 @@ This will fail in production if not fixed.`);
                 vue.createElementVNode("text", { class: "arrow-down" }, "▾")
               ])
             ], 40, ["value", "range"]),
-            vue.createCommentVNode(" 二级分类 (当一级选中后显示) "),
             $setup.selectedMainCategory && $setup.subCategories.length > 0 ? (vue.openBlock(), vue.createElementBlock("picker", {
               key: 0,
               onChange: $setup.onSubCategoryChange,
@@ -5345,7 +5237,6 @@ This will fail in production if not fixed.`);
                 vue.createElementVNode("text", { class: "arrow-down" }, "▾")
               ])
             ], 40, ["value", "range"])) : vue.createCommentVNode("v-if", true),
-            vue.createCommentVNode(" 三级分类 (当二级选中后显示) "),
             $setup.selectedSubCategory && $setup.childCategories.length > 0 ? (vue.openBlock(), vue.createElementBlock("picker", {
               key: 1,
               onChange: $setup.onChildCategoryChange,
@@ -5364,7 +5255,6 @@ This will fail in production if not fixed.`);
                 vue.createElementVNode("text", { class: "arrow-down" }, "▾")
               ])
             ], 40, ["value", "range"])) : vue.createCommentVNode("v-if", true),
-            vue.createCommentVNode(" 重置按钮 "),
             $setup.selectedChildCategory || $setup.selectedSubCategory || $setup.selectedMainCategory ? (vue.openBlock(), vue.createElementBlock("view", {
               key: 2,
               class: "reset-btn",
@@ -5394,7 +5284,6 @@ This will fail in production if not fixed.`);
           ])
         ])
       ]),
-      vue.createCommentVNode(" 项目列表 "),
       vue.createElementVNode("view", { class: "project-list-container" }, [
         $setup.projects.length > 0 ? (vue.openBlock(), vue.createElementBlock("view", {
           key: 0,
@@ -5414,7 +5303,6 @@ This will fail in production if not fixed.`);
             /* KEYED_FRAGMENT */
           ))
         ])) : vue.createCommentVNode("v-if", true),
-        vue.createCommentVNode(" 状态视图 "),
         $setup.loading ? (vue.openBlock(), vue.createElementBlock("view", {
           key: 1,
           class: "status-view"
@@ -5440,7 +5328,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesProjectsList = /* @__PURE__ */ _export_sfc(_sfc_main$r, [["render", _sfc_render$r], ["__scopeId", "data-v-16e737a9"], ["__file", "F:/new/success/frontapp/pages/projects/list.vue"]]);
+  const PagesProjectsList = /* @__PURE__ */ _export_sfc(_sfc_main$r, [["render", _sfc_render$r], ["__scopeId", "data-v-16e737a9"], ["__file", "F:/new/success/uniappandroid/pages/projects/list.vue"]]);
   function processImageUrl(url) {
     if (!url)
       return url;
@@ -6199,7 +6087,6 @@ This will fail in production if not fixed.`);
   function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "detail-container" }, [
       $setup.project ? (vue.openBlock(), vue.createElementBlock("view", { key: 0 }, [
-        vue.createCommentVNode(" 项目信息卡片 "),
         vue.createElementVNode("view", { class: "card-glass" }, [
           vue.createElementVNode(
             "view",
@@ -6254,7 +6141,6 @@ This will fail in production if not fixed.`);
             )
           ])
         ]),
-        vue.createCommentVNode(" 项目描述 "),
         vue.createElementVNode("view", { class: "card-glass" }, [
           vue.createElementVNode("view", { class: "card-title" }, "项目描述"),
           vue.createElementVNode(
@@ -6265,13 +6151,11 @@ This will fail in production if not fixed.`);
             /* TEXT */
           )
         ]),
-        vue.createCommentVNode(" 🎯 新增：项目附件 "),
         $setup.projectAttachments.images.length > 0 || $setup.projectAttachments.pdfs.length > 0 || $setup.projectAttachments.videos.length > 0 ? (vue.openBlock(), vue.createElementBlock("scroll-view", {
           key: 0,
           class: "card-glass"
         }, [
           vue.createElementVNode("view", { class: "card-title" }, "项目附件"),
-          vue.createCommentVNode(" 图片附件 "),
           $setup.projectAttachments.images.length > 0 ? (vue.openBlock(), vue.createElementBlock("view", {
             key: 0,
             class: "attachments-section"
@@ -6299,7 +6183,6 @@ This will fail in production if not fixed.`);
               ))
             ])
           ])) : vue.createCommentVNode("v-if", true),
-          vue.createCommentVNode(" 视频附件 "),
           $setup.projectAttachments.videos.length > 0 ? (vue.openBlock(), vue.createElementBlock("view", {
             key: 1,
             class: "attachments-section"
@@ -6314,7 +6197,6 @@ This will fail in production if not fixed.`);
                     key: "video_" + index,
                     class: "video-attachment-item"
                   }, [
-                    vue.createCommentVNode(" 使用封面预览代替直接video标签 "),
                     vue.createElementVNode("view", {
                       class: "video-attachment-preview",
                       onClick: ($event) => $setup.previewAttachmentVideo(video.url, video.name)
@@ -6342,7 +6224,6 @@ This will fail in production if not fixed.`);
               ))
             ])
           ])) : vue.createCommentVNode("v-if", true),
-          vue.createCommentVNode(" PDF 附件 "),
           $setup.projectAttachments.pdfs.length > 0 ? (vue.openBlock(), vue.createElementBlock("view", {
             key: 2,
             class: "attachments-section"
@@ -6378,8 +6259,6 @@ This will fail in production if not fixed.`);
             ])
           ])) : vue.createCommentVNode("v-if", true)
         ])) : vue.createCommentVNode("v-if", true),
-        vue.createCommentVNode(" 🎯 新增结束 "),
-        vue.createCommentVNode(" 发布者信息 "),
         vue.createElementVNode("view", { class: "card-glass publisher-card" }, [
           vue.createElementVNode("view", { class: "card-title" }, "发布者"),
           vue.createElementVNode("view", { class: "publisher-info" }, [
@@ -6416,7 +6295,6 @@ This will fail in production if not fixed.`);
             }, "联系TA")
           ])
         ]),
-        vue.createCommentVNode(" 投标情况 "),
         $setup.isOwner && $setup.bids.length > 0 ? (vue.openBlock(), vue.createElementBlock("view", {
           key: 1,
           class: "card-glass"
@@ -6501,7 +6379,6 @@ This will fail in production if not fixed.`);
             ))
           ])
         ])) : vue.createCommentVNode("v-if", true),
-        vue.createCommentVNode(" 项目管理 "),
         $setup.isOwner ? (vue.openBlock(), vue.createElementBlock("view", {
           key: 2,
           class: "card-glass"
@@ -6541,19 +6418,16 @@ This will fail in production if not fixed.`);
           ])
         ])) : vue.createCommentVNode("v-if", true)
       ])) : vue.createCommentVNode("v-if", true),
-      vue.createCommentVNode(" 加载状态 "),
       $setup.loading ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 1,
         class: "loading-view"
       }, [
         vue.createElementVNode("text", null, "加载中...")
       ])) : vue.createCommentVNode("v-if", true),
-      vue.createCommentVNode(" 底部操作栏 "),
       $setup.project ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 2,
         class: "action-bar"
       }, [
-        vue.createCommentVNode(" 未登录用户 "),
         !$setup.userStore.hasLogin ? (vue.openBlock(), vue.createElementBlock("button", {
           key: 0,
           class: "action-btn bid-btn",
@@ -6561,67 +6435,54 @@ This will fail in production if not fixed.`);
         }, [
           vue.createElementVNode("text", { class: "btn-icon" }, "🔐"),
           vue.createElementVNode("text", { class: "btn-text" }, "登录后参与")
-        ])) : $setup.isOwner ? (vue.openBlock(), vue.createElementBlock(
-          vue.Fragment,
-          { key: 1 },
-          [
-            vue.createCommentVNode(" 已登录用户 - 项目所有者 "),
-            vue.createElementVNode("view", { class: "owner-actions" }, [
-              $setup.bids.length > 0 ? (vue.openBlock(), vue.createElementBlock("button", {
-                key: 0,
-                class: "action-btn manage-btn",
-                onClick: $setup.viewBids
-              }, [
-                vue.createElementVNode("text", { class: "btn-icon" }, "👥"),
-                vue.createElementVNode("text", { class: "btn-text" }, "项目管理中")
-              ])) : vue.createCommentVNode("v-if", true),
-              $setup.project.status === "bidding" ? (vue.openBlock(), vue.createElementBlock("button", {
-                key: 1,
-                class: "action-btn cancel-btn",
-                onClick: $setup.cancelProject
-              }, [
-                vue.createElementVNode("text", { class: "btn-icon" }, "❌"),
-                vue.createElementVNode("text", { class: "btn-text" }, "取消项目")
-              ])) : vue.createCommentVNode("v-if", true)
-            ])
-          ],
-          64
-          /* STABLE_FRAGMENT */
-        )) : (vue.openBlock(), vue.createElementBlock(
-          vue.Fragment,
-          { key: 2 },
-          [
-            vue.createCommentVNode(" 已登录用户 - 访客 "),
-            vue.createElementVNode("view", { class: "visitor-actions" }, [
-              vue.createElementVNode("button", {
-                class: "action-btn contact-btn-main",
-                onClick: $setup.handleContact
-              }, [
-                vue.createElementVNode("text", { class: "btn-icon" }, "💬"),
-                vue.createElementVNode("text", { class: "btn-text" }, "去沟通")
-              ]),
-              !$setup.hasBid && ($setup.project.status === "bidding" || $setup.project.status === 0) ? (vue.openBlock(), vue.createElementBlock("button", {
-                key: 0,
-                class: "action-btn bid-btn",
-                onClick: $setup.openBidPopup
-              }, [
-                vue.createElementVNode("text", { class: "btn-icon" }, "📝"),
-                vue.createElementVNode("text", { class: "btn-text" }, "去投标")
-              ])) : vue.createCommentVNode("v-if", true),
-              $setup.hasBid ? (vue.openBlock(), vue.createElementBlock("view", {
-                key: 1,
-                class: "action-text"
-              }, [
-                vue.createElementVNode("text", { class: "btn-icon" }, "✅"),
-                vue.createElementVNode("text", null, "您已投标")
-              ])) : vue.createCommentVNode("v-if", true)
-            ])
-          ],
-          64
-          /* STABLE_FRAGMENT */
-        ))
+        ])) : $setup.isOwner ? (vue.openBlock(), vue.createElementBlock("view", {
+          key: 1,
+          class: "owner-actions"
+        }, [
+          $setup.bids.length > 0 ? (vue.openBlock(), vue.createElementBlock("button", {
+            key: 0,
+            class: "action-btn manage-btn",
+            onClick: $setup.viewBids
+          }, [
+            vue.createElementVNode("text", { class: "btn-icon" }, "👥"),
+            vue.createElementVNode("text", { class: "btn-text" }, "项目管理中")
+          ])) : vue.createCommentVNode("v-if", true),
+          $setup.project.status === "bidding" ? (vue.openBlock(), vue.createElementBlock("button", {
+            key: 1,
+            class: "action-btn cancel-btn",
+            onClick: $setup.cancelProject
+          }, [
+            vue.createElementVNode("text", { class: "btn-icon" }, "❌"),
+            vue.createElementVNode("text", { class: "btn-text" }, "取消项目")
+          ])) : vue.createCommentVNode("v-if", true)
+        ])) : (vue.openBlock(), vue.createElementBlock("view", {
+          key: 2,
+          class: "visitor-actions"
+        }, [
+          vue.createElementVNode("button", {
+            class: "action-btn contact-btn-main",
+            onClick: $setup.handleContact
+          }, [
+            vue.createElementVNode("text", { class: "btn-icon" }, "💬"),
+            vue.createElementVNode("text", { class: "btn-text" }, "去沟通")
+          ]),
+          !$setup.hasBid && ($setup.project.status === "bidding" || $setup.project.status === 0) ? (vue.openBlock(), vue.createElementBlock("button", {
+            key: 0,
+            class: "action-btn bid-btn",
+            onClick: $setup.openBidPopup
+          }, [
+            vue.createElementVNode("text", { class: "btn-icon" }, "📝"),
+            vue.createElementVNode("text", { class: "btn-text" }, "去投标")
+          ])) : vue.createCommentVNode("v-if", true),
+          $setup.hasBid ? (vue.openBlock(), vue.createElementBlock("view", {
+            key: 1,
+            class: "action-text"
+          }, [
+            vue.createElementVNode("text", { class: "btn-icon" }, "✅"),
+            vue.createElementVNode("text", null, "您已投标")
+          ])) : vue.createCommentVNode("v-if", true)
+        ]))
       ])) : vue.createCommentVNode("v-if", true),
-      vue.createCommentVNode(" 投标弹窗 "),
       $setup.showBidPopup ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 3,
         class: "popup-mask",
@@ -6661,7 +6522,6 @@ This will fail in production if not fixed.`);
               ]),
               vue.createElementVNode("view", { class: "form-item" }, [
                 vue.createElementVNode("text", { class: "form-label" }, "预计交付日期"),
-                vue.createCommentVNode(' <input class="form-input" type="number" v-model="bidForm.delivery_days" placeholder="请输入天数"/> '),
                 vue.createElementVNode("picker", {
                   mode: "date",
                   value: $setup.bidForm.delivery_days,
@@ -6693,7 +6553,6 @@ This will fail in production if not fixed.`);
                   [vue.vModelText, $setup.bidForm.description]
                 ])
               ]),
-              vue.createCommentVNode(" 图片上传区域 "),
               vue.createElementVNode("view", { class: "form-item" }, [
                 vue.createElementVNode("text", { class: "form-label" }, "图片附件 (最多5张)"),
                 vue.createElementVNode("view", { class: "upload-area" }, [
@@ -6729,7 +6588,6 @@ This will fail in production if not fixed.`);
                   ])) : vue.createCommentVNode("v-if", true)
                 ])
               ]),
-              vue.createCommentVNode(" PDF文档上传区域 "),
               vue.createElementVNode("view", { class: "form-item" }, [
                 vue.createElementVNode("text", { class: "form-label" }, "PDF文档 (最多3个)"),
                 vue.createElementVNode("view", { class: "upload-area" }, [
@@ -6767,7 +6625,6 @@ This will fail in production if not fixed.`);
                   ])) : vue.createCommentVNode("v-if", true)
                 ])
               ]),
-              vue.createCommentVNode(" 视频上传区域 "),
               vue.createElementVNode("view", { class: "form-item" }, [
                 vue.createElementVNode("text", { class: "form-label" }, "视频附件 (最多1个)"),
                 vue.createElementVNode("view", { class: "upload-area" }, [
@@ -6805,7 +6662,7 @@ This will fail in production if not fixed.`);
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesProjectsDetail = /* @__PURE__ */ _export_sfc(_sfc_main$q, [["render", _sfc_render$q], ["__scopeId", "data-v-4d934d6f"], ["__file", "F:/new/success/frontapp/pages/projects/detail.vue"]]);
+  const PagesProjectsDetail = /* @__PURE__ */ _export_sfc(_sfc_main$q, [["render", _sfc_render$q], ["__scopeId", "data-v-4d934d6f"], ["__file", "F:/new/success/uniappandroid/pages/projects/detail.vue"]]);
   const _imports_0$5 = "/static/icons/arrow_right.png";
   const _imports_1$3 = "/static/icons/check.png";
   const _sfc_main$p = {
@@ -6914,9 +6771,7 @@ This will fail in production if not fixed.`);
   function _sfc_render$p(_ctx, _cache, $props, $setup, $data, $options) {
     var _a;
     return vue.openBlock(), vue.createElementBlock("view", { class: "category-select-container" }, [
-      vue.createCommentVNode(' <view class="header">\n      <view class="back-button" @click="goBack">\n        \n        <image src="/static/icons/arrow_left.png" mode="aspectFit"></image>\n      </view>\n      <view class="title">选择项目分类</view>\n    </view> '),
       vue.createElementVNode("view", { class: "category-steps" }, [
-        vue.createCommentVNode(" 修改步骤显示，初始显示传入的一级分类名称 "),
         vue.createElementVNode(
           "view",
           { class: "step active" },
@@ -6945,8 +6800,6 @@ This will fail in production if not fixed.`);
           /* CLASS */
         )
       ]),
-      vue.createCommentVNode(' 移除一级分类列表 (v-if="step === 1") '),
-      vue.createCommentVNode(" 二级分类列表 "),
       $setup.step === 2 ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 0,
         class: "category-list"
@@ -6978,7 +6831,6 @@ This will fail in production if not fixed.`);
           /* KEYED_FRAGMENT */
         ))
       ])) : vue.createCommentVNode("v-if", true),
-      vue.createCommentVNode(" 三级分类列表 "),
       $setup.step === 3 ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 1,
         class: "category-list"
@@ -7012,7 +6864,7 @@ This will fail in production if not fixed.`);
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesProjectsCategorySelect = /* @__PURE__ */ _export_sfc(_sfc_main$p, [["render", _sfc_render$p], ["__scopeId", "data-v-0433eecd"], ["__file", "F:/new/success/frontapp/pages/projects/category-select.vue"]]);
+  const PagesProjectsCategorySelect = /* @__PURE__ */ _export_sfc(_sfc_main$p, [["render", _sfc_render$p], ["__scopeId", "data-v-0433eecd"], ["__file", "F:/new/success/uniappandroid/pages/projects/category-select.vue"]]);
   function publishProject(projectData) {
     return post("/projects", projectData);
   }
@@ -7584,13 +7436,10 @@ This will fail in production if not fixed.`);
   function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
     var _a, _b;
     return vue.openBlock(), vue.createElementBlock("view", { class: "publish-container" }, [
-      vue.createCommentVNode(' <view class="header">\n      <view class="back-button" @click="goBack">\n        <image src="/static/icons/arrow_left.png" mode="aspectFit"></image>\n      </view>\n      <view class="title">发布项目</view>\n    </view> '),
-      vue.createCommentVNode(" 使用 scroll-view 实现滚动 "),
       vue.createElementVNode("scroll-view", {
         "scroll-y": "",
         class: "form-container"
       }, [
-        vue.createCommentVNode(" 分类信息展示 "),
         vue.createElementVNode("view", { class: "form-section glass-effect" }, [
           vue.createElementVNode("view", { class: "section-title" }, "项目分类"),
           vue.createElementVNode("view", {
@@ -7611,7 +7460,6 @@ This will fail in production if not fixed.`);
             })
           ])
         ]),
-        vue.createCommentVNode(" 基本信息 "),
         vue.createElementVNode("view", { class: "form-section glass-effect" }, [
           vue.createElementVNode("view", { class: "section-title" }, "基本信息"),
           vue.createElementVNode("view", { class: "form-item" }, [
@@ -7704,8 +7552,6 @@ This will fail in production if not fixed.`);
               ])
             ], 40, ["value", "start"])
           ]),
-          vue.createCommentVNode(" 🎯 修改：项目地点获取 "),
-          vue.createCommentVNode(" 🎯 修改：项目地点获取（直接点击获取） "),
           vue.createElementVNode("view", { class: "form-item" }, [
             vue.createElementVNode("text", { class: "label" }, "项目地点"),
             vue.createElementVNode("view", { class: "location-container" }, [
@@ -7741,7 +7587,6 @@ This will fail in production if not fixed.`);
             ])
           ])
         ]),
-        vue.createCommentVNode(" 项目详情 "),
         vue.createElementVNode("view", { class: "form-section glass-effect" }, [
           vue.createElementVNode("view", { class: "section-title" }, "项目详情"),
           vue.createElementVNode("view", { class: "form-item" }, [
@@ -7780,7 +7625,6 @@ This will fail in production if not fixed.`);
               /* TEXT */
             )
           ]),
-          vue.createCommentVNode(" 🎯 修改：图片上传区域 "),
           vue.createElementVNode("view", { class: "form-item" }, [
             vue.createElementVNode("text", { class: "form-label" }, "图片附件 (最多5张)"),
             vue.createElementVNode("view", { class: "upload-area" }, [
@@ -7816,8 +7660,6 @@ This will fail in production if not fixed.`);
               ])) : vue.createCommentVNode("v-if", true)
             ])
           ]),
-          vue.createCommentVNode(" 🎯 修改：文档上传区域 "),
-          vue.createCommentVNode(" PDF文档上传区域 "),
           vue.createElementVNode("view", { class: "form-item" }, [
             vue.createElementVNode("text", { class: "form-label" }, "PDF文档 (最多3个)"),
             vue.createElementVNode("view", { class: "upload-area" }, [
@@ -7855,7 +7697,6 @@ This will fail in production if not fixed.`);
               ])) : vue.createCommentVNode("v-if", true)
             ])
           ]),
-          vue.createCommentVNode(" CAD/STP文件上传区域 - 仅工业标单分类显示 "),
           ((_b = (_a = $setup.categoryInfo) == null ? void 0 : _a.mainCategory) == null ? void 0 : _b.id) === 1 ? (vue.openBlock(), vue.createElementBlock("view", {
             key: 0,
             class: "form-item"
@@ -7896,7 +7737,6 @@ This will fail in production if not fixed.`);
               ])) : vue.createCommentVNode("v-if", true)
             ])
           ])) : vue.createCommentVNode("v-if", true),
-          vue.createCommentVNode(" 视频上传区域 "),
           vue.createElementVNode("view", { class: "form-item" }, [
             vue.createElementVNode("text", { class: "form-label" }, "视频附件 (最多1个)"),
             vue.createElementVNode("view", { class: "upload-area" }, [
@@ -7904,7 +7744,6 @@ This will fail in production if not fixed.`);
                 key: 0,
                 class: "file-item video-item"
               }, [
-                vue.createCommentVNode(" 使用封面图片代替直接的video标签，避免滚动时的黑框问题 "),
                 vue.createElementVNode("view", {
                   class: "video-preview-container",
                   onClick: $setup.previewVideo
@@ -7941,7 +7780,6 @@ This will fail in production if not fixed.`);
             ])
           ])
         ]),
-        vue.createCommentVNode(" 联系方式 "),
         vue.createElementVNode("view", { class: "form-section glass-effect" }, [
           vue.createElementVNode("view", { class: "section-title" }, "联系方式"),
           vue.createElementVNode("view", { class: "form-item" }, [
@@ -7979,7 +7817,6 @@ This will fail in production if not fixed.`);
             ])
           ])
         ]),
-        vue.createCommentVNode(" 提交按钮 "),
         vue.createElementVNode("view", {
           class: "submit-btn glow-effect",
           onClick: $setup.submitProject
@@ -7987,7 +7824,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesProjectsPublish = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["render", _sfc_render$o], ["__scopeId", "data-v-68ebeda0"], ["__file", "F:/new/success/frontapp/pages/projects/publish.vue"]]);
+  const PagesProjectsPublish = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["render", _sfc_render$o], ["__scopeId", "data-v-68ebeda0"], ["__file", "F:/new/success/uniappandroid/pages/projects/publish.vue"]]);
   const _sfc_main$n = {
     __name: "ConversationCard",
     props: {
@@ -8069,7 +7906,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const ConversationCard = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$n], ["__scopeId", "data-v-72739596"], ["__file", "F:/new/success/frontapp/components/ConversationCard.vue"]]);
+  const ConversationCard = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$n], ["__scopeId", "data-v-72739596"], ["__file", "F:/new/success/uniappandroid/components/ConversationCard.vue"]]);
   const _sfc_main$m = {
     __name: "NotificationCard",
     props: {
@@ -8175,7 +8012,7 @@ This will fail in production if not fixed.`);
       /* CLASS */
     );
   }
-  const NotificationCard = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$m], ["__scopeId", "data-v-731e4415"], ["__file", "F:/new/success/frontapp/components/NotificationCard.vue"]]);
+  const NotificationCard = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$m], ["__scopeId", "data-v-731e4415"], ["__file", "F:/new/success/uniappandroid/components/NotificationCard.vue"]]);
   const _sfc_main$l = {
     __name: "SubscriptionNotificationCard",
     props: {
@@ -8269,7 +8106,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const SubscriptionNotificationCard = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$l], ["__scopeId", "data-v-54e0d8da"], ["__file", "F:/new/success/frontapp/components/SubscriptionNotificationCard.vue"]]);
+  const SubscriptionNotificationCard = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$l], ["__scopeId", "data-v-54e0d8da"], ["__file", "F:/new/success/uniappandroid/components/SubscriptionNotificationCard.vue"]]);
   const _imports_0$3 = "/static/icons/empty-box.png";
   const _sfc_main$k = {
     __name: "index",
@@ -8579,7 +8416,6 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "messages-container" }, [
-      vue.createCommentVNode(" 顶部固定区域 "),
       vue.createElementVNode("view", { class: "header-fixed" }, [
         vue.createElementVNode("view", { class: "tab-bar-glass" }, [
           vue.createElementVNode(
@@ -8615,22 +8451,10 @@ This will fail in production if not fixed.`);
             ],
             2
             /* CLASS */
-          ),
-          vue.createCommentVNode(` <view \r
-					class="tab-item" \r
-					:class="{ active: activeTab === 'subscription' }"\r
-					@click="switchTab('subscription')"\r
-				>\r
-					<text>订阅</text>\r
-					<view v-if="unreadSubscriptionCount > 0" class="badge">\r
-						{{ unreadSubscriptionCount > 99 ? '99+' : unreadSubscriptionCount }}\r
-					</view>\r
-				</view> `)
+          )
         ])
       ]),
-      vue.createCommentVNode(" 内容区域 "),
       vue.createElementVNode("view", { class: "content-area" }, [
-        vue.createCommentVNode(" 聊天列表 "),
         vue.withDirectives(vue.createElementVNode(
           "view",
           null,
@@ -8675,13 +8499,11 @@ This will fail in production if not fixed.`);
         ), [
           [vue.vShow, $setup.activeTab === "chat"]
         ]),
-        vue.createCommentVNode(" 通知列表 "),
         vue.withDirectives(vue.createElementVNode(
           "view",
           null,
           [
             !$setup.loading && $setup.hasNotifications ? (vue.openBlock(), vue.createElementBlock("view", { key: 0 }, [
-              vue.createCommentVNode(" 全部标为已读按钮 "),
               $setup.hasUnreadNotifications ? (vue.openBlock(), vue.createElementBlock("view", {
                 key: 0,
                 class: "mark-all-read-container"
@@ -8732,13 +8554,11 @@ This will fail in production if not fixed.`);
         ), [
           [vue.vShow, $setup.activeTab === "notification"]
         ]),
-        vue.createCommentVNode(" 订阅通知列表 "),
         vue.withDirectives(vue.createElementVNode(
           "view",
           null,
           [
             !$setup.loading && $setup.hasSubscriptionNotifications ? (vue.openBlock(), vue.createElementBlock("view", { key: 0 }, [
-              vue.createCommentVNode(" 全部标为已读按钮 "),
               $setup.unreadSubscriptionCount > 0 ? (vue.openBlock(), vue.createElementBlock("view", {
                 key: 0,
                 class: "mark-all-read-container"
@@ -8790,7 +8610,6 @@ This will fail in production if not fixed.`);
         ), [
           [vue.vShow, $setup.activeTab === "subscription"]
         ]),
-        vue.createCommentVNode(" 加载状态 "),
         $setup.loading ? (vue.openBlock(), vue.createElementBlock("view", {
           key: 0,
           class: "loading-state"
@@ -8800,7 +8619,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesMessagesIndex = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$k], ["__scopeId", "data-v-aedce2fc"], ["__file", "F:/new/success/frontapp/pages/messages/index.vue"]]);
+  const PagesMessagesIndex = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$k], ["__scopeId", "data-v-aedce2fc"], ["__file", "F:/new/success/uniappandroid/pages/messages/index.vue"]]);
   const useOrderStore = defineStore("order", {
     state: () => ({
       orderList: [],
@@ -9317,7 +9136,6 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "chat-container" }, [
-      vue.createCommentVNode(" 顶部固定头部 "),
       vue.createElementVNode("view", { class: "header-fixed" }, [
         vue.createElementVNode("view", { class: "header-glass" }, [
           vue.createElementVNode("text", {
@@ -9337,7 +9155,6 @@ This will fail in production if not fixed.`);
           }, "···")
         ])
       ]),
-      vue.createCommentVNode(" 聊天内容区域 "),
       vue.createElementVNode("scroll-view", {
         class: "messages-scroll",
         "scroll-y": "",
@@ -9350,7 +9167,6 @@ This will fail in production if not fixed.`);
             key: 0,
             class: "loading-more"
           }, "加载中...")) : vue.createCommentVNode("v-if", true),
-          vue.createCommentVNode(" 系统消息 "),
           $setup.showSystemMessage ? (vue.openBlock(), vue.createElementBlock("view", {
             key: 1,
             class: "system-message"
@@ -9371,7 +9187,6 @@ This will fail in production if not fixed.`);
                 key: msg.id,
                 id: "msg-" + msg.id
               }, [
-                vue.createCommentVNode(" 时间显示 "),
                 $setup.shouldShowTime(msg, index) ? (vue.openBlock(), vue.createElementBlock(
                   "view",
                   {
@@ -9382,7 +9197,6 @@ This will fail in production if not fixed.`);
                   1
                   /* TEXT */
                 )) : vue.createCommentVNode("v-if", true),
-                vue.createCommentVNode(" 消息气泡 "),
                 vue.createElementVNode(
                   "view",
                   {
@@ -9427,7 +9241,6 @@ This will fail in production if not fixed.`);
             128
             /* KEYED_FRAGMENT */
           )),
-          vue.createCommentVNode(" 订单合同系统消息 "),
           $setup.orderContractGenerated ? (vue.openBlock(), vue.createElementBlock("view", {
             key: 2,
             class: "system-message"
@@ -9436,16 +9249,13 @@ This will fail in production if not fixed.`);
           ])) : vue.createCommentVNode("v-if", true)
         ])
       ], 40, ["scroll-into-view"]),
-      vue.createCommentVNode(" 底部输入区域 "),
       vue.createElementVNode("view", { class: "input-area-fixed" }, [
         vue.createElementVNode("view", { class: "input-area-glass" }, [
-          vue.createCommentVNode(" 语音/文字切换图标 "),
           vue.createElementVNode("image", {
             class: "voice-icon",
             src: _imports_0$4,
             onClick: $setup.toggleInputMode
           }),
-          vue.createCommentVNode(" 文本输入 "),
           $setup.inputMode === "text" ? vue.withDirectives((vue.openBlock(), vue.createElementBlock(
             "textarea",
             {
@@ -9464,7 +9274,6 @@ This will fail in production if not fixed.`);
           )), [
             [vue.vModelText, $setup.inputText]
           ]) : vue.createCommentVNode("v-if", true),
-          vue.createCommentVNode(" 语音输入 "),
           $setup.inputMode === "voice" ? (vue.openBlock(), vue.createElementBlock(
             "button",
             {
@@ -9490,7 +9299,6 @@ This will fail in production if not fixed.`);
           ], 8, ["disabled"])) : vue.createCommentVNode("v-if", true)
         ])
       ]),
-      vue.createCommentVNode(" 悬浮订单按钮 "),
       vue.createElementVNode("view", {
         class: "floating-order-btn",
         onClick: $setup.showOrderModal
@@ -9500,7 +9308,6 @@ This will fail in production if not fixed.`);
           src: _imports_2$1
         })
       ]),
-      vue.createCommentVNode(" 订单弹窗 "),
       $setup.orderModalVisible ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 0,
         class: "order-modal"
@@ -9636,7 +9443,7 @@ This will fail in production if not fixed.`);
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesMessagesChat = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$j], ["__scopeId", "data-v-56908723"], ["__file", "F:/new/success/frontapp/pages/messages/chat.vue"]]);
+  const PagesMessagesChat = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$j], ["__scopeId", "data-v-56908723"], ["__file", "F:/new/success/uniappandroid/pages/messages/chat.vue"]]);
   const _imports_0$2 = "/static/images/empty-order.png";
   const _sfc_main$i = {
     __name: "index",
@@ -9952,7 +9759,6 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "orders-page" }, [
-      vue.createCommentVNode(" 顶部选项卡 "),
       vue.createElementVNode("view", { class: "tab-header" }, [
         (vue.openBlock(), vue.createElementBlock(
           vue.Fragment,
@@ -9976,7 +9782,6 @@ This will fail in production if not fixed.`);
           /* STABLE_FRAGMENT */
         ))
       ]),
-      vue.createCommentVNode(" 订单列表 "),
       vue.createElementVNode("view", { class: "order-list" }, [
         (vue.openBlock(true), vue.createElementBlock(
           vue.Fragment,
@@ -10082,21 +9887,18 @@ This will fail in production if not fixed.`);
           128
           /* KEYED_FRAGMENT */
         )),
-        vue.createCommentVNode(" 加载更多 "),
         $setup.loading ? (vue.openBlock(), vue.createElementBlock("view", {
           key: 0,
           class: "loading"
         }, [
           vue.createElementVNode("text", null, "加载中...")
         ])) : vue.createCommentVNode("v-if", true),
-        vue.createCommentVNode(" 没有更多数据 "),
         !$setup.hasMore && $setup.filteredOrders.length > 0 ? (vue.openBlock(), vue.createElementBlock("view", {
           key: 1,
           class: "no-more"
         }, [
           vue.createElementVNode("text", { class: "no-more-text" }, "没有更多订单了")
         ])) : vue.createCommentVNode("v-if", true),
-        vue.createCommentVNode(" 空状态 "),
         !$setup.loading && $setup.filteredOrders.length === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
           key: 2,
           class: "empty-state"
@@ -10114,7 +9916,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesOrdersIndex = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$i], ["__scopeId", "data-v-e1e6274e"], ["__file", "F:/new/success/frontapp/pages/orders/index.vue"]]);
+  const PagesOrdersIndex = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$i], ["__scopeId", "data-v-e1e6274e"], ["__file", "F:/new/success/uniappandroid/pages/orders/index.vue"]]);
   const _sfc_main$h = {
     __name: "detail",
     setup(__props, { expose: __expose }) {
@@ -10351,7 +10153,6 @@ This will fail in production if not fixed.`);
   function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
     var _a, _b;
     return vue.openBlock(), vue.createElementBlock("view", { class: "order-detail-page" }, [
-      vue.createCommentVNode(" 订单状态卡片 "),
       vue.createElementVNode(
         "view",
         {
@@ -10387,7 +10188,6 @@ This will fail in production if not fixed.`);
         2
         /* CLASS */
       ),
-      vue.createCommentVNode(" 订单信息 "),
       vue.createElementVNode("view", { class: "info-card" }, [
         vue.createElementVNode("view", { class: "card-title" }, "订单信息"),
         vue.createElementVNode("view", { class: "info-item" }, [
@@ -10421,7 +10221,6 @@ This will fail in production if not fixed.`);
           )
         ])
       ]),
-      vue.createCommentVNode(" 项目信息 "),
       vue.createElementVNode("view", { class: "info-card" }, [
         vue.createElementVNode("view", { class: "card-title" }, "项目信息"),
         vue.createElementVNode("view", { class: "project-info" }, [
@@ -10451,7 +10250,6 @@ This will fail in production if not fixed.`);
           )
         ])
       ]),
-      vue.createCommentVNode(" 交易方信息 "),
       vue.createElementVNode("view", { class: "info-card" }, [
         vue.createElementVNode("view", { class: "card-title" }, "交易方信息"),
         vue.createElementVNode("view", { class: "info-item" }, [
@@ -10475,7 +10273,6 @@ This will fail in production if not fixed.`);
           )
         ])
       ]),
-      vue.createCommentVNode(" 订单进度 "),
       vue.createElementVNode("view", { class: "info-card" }, [
         vue.createElementVNode("view", { class: "card-title" }, "订单进度"),
         vue.createElementVNode("view", { class: "progress-timeline" }, [
@@ -10520,7 +10317,6 @@ This will fail in production if not fixed.`);
           ))
         ])
       ]),
-      vue.createCommentVNode(" 操作按钮 "),
       vue.createElementVNode("view", { class: "action-bar" }, [
         $setup.order.status === "pending" ? (vue.openBlock(), vue.createElementBlock("button", {
           key: 0,
@@ -10550,7 +10346,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesOrdersDetail = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$h], ["__scopeId", "data-v-bc4602bd"], ["__file", "F:/new/success/frontapp/pages/orders/detail.vue"]]);
+  const PagesOrdersDetail = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$h], ["__scopeId", "data-v-bc4602bd"], ["__file", "F:/new/success/uniappandroid/pages/orders/detail.vue"]]);
   const _imports_0$1 = "/static/icons/projects.png";
   const _imports_2 = "/static/icons/order.png";
   const _imports_3 = "/static/icons/verify.png";
@@ -10605,13 +10401,11 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "user-page-container" }, [
-      vue.createCommentVNode(" 用户信息 "),
       $setup.user ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 0,
         class: "user-content"
       }, [
         vue.createElementVNode("view", { class: "glass-effect" }, [
-          vue.createCommentVNode(" 用户头部 "),
           vue.createElementVNode("view", {
             class: "user-header",
             onClick: $setup.goToProfile
@@ -10652,7 +10446,6 @@ This will fail in production if not fixed.`);
               vue.createElementVNode("text", null, "›")
             ])
           ]),
-          vue.createCommentVNode(" 账户信息 "),
           vue.createElementVNode("view", { class: "account-info" }, [
             vue.createElementVNode("view", { class: "balance-section" }, [
               vue.createElementVNode("text", { class: "balance-label" }, "账户余额 (元)"),
@@ -10669,7 +10462,6 @@ This will fail in production if not fixed.`);
               onClick: $setup.goToWallet
             }, "充值")
           ]),
-          vue.createCommentVNode(" 功能菜单 "),
           vue.createElementVNode("view", { class: "menu-list" }, [
             vue.createElementVNode("view", {
               class: "menu-item",
@@ -10741,31 +10533,25 @@ This will fail in production if not fixed.`);
             ])) : vue.createCommentVNode("v-if", true)
           ])
         ])
-      ])) : (vue.openBlock(), vue.createElementBlock(
-        vue.Fragment,
-        { key: 1 },
-        [
-          vue.createCommentVNode(" 未登录提示 "),
-          vue.createElementVNode("view", { class: "login-prompt-container" }, [
-            vue.createElementVNode("view", { class: "glass-effect" }, [
-              vue.createElementVNode("image", {
-                class: "prompt-logo",
-                src: _imports_5
-              }),
-              vue.createElementVNode("text", { class: "prompt-text" }, "登录后体验完整功能"),
-              vue.createElementVNode("button", {
-                class: "prompt-login-btn",
-                onClick: $setup.goToLogin
-              }, "立即登录")
-            ])
-          ])
-        ],
-        2112
-        /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */
-      ))
+      ])) : (vue.openBlock(), vue.createElementBlock("view", {
+        key: 1,
+        class: "login-prompt-container"
+      }, [
+        vue.createElementVNode("view", { class: "glass-effect" }, [
+          vue.createElementVNode("image", {
+            class: "prompt-logo",
+            src: _imports_5
+          }),
+          vue.createElementVNode("text", { class: "prompt-text" }, "登录后体验完整功能"),
+          vue.createElementVNode("button", {
+            class: "prompt-login-btn",
+            onClick: $setup.goToLogin
+          }, "立即登录")
+        ])
+      ]))
     ]);
   }
-  const PagesUserIndex = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["render", _sfc_render$g], ["__scopeId", "data-v-79e6a490"], ["__file", "F:/new/success/frontapp/pages/user/index.vue"]]);
+  const PagesUserIndex = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["render", _sfc_render$g], ["__scopeId", "data-v-79e6a490"], ["__file", "F:/new/success/uniappandroid/pages/user/index.vue"]]);
   const _sfc_main$f = {
     __name: "projects",
     setup(__props, { expose: __expose }) {
@@ -11002,7 +10788,6 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "user-projects-page" }, [
-      vue.createCommentVNode(" 头部区域 "),
       vue.createElementVNode("view", { class: "header" }, [
         vue.createElementVNode("view", {
           class: "back-icon",
@@ -11016,7 +10801,6 @@ This will fail in production if not fixed.`);
         ]),
         vue.createElementVNode("view", { class: "header-title" }, "我的项目")
       ]),
-      vue.createCommentVNode(" 顶部选项卡 "),
       vue.createElementVNode("view", { class: "tab-header glass-effect" }, [
         (vue.openBlock(), vue.createElementBlock(
           vue.Fragment,
@@ -11040,9 +10824,7 @@ This will fail in production if not fixed.`);
           /* STABLE_FRAGMENT */
         ))
       ]),
-      vue.createCommentVNode(" 项目列表 "),
       vue.createElementVNode("view", { class: "project-list" }, [
-        vue.createCommentVNode(" 项目卡片 "),
         (vue.openBlock(true), vue.createElementBlock(
           vue.Fragment,
           null,
@@ -11052,7 +10834,6 @@ This will fail in production if not fixed.`);
               key: project.id,
               class: "project-item"
             }, [
-              vue.createCommentVNode(" 项目信息卡片 "),
               vue.createElementVNode("view", { class: "card-glass" }, [
                 vue.createElementVNode(
                   "view",
@@ -11094,7 +10875,6 @@ This will fail in production if not fixed.`);
                   ])
                 ])
               ]),
-              vue.createCommentVNode(" 投标情况区域 "),
               vue.createElementVNode("view", { class: "bid-status-section glass-effect" }, [
                 vue.createElementVNode("view", { class: "bid-status-header" }, [
                   vue.createElementVNode("view", { class: "bid-status-title" }, "投标情况"),
@@ -11106,7 +10886,6 @@ This will fail in production if not fixed.`);
                     /* TEXT */
                   )
                 ]),
-                vue.createCommentVNode(" 投标列表 "),
                 vue.createElementVNode("view", { class: "bids-container" }, [
                   $setup.projectBids[project.id] && $setup.projectBids[project.id].length > 0 ? (vue.openBlock(), vue.createElementBlock("view", {
                     key: 0,
@@ -11122,7 +10901,6 @@ This will fail in production if not fixed.`);
                           class: "bid-item glass-effect-subtle"
                         }, [
                           vue.createElementVNode("view", { class: "bid-info" }, [
-                            vue.createCommentVNode(" 投标者头像和用户名 "),
                             vue.createElementVNode("image", {
                               class: "bidder-avatar",
                               src: ((_a2 = bid.bidder) == null ? void 0 : _a2.avatar) || "/static/images/default-avatar.png",
@@ -11135,7 +10913,6 @@ This will fail in production if not fixed.`);
                               1
                               /* TEXT */
                             ),
-                            vue.createCommentVNode(" 投标价格 "),
                             vue.createElementVNode(
                               "text",
                               { class: "bid-price" },
@@ -11143,7 +10920,6 @@ This will fail in production if not fixed.`);
                               1
                               /* TEXT */
                             ),
-                            vue.createCommentVNode(" 交付周期 "),
                             vue.createElementVNode(
                               "text",
                               { class: "bid-delivery" },
@@ -11151,7 +10927,6 @@ This will fail in production if not fixed.`);
                               1
                               /* TEXT */
                             ),
-                            vue.createCommentVNode(" 投标描述 "),
                             vue.createElementVNode(
                               "text",
                               { class: "bid-description" },
@@ -11159,8 +10934,6 @@ This will fail in production if not fixed.`);
                               1
                               /* TEXT */
                             ),
-                            vue.createCommentVNode("新需求：补全这里 投标的图片或视频"),
-                            vue.createCommentVNode(" 投标附件（图片/视频） "),
                             bid.attachments ? (vue.openBlock(), vue.createElementBlock("view", {
                               key: 0,
                               class: "bid-attachments"
@@ -11173,39 +10946,27 @@ This will fail in production if not fixed.`);
                                     key: index,
                                     class: "attachment-item"
                                   }, [
-                                    vue.createCommentVNode(" 图片 "),
                                     $setup.isImageUrl(url) ? (vue.openBlock(), vue.createElementBlock("image", {
                                       key: 0,
                                       src: url,
                                       class: "attachment-media",
                                       mode: "widthFix",
                                       onClick: ($event) => $setup.previewImage(url)
-                                    }, null, 8, ["src", "onClick"])) : $setup.isVideoUrl(url) ? (vue.openBlock(), vue.createElementBlock(
-                                      vue.Fragment,
-                                      { key: 1 },
-                                      [
-                                        vue.createCommentVNode(" 视频 "),
-                                        vue.createElementVNode("video", {
-                                          src: url,
-                                          class: "attachment-media",
-                                          controls: "",
-                                          playsinline: ""
-                                        }, null, 8, ["src"])
-                                      ],
-                                      2112
-                                      /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */
-                                    )) : vue.createCommentVNode("v-if", true)
+                                    }, null, 8, ["src", "onClick"])) : $setup.isVideoUrl(url) ? (vue.openBlock(), vue.createElementBlock("video", {
+                                      key: 1,
+                                      src: url,
+                                      class: "attachment-media",
+                                      controls: "",
+                                      playsinline: ""
+                                    }, null, 8, ["src"])) : vue.createCommentVNode("v-if", true)
                                   ]);
                                 }),
                                 128
                                 /* KEYED_FRAGMENT */
                               ))
-                            ])) : vue.createCommentVNode("v-if", true),
-                            vue.createCommentVNode(' "description": "1288456987236",\n            "attachments": "http://115.190.38.218/api/static/img/1763219827192_Screenshot_2025-11-15-13-17-16-13_a3aef48b92d9927bcc00b64ec0b65b97_20251115231708_67097249.jpg,http://115.190.38.218/api/static/video/1763219882165_20251115231838_40975918.mp4",')
+                            ])) : vue.createCommentVNode("v-if", true)
                           ]),
-                          vue.createCommentVNode(" 操作按钮 "),
                           vue.createElementVNode("view", { class: "bid-actions" }, [
-                            vue.createCommentVNode(" 去沟通按钮 "),
                             vue.createElementVNode("button", {
                               class: "action-btn contact-bidder-btn",
                               onClick: ($event) => {
@@ -11213,7 +10974,6 @@ This will fail in production if not fixed.`);
                                 return $setup.handleContact((_a3 = bid.bidder) == null ? void 0 : _a3.id);
                               }
                             }, "联系投标人", 8, ["onClick"]),
-                            vue.createCommentVNode(" 🎯 修改：确认中标按钮 "),
                             vue.createElementVNode("button", {
                               class: vue.normalizeClass(["action-btn select-bid-btn", { "btn-disabled": $setup.isBidSelected(project.id, bid.id) || $setup.hasSelectedBid(project.id) }]),
                               onClick: ($event) => $setup.handleSelectBid(bid.id),
@@ -11222,7 +10982,6 @@ This will fail in production if not fixed.`);
                               $setup.isBidSelected(project.id, bid.id) ? (vue.openBlock(), vue.createElementBlock("text", { key: 0 }, "已中标")) : $setup.hasSelectedBid(project.id) ? (vue.openBlock(), vue.createElementBlock("text", { key: 1 }, "项目已选标")) : (vue.openBlock(), vue.createElementBlock("text", { key: 2 }, "确认中标"))
                             ], 10, ["onClick", "disabled"])
                           ]),
-                          vue.createCommentVNode(" 🎯 新增：中标状态提示 "),
                           $setup.isBidSelected(project.id, bid.id) ? (vue.openBlock(), vue.createElementBlock("view", {
                             key: 0,
                             class: "selected-bid-indicator"
@@ -11247,33 +11006,26 @@ This will fail in production if not fixed.`);
           128
           /* KEYED_FRAGMENT */
         )),
-        vue.createCommentVNode(" 加载状态 "),
         $setup.loading ? (vue.openBlock(), vue.createElementBlock("view", {
           key: 0,
           class: "loading-state"
         }, [
           vue.createElementVNode("text", null, "加载中...")
-        ])) : !$setup.loading && $setup.filteredProjects.length === 0 ? (vue.openBlock(), vue.createElementBlock(
-          vue.Fragment,
-          { key: 1 },
-          [
-            vue.createCommentVNode(" 空状态 "),
-            vue.createElementVNode("view", { class: "empty-state glass-effect" }, [
-              vue.createElementVNode("image", {
-                class: "empty-icon",
-                src: _imports_1$4,
-                mode: "aspectFit"
-              }),
-              vue.createElementVNode("text", { class: "empty-text" }, "暂无相关项目")
-            ])
-          ],
-          2112
-          /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */
-        )) : vue.createCommentVNode("v-if", true)
+        ])) : !$setup.loading && $setup.filteredProjects.length === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
+          key: 1,
+          class: "empty-state glass-effect"
+        }, [
+          vue.createElementVNode("image", {
+            class: "empty-icon",
+            src: _imports_1$4,
+            mode: "aspectFit"
+          }),
+          vue.createElementVNode("text", { class: "empty-text" }, "暂无相关项目")
+        ])) : vue.createCommentVNode("v-if", true)
       ])
     ]);
   }
-  const PagesUserProjects = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$f], ["__scopeId", "data-v-d7d59219"], ["__file", "F:/new/success/frontapp/pages/user/projects.vue"]]);
+  const PagesUserProjects = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$f], ["__scopeId", "data-v-d7d59219"], ["__file", "F:/new/success/uniappandroid/pages/user/projects.vue"]]);
   const _imports_0 = "/static/images/empty-notification.png";
   const _sfc_main$e = {
     __name: "index",
@@ -11454,7 +11206,6 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "notifications-page" }, [
-      vue.createCommentVNode(" 全部标为已读按钮 "),
       $setup.hasUnreadNotifications ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 0,
         class: "mark-all-read-container"
@@ -11466,7 +11217,6 @@ This will fail in production if not fixed.`);
           vue.createElementVNode("text", null, "全部标为已读")
         ])
       ])) : vue.createCommentVNode("v-if", true),
-      vue.createCommentVNode(" 通知列表 "),
       vue.createElementVNode("view", { class: "notification-list" }, [
         (vue.openBlock(true), vue.createElementBlock(
           vue.Fragment,
@@ -11524,7 +11274,6 @@ This will fail in production if not fixed.`);
           128
           /* KEYED_FRAGMENT */
         )),
-        vue.createCommentVNode(" 空状态 "),
         !$setup.loading && $setup.messageStore.notifications.length === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
           key: 0,
           class: "empty-state"
@@ -11536,7 +11285,6 @@ This will fail in production if not fixed.`);
           vue.createElementVNode("text", { class: "empty-text" }, "暂无通知")
         ])) : vue.createCommentVNode("v-if", true)
       ]),
-      vue.createCommentVNode(" 加载状态 "),
       $setup.loading ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 1,
         class: "loading"
@@ -11545,7 +11293,7 @@ This will fail in production if not fixed.`);
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesNotificationsIndex = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["render", _sfc_render$e], ["__scopeId", "data-v-4e9da382"], ["__file", "F:/new/success/frontapp/pages/notifications/index.vue"]]);
+  const PagesNotificationsIndex = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["render", _sfc_render$e], ["__scopeId", "data-v-4e9da382"], ["__file", "F:/new/success/uniappandroid/pages/notifications/index.vue"]]);
   const _sfc_main$d = {
     __name: "verify",
     setup(__props, { expose: __expose }) {
@@ -11649,7 +11397,6 @@ This will fail in production if not fixed.`);
           class: "back-btn",
           onClick: $setup.goBack
         }, [
-          vue.createCommentVNode(" 🎯 修改：使用图片作为返回按钮 "),
           vue.createElementVNode("image", {
             src: _imports_0$7,
             class: "back-icon"
@@ -11835,7 +11582,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesUserVerify = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$d], ["__scopeId", "data-v-71a5fc89"], ["__file", "F:/new/success/frontapp/pages/user/verify.vue"]]);
+  const PagesUserVerify = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$d], ["__scopeId", "data-v-71a5fc89"], ["__file", "F:/new/success/uniappandroid/pages/user/verify.vue"]]);
   const _sfc_main$c = {
     __name: "settings",
     setup(__props, { expose: __expose }) {
@@ -11961,7 +11708,6 @@ This will fail in production if not fixed.`);
           class: "back-btn",
           onClick: $setup.goBack
         }, [
-          vue.createCommentVNode(" 🎯 修改：使用图片作为返回按钮 "),
           vue.createElementVNode("image", {
             src: _imports_0$7,
             class: "back-icon"
@@ -11971,7 +11717,6 @@ This will fail in production if not fixed.`);
         vue.createElementVNode("view", { class: "header-right" })
       ]),
       vue.createElementVNode("view", { class: "content-container" }, [
-        vue.createCommentVNode(" 账号设置 "),
         vue.createElementVNode("view", { class: "settings-section" }, [
           vue.createElementVNode("view", { class: "section-title" }, "账号设置"),
           vue.createElementVNode("view", {
@@ -12006,7 +11751,6 @@ This will fail in production if not fixed.`);
             vue.createElementVNode("text", { class: "item-arrow" }, "›")
           ])) : vue.createCommentVNode("v-if", true)
         ]),
-        vue.createCommentVNode(" 通知设置 "),
         vue.createElementVNode("view", { class: "settings-section" }, [
           vue.createElementVNode("view", { class: "section-title" }, "通知设置"),
           vue.createElementVNode("view", { class: "settings-item" }, [
@@ -12043,7 +11787,6 @@ This will fail in production if not fixed.`);
             }, null, 40, ["checked"])
           ])
         ]),
-        vue.createCommentVNode(" 隐私设置 "),
         vue.createElementVNode("view", { class: "settings-section" }, [
           vue.createElementVNode("view", { class: "section-title" }, "隐私设置"),
           vue.createElementVNode("view", { class: "settings-item" }, [
@@ -12079,7 +11822,6 @@ This will fail in production if not fixed.`);
             }, null, 40, ["checked"])
           ])
         ]),
-        vue.createCommentVNode(" 其他设置 "),
         vue.createElementVNode("view", { class: "settings-section" }, [
           vue.createElementVNode("view", { class: "section-title" }, "其他设置"),
           vue.createElementVNode("view", {
@@ -12119,19 +11861,17 @@ This will fail in production if not fixed.`);
             vue.createElementVNode("text", { class: "item-arrow" }, "›")
           ])
         ]),
-        vue.createCommentVNode(" 退出登录 "),
         vue.createElementVNode("button", {
           class: "logout-btn",
           onClick: $setup.handleLogout
         }, "退出登录"),
-        vue.createCommentVNode(" 版本信息 "),
         vue.createElementVNode("view", { class: "version-info" }, [
           vue.createElementVNode("text", null, "当前版本: v1.0.0")
         ])
       ])
     ]);
   }
-  const PagesUserSettings = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$c], ["__scopeId", "data-v-ce914230"], ["__file", "F:/new/success/frontapp/pages/user/settings.vue"]]);
+  const PagesUserSettings = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$c], ["__scopeId", "data-v-ce914230"], ["__file", "F:/new/success/uniappandroid/pages/user/settings.vue"]]);
   const _sfc_main$b = {
     __name: "profile",
     setup(__props, { expose: __expose }) {
@@ -12224,7 +11964,6 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "profile-container" }, [
-      vue.createCommentVNode(" 顶部导航栏 "),
       vue.createElementVNode("view", { class: "navbar" }, [
         vue.createElementVNode("view", {
           class: "back-btn",
@@ -12237,7 +11976,6 @@ This will fail in production if not fixed.`);
         ]),
         vue.createElementVNode("text", { class: "page-title" }, "用户主页")
       ]),
-      vue.createCommentVNode(" 用户基本信息卡片 "),
       vue.createElementVNode("view", { class: "card-glass user-card" }, [
         vue.createElementVNode("view", { class: "user-header" }, [
           vue.createElementVNode("image", {
@@ -12303,7 +12041,6 @@ This will fail in production if not fixed.`);
           }, "联系TA")
         ])
       ]),
-      vue.createCommentVNode(" 用户认证信息 "),
       vue.createElementVNode("view", { class: "card-glass verify-card" }, [
         vue.createElementVNode("view", { class: "card-title" }, "认证信息"),
         vue.createElementVNode("view", { class: "verify-items" }, [
@@ -12354,7 +12091,6 @@ This will fail in production if not fixed.`);
           )
         ])
       ]),
-      vue.createCommentVNode(" 用户项目列表 "),
       vue.createElementVNode("view", { class: "card-glass projects-card" }, [
         vue.createElementVNode("view", { class: "card-title" }, "发布的项目"),
         $setup.userProjects.length > 0 ? (vue.openBlock(), vue.createElementBlock("view", {
@@ -12416,7 +12152,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesUserProfile = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$b], ["__file", "F:/new/success/frontapp/pages/user/profile.vue"]]);
+  const PagesUserProfile = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$b], ["__file", "F:/new/success/uniappandroid/pages/user/profile.vue"]]);
   const _sfc_main$a = {
     __name: "myinformation",
     setup(__props, { expose: __expose }) {
@@ -12500,7 +12236,6 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "myinfo-container" }, [
-      vue.createCommentVNode(" 顶部导航栏 "),
       vue.createElementVNode("view", { class: "navbar" }, [
         vue.createElementVNode("view", {
           class: "back-btn",
@@ -12513,9 +12248,7 @@ This will fail in production if not fixed.`);
         ]),
         vue.createElementVNode("text", { class: "page-title" }, "个人信息")
       ]),
-      vue.createCommentVNode(" 个人信息表单 "),
       vue.createElementVNode("view", { class: "form-container" }, [
-        vue.createCommentVNode(" 头像上传 "),
         vue.createElementVNode("view", { class: "avatar-section" }, [
           vue.createElementVNode("text", { class: "section-title" }, "头像"),
           vue.createElementVNode("view", { class: "avatar-upload" }, [
@@ -12527,7 +12260,6 @@ This will fail in production if not fixed.`);
             vue.createElementVNode("text", { class: "upload-hint" }, "点击更换头像")
           ])
         ]),
-        vue.createCommentVNode(" 基本信息 "),
         vue.createElementVNode("view", { class: "info-section" }, [
           vue.createElementVNode("text", { class: "section-title" }, "基本信息"),
           vue.createElementVNode("view", { class: "form-item" }, [
@@ -12564,7 +12296,6 @@ This will fail in production if not fixed.`);
               [vue.vModelText, $setup.formData.companyName]
             ])
           ]),
-          vue.createCommentVNode(" 用户名和其他不可修改的信息 "),
           vue.createElementVNode("view", { class: "form-item readonly" }, [
             vue.createElementVNode("text", { class: "form-label" }, "用户名"),
             vue.createElementVNode("input", {
@@ -12602,7 +12333,6 @@ This will fail in production if not fixed.`);
             vue.createElementVNode("text", { class: "readonly-hint" }, "手机号不可修改")
           ])) : vue.createCommentVNode("v-if", true)
         ]),
-        vue.createCommentVNode(" 提交按钮 "),
         vue.createElementVNode("button", {
           class: "submit-btn",
           onClick: $setup.handleSubmit
@@ -12610,7 +12340,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesUserMyinformation = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$a], ["__file", "F:/new/success/frontapp/pages/user/myinformation.vue"]]);
+  const PagesUserMyinformation = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$a], ["__file", "F:/new/success/uniappandroid/pages/user/myinformation.vue"]]);
   function getUserSubscriptions() {
     return get("/notifications/subscriptions");
   }
@@ -12865,9 +12595,6 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "home-container" }, [
-      vue.createCommentVNode(" 状态栏 "),
-      vue.createCommentVNode(' <view class="status-bar">\r\n      <text>{{ currentTime }}</text>\r\n      <view class="status-icons">\r\n        <text class="iconfont icon-signal"></text>\r\n        <text class="iconfont icon-wifi"></text>\r\n        <text class="iconfont icon-battery"></text>\r\n      </view>\r\n    </view> '),
-      vue.createCommentVNode(" 顶部标题栏 "),
       vue.createElementVNode("view", { class: "header" }, [
         vue.createElementVNode("view", { class: "header-top" }, [
           vue.createElementVNode("view", { class: "logo" }, [
@@ -12878,12 +12605,9 @@ This will fail in production if not fixed.`);
             vue.createElementVNode("view", { style: { "font-size": "19px" } }, [
               vue.createElementVNode("b", { style: { "color": "blue" } }, "海量"),
               vue.createTextVNode("需求 等你选择！")
-            ]),
-            vue.createCommentVNode(' <view class="header-btn" @click="goToNotifications">\r\n            <text class="iconfont icon-bell"></text>\r\n            <view v-if="unreadNotifications > 0" class="badge">{{ unreadNotifications }}</view>\r\n          </view> '),
-            vue.createCommentVNode(' <view class="header-btn" @click="goToUserCenter">\r\n            <text class="iconfont icon-user"></text>\r\n          </view> ')
+            ])
           ])
         ]),
-        vue.createCommentVNode(" 搜索栏 "),
         vue.createElementVNode("view", { class: "search-bar-glass" }, [
           vue.createElementVNode("text", { class: "search-icon" }, "🔍"),
           vue.withDirectives(vue.createElementVNode(
@@ -12902,11 +12626,8 @@ This will fail in production if not fixed.`);
           ])
         ])
       ]),
-      vue.createCommentVNode(" 主要内容区域 "),
       vue.createElementVNode("view", { class: "main-content" }, [
-        vue.createCommentVNode(" 类目选择 "),
         vue.createElementVNode("view", { class: "categories-section fade-in-up" }, [
-          vue.createCommentVNode(' <view class="section-title">选择发布类目</view> '),
           vue.createElementVNode("view", { class: "categories-grid" }, [
             (vue.openBlock(true), vue.createElementBlock(
               vue.Fragment,
@@ -12948,7 +12669,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesBidsIndex = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$9], ["__scopeId", "data-v-54397df0"], ["__file", "F:/new/success/frontapp/pages/bids/index.vue"]]);
+  const PagesBidsIndex = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$9], ["__scopeId", "data-v-54397df0"], ["__file", "F:/new/success/uniappandroid/pages/bids/index.vue"]]);
   const _imports_1$1 = "/static/icons/secondhand.png";
   const _sfc_main$8 = {
     __name: "mybids",
@@ -13158,7 +12879,6 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "mybids-page" }, [
-      vue.createCommentVNode(" 头部区域 "),
       vue.createElementVNode("view", { class: "header" }, [
         vue.createElementVNode("view", {
           class: "back-icon",
@@ -13172,7 +12892,6 @@ This will fail in production if not fixed.`);
         ]),
         vue.createElementVNode("view", { class: "header-title" }, "我的投标")
       ]),
-      vue.createCommentVNode(" 顶部选项卡 "),
       vue.createElementVNode("view", { class: "tab-header glass-effect" }, [
         (vue.openBlock(), vue.createElementBlock(
           vue.Fragment,
@@ -13196,9 +12915,7 @@ This will fail in production if not fixed.`);
           /* STABLE_FRAGMENT */
         ))
       ]),
-      vue.createCommentVNode(" 投标列表 "),
       vue.createElementVNode("view", { class: "bids-list" }, [
-        vue.createCommentVNode(" 投标卡片 "),
         (vue.openBlock(true), vue.createElementBlock(
           vue.Fragment,
           null,
@@ -13208,7 +12925,6 @@ This will fail in production if not fixed.`);
               key: bid.id,
               class: "bid-item glass-effect"
             }, [
-              vue.createCommentVNode(" 项目信息 "),
               vue.createElementVNode("view", {
                 class: "project-info",
                 onClick: ($event) => {
@@ -13231,7 +12947,6 @@ This will fail in production if not fixed.`);
                   /* TEXT */
                 )
               ], 8, ["onClick"]),
-              vue.createCommentVNode(" 投标详情 "),
               vue.createElementVNode("view", { class: "bid-details" }, [
                 vue.createElementVNode("view", { class: "info-grid" }, [
                   vue.createElementVNode("view", { class: "info-item" }, [
@@ -13265,7 +12980,6 @@ This will fail in production if not fixed.`);
                     )
                   ])
                 ]),
-                vue.createCommentVNode(" 投标状态 "),
                 vue.createElementVNode("view", { class: "bid-status-container" }, [
                   vue.createElementVNode(
                     "view",
@@ -13277,7 +12991,6 @@ This will fail in production if not fixed.`);
                     /* TEXT, CLASS */
                   )
                 ]),
-                vue.createCommentVNode(" 投标描述 "),
                 vue.createElementVNode("view", { class: "bid-description" }, [
                   vue.createElementVNode("text", { class: "description-label" }, "投标说明:"),
                   vue.createElementVNode(
@@ -13289,9 +13002,7 @@ This will fail in production if not fixed.`);
                   )
                 ])
               ]),
-              vue.createCommentVNode(" 操作按钮 "),
               vue.createElementVNode("view", { class: "bid-actions" }, [
-                vue.createCommentVNode(" 联系发布者按钮 "),
                 vue.createElementVNode("button", {
                   class: "action-btn contact-btn",
                   onClick: ($event) => {
@@ -13299,19 +13010,16 @@ This will fail in production if not fixed.`);
                     return $setup.handleContact((_a2 = bid.project) == null ? void 0 : _a2.publisher_id);
                   }
                 }, " 联系发布者 ", 8, ["onClick"]),
-                vue.createCommentVNode(" 取消投标按钮 (仅在待审核状态显示) "),
                 bid.status === "pending" ? (vue.openBlock(), vue.createElementBlock("button", {
                   key: 0,
                   class: "action-btn cancel-btn",
                   onClick: ($event) => $setup.handleCancelBid(bid.id)
                 }, " 取消投标 ", 8, ["onClick"])) : vue.createCommentVNode("v-if", true),
-                vue.createCommentVNode(" 修改投标按钮 (仅在待审核状态显示) "),
                 bid.status === "pending" ? (vue.openBlock(), vue.createElementBlock("button", {
                   key: 1,
                   class: "action-btn edit-btn",
                   onClick: ($event) => $setup.handleEditBid(bid)
                 }, " 修改投标 ", 8, ["onClick"])) : vue.createCommentVNode("v-if", true),
-                vue.createCommentVNode(" 查看项目按钮 "),
                 vue.createElementVNode("button", {
                   class: "action-btn view-btn",
                   onClick: ($event) => {
@@ -13320,7 +13028,6 @@ This will fail in production if not fixed.`);
                   }
                 }, " 查看项目 ", 8, ["onClick"])
               ]),
-              vue.createCommentVNode(" 中标标识 "),
               bid.status === "selected" ? (vue.openBlock(), vue.createElementBlock("view", {
                 key: 0,
                 class: "selected-badge"
@@ -13332,38 +13039,31 @@ This will fail in production if not fixed.`);
           128
           /* KEYED_FRAGMENT */
         )),
-        vue.createCommentVNode(" 加载状态 "),
         $setup.loading ? (vue.openBlock(), vue.createElementBlock("view", {
           key: 0,
           class: "loading-state"
         }, [
           vue.createElementVNode("text", null, "加载中...")
-        ])) : !$setup.loading && $setup.filteredBids.length === 0 ? (vue.openBlock(), vue.createElementBlock(
-          vue.Fragment,
-          { key: 1 },
-          [
-            vue.createCommentVNode(" 空状态 "),
-            vue.createElementVNode("view", { class: "empty-state glass-effect" }, [
-              vue.createElementVNode("image", {
-                class: "empty-icon",
-                src: _imports_1$1,
-                mode: "aspectFit"
-              }),
-              vue.createElementVNode("text", { class: "empty-text" }, "暂无投标记录"),
-              vue.createElementVNode("text", { class: "empty-subtext" }, "去浏览项目并提交您的投标吧"),
-              vue.createElementVNode("button", {
-                class: "browse-projects-btn",
-                onClick: $setup.goBrowseProjects
-              }, "浏览项目")
-            ])
-          ],
-          2112
-          /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */
-        )) : vue.createCommentVNode("v-if", true)
+        ])) : !$setup.loading && $setup.filteredBids.length === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
+          key: 1,
+          class: "empty-state glass-effect"
+        }, [
+          vue.createElementVNode("image", {
+            class: "empty-icon",
+            src: _imports_1$1,
+            mode: "aspectFit"
+          }),
+          vue.createElementVNode("text", { class: "empty-text" }, "暂无投标记录"),
+          vue.createElementVNode("text", { class: "empty-subtext" }, "去浏览项目并提交您的投标吧"),
+          vue.createElementVNode("button", {
+            class: "browse-projects-btn",
+            onClick: $setup.goBrowseProjects
+          }, "浏览项目")
+        ])) : vue.createCommentVNode("v-if", true)
       ])
     ]);
   }
-  const PagesUserMybids = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$8], ["__scopeId", "data-v-42641889"], ["__file", "F:/new/success/frontapp/pages/user/mybids.vue"]]);
+  const PagesUserMybids = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$8], ["__scopeId", "data-v-42641889"], ["__file", "F:/new/success/uniappandroid/pages/user/mybids.vue"]]);
   const _sfc_main$7 = {
     __name: "video-player",
     setup(__props, { expose: __expose }) {
@@ -13448,7 +13148,6 @@ This will fail in production if not fixed.`);
           onLoadstart: $setup.onVideoLoadStart,
           onCanplay: $setup.onVideoCanPlay
         }, null, 40, ["src"]),
-        vue.createCommentVNode(" 加载状态 "),
         $setup.loading ? (vue.openBlock(), vue.createElementBlock("view", {
           key: 0,
           class: "loading-overlay"
@@ -13456,7 +13155,6 @@ This will fail in production if not fixed.`);
           vue.createElementVNode("view", { class: "loading-spinner" }),
           vue.createElementVNode("text", { class: "loading-text" }, "视频加载中...")
         ])) : vue.createCommentVNode("v-if", true),
-        vue.createCommentVNode(" 错误状态 "),
         $setup.error ? (vue.openBlock(), vue.createElementBlock("view", {
           key: 1,
           class: "error-overlay"
@@ -13471,7 +13169,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesCommonVideoPlayer = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$7], ["__scopeId", "data-v-dfe2500e"], ["__file", "F:/new/success/frontapp/pages/common/video-player.vue"]]);
+  const PagesCommonVideoPlayer = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$7], ["__scopeId", "data-v-dfe2500e"], ["__file", "F:/new/success/uniappandroid/pages/common/video-player.vue"]]);
   const _sfc_main$6 = {};
   function _sfc_render$6(_ctx, _cache) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "agreement-page" }, [
@@ -13510,7 +13208,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesCommonUserAgreement = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6], ["__scopeId", "data-v-7b2724bd"], ["__file", "F:/new/success/frontapp/pages/common/user-agreement.vue"]]);
+  const PagesCommonUserAgreement = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6], ["__scopeId", "data-v-7b2724bd"], ["__file", "F:/new/success/uniappandroid/pages/common/user-agreement.vue"]]);
   const useGlobalStore = defineStore("global", {
     state: () => ({
       appLoaded: false,
@@ -13687,24 +13385,34 @@ This will fail in production if not fixed.`);
           vue.createElementVNode("text", { class: "section-text" }, " 我们仅在提供国中宝服务所必需的范围内收集信息，包括账号注册信息、业务使用记录、 设备信息以及按照监管要求保存的日志。为保障广告投放与设备安全，我们会在您同意后 调用系统能力获取设备标识，该信息仅用于风控核验与统计分析，不会用于识别具体自然人。 "),
           vue.createElementVNode("view", { class: "bullet" }, [
             vue.createElementVNode("text", { class: "bullet-title" }, "敏感信息及用途"),
-            vue.createElementVNode("text", { class: "bullet-text" }, "• OAID（开放匿名设备标识符）：仅在您点击“同意”后获取，用于统计、风控及反作弊。"),
+            vue.createElementVNode("text", { class: "bullet-text" }, '• OAID（开放匿名设备标识符）：仅在您点击"同意"后获取，用于统计、风控及反作弊。'),
             vue.createElementVNode("text", { class: "bullet-text" }, "• 位置信息：用于推荐本地项目，可在设置 > 隐私设置中关闭。")
           ])
         ]),
         vue.createElementVNode("view", { class: "section" }, [
-          vue.createElementVNode("text", { class: "section-title" }, "二、我们如何使用信息"),
+          vue.createElementVNode("text", { class: "section-title" }, "二、关于DCloud uni-app引擎"),
+          vue.createElementVNode("text", { class: "section-text" }, " 重要说明：我们的产品基于DCloud uni-app(5+ App/Wap2App)开发，应用运行期间需要收集您的设备唯一识别码（IMEI/android ID/DEVICE_ID/IDFA、SIM 卡 IMSI 信息、OAID）以提供统计分析服务，并通过应用启动数据及异常错误日志分析改进性能和用户体验，为用户提供更好的服务。 "),
+          vue.createElementVNode("view", { class: "bullet" }, [
+            vue.createElementVNode("text", { class: "bullet-title" }, "特别说明："),
+            vue.createElementVNode("text", { class: "bullet-text" }, "• 本SDK不会申请涉及隐私的权限，所有权限申请均由开发者的代码申请。"),
+            vue.createElementVNode("text", { class: "bullet-text" }, '• 收集的"匿名设备标识符"为随机生成的字符串，不包括OAID、IDFA、IMEI、Android ID等信息。')
+          ]),
+          vue.createElementVNode("text", { class: "section-text" }, " 详情内容请访问《DCloud App引擎隐私政策》。 ")
+        ]),
+        vue.createElementVNode("view", { class: "section" }, [
+          vue.createElementVNode("text", { class: "section-title" }, "三、我们如何使用信息"),
           vue.createElementVNode("text", { class: "section-text" }, " 我们会将收集到的信息用于提供核心交易、订单履约、客服处理、安全防护及改进产品体验。 ")
         ]),
         vue.createElementVNode("view", { class: "section" }, [
-          vue.createElementVNode("text", { class: "section-title" }, "三、账号注销"),
-          vue.createElementVNode("text", { class: "section-text" }, " 您可以按照“我的-设置-账号注销”入口提交注销申请。我们将在 15 个工作日内处理，并在完成后 删除或匿名化您的个人信息（法律法规另有规定除外）。注销完成后，账号关联的项目、订单及 积分等数据将无法恢复，请谨慎操作。 "),
+          vue.createElementVNode("text", { class: "section-title" }, "四、账号注销"),
+          vue.createElementVNode("text", { class: "section-text" }, ' 您可以按照"我的-设置-账号注销"入口提交注销申请。我们将在 15 个工作日内处理，并在完成后 删除或匿名化您的个人信息（法律法规另有规定除外）。注销完成后，账号关联的项目、订单及 积分等数据将无法恢复，请谨慎操作。 '),
           vue.createElementVNode("button", {
             class: "primary-btn",
             onClick: $setup.goToAccountCancellation
           }, "前往账号注销")
         ]),
         vue.createElementVNode("view", { class: "section" }, [
-          vue.createElementVNode("text", { class: "section-title" }, "四、联系我们"),
+          vue.createElementVNode("text", { class: "section-title" }, "五、联系我们"),
           vue.createElementVNode("text", { class: "section-text" }, " 如果您对本隐私政策有任何疑问或建议，可通过客服邮箱 763705036@qq.com 与我们联系， 我们会在收到后 15 个工作日内答复。 应用运营方：沈阳科蓝金属科技有限公司 ")
         ])
       ]),
@@ -13726,7 +13434,7 @@ This will fail in production if not fixed.`);
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesCommonPrivacyPolicy = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["__scopeId", "data-v-8d87e98c"], ["__file", "F:/new/success/frontapp/pages/common/privacy-policy.vue"]]);
+  const PagesCommonPrivacyPolicy = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["__scopeId", "data-v-8d87e98c"], ["__file", "F:/new/success/uniappandroid/pages/common/privacy-policy.vue"]]);
   const _sfc_main$4 = {
     __name: "security",
     setup(__props, { expose: __expose }) {
@@ -13933,7 +13641,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesUserSecurity = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["__scopeId", "data-v-b48a6a9f"], ["__file", "F:/new/success/frontapp/pages/user/security.vue"]]);
+  const PagesUserSecurity = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["__scopeId", "data-v-b48a6a9f"], ["__file", "F:/new/success/uniappandroid/pages/user/security.vue"]]);
   const _sfc_main$3 = {
     __name: "account-cancel",
     setup(__props, { expose: __expose }) {
@@ -14143,7 +13851,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesUserAccountCancel = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["__scopeId", "data-v-a6bc6d93"], ["__file", "F:/new/success/frontapp/pages/user/account-cancel.vue"]]);
+  const PagesUserAccountCancel = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["__scopeId", "data-v-a6bc6d93"], ["__file", "F:/new/success/uniappandroid/pages/user/account-cancel.vue"]]);
   const _imports_1 = "/static/logo.png";
   const _sfc_main$2 = {
     __name: "about",
@@ -14170,7 +13878,6 @@ This will fail in production if not fixed.`);
           class: "back-btn",
           onClick: $setup.goBack
         }, [
-          vue.createCommentVNode(" 使用图片作为返回按钮 "),
           vue.createElementVNode("image", {
             src: _imports_0$7,
             class: "back-icon"
@@ -14180,23 +13887,19 @@ This will fail in production if not fixed.`);
         vue.createElementVNode("view", { class: "header-right" })
       ]),
       vue.createElementVNode("view", { class: "content-container" }, [
-        vue.createCommentVNode(" 应用logo "),
         vue.createElementVNode("view", { class: "app-logo" }, [
           vue.createElementVNode("image", {
             src: _imports_1,
             class: "logo-image"
           })
         ]),
-        vue.createCommentVNode(" 应用名称和版本 "),
         vue.createElementVNode("view", { class: "app-info" }, [
           vue.createElementVNode("text", { class: "app-name" }, "国中宝 App"),
           vue.createElementVNode("text", { class: "app-version" }, "当前版本: v1.0.0")
         ]),
-        vue.createCommentVNode(" 应用描述 "),
         vue.createElementVNode("view", { class: "app-description" }, [
           vue.createElementVNode("text", null, " 一个提供大家发布采购和消费需求的平台，用户会员有双重身份科同为甲方和乙方，甲方发布需求后会收到多个乙方的报价和投标，从中选择一个最符合自己需求的乙方在线上达成交易，会员要求实名制，共分两种企业会员和普通会员")
         ]),
-        vue.createCommentVNode(" 公司信息 "),
         vue.createElementVNode("view", { class: "company-info" }, [
           vue.createElementVNode("view", { class: "info-item" }, [
             vue.createElementVNode("text", { class: "info-label" }, "公司名称："),
@@ -14213,7 +13916,6 @@ This will fail in production if not fixed.`);
             ])
           ])
         ]),
-        vue.createCommentVNode(" 服务条款和隐私政策 "),
         vue.createElementVNode("view", { class: "legal-info" }, [
           vue.createElementVNode("button", {
             class: "legal-btn",
@@ -14224,14 +13926,13 @@ This will fail in production if not fixed.`);
             onClick: $setup.goToPrivacyPolicy
           }, "隐私政策")
         ]),
-        vue.createCommentVNode(" 版权信息 "),
         vue.createElementVNode("view", { class: "copyright" }, [
           vue.createElementVNode("text", null, "© 2025 沈阳科蓝金属科技有限公司. 保留所有权利。")
         ])
       ])
     ]);
   }
-  const PagesCommonAbout = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["__scopeId", "data-v-d75f624b"], ["__file", "F:/new/success/frontapp/pages/common/about.vue"]]);
+  const PagesCommonAbout = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["__scopeId", "data-v-d75f624b"], ["__file", "F:/new/success/uniappandroid/pages/common/about.vue"]]);
   const _sfc_main$1 = {
     __name: "feedback",
     setup(__props, { expose: __expose }) {
@@ -14280,7 +13981,6 @@ This will fail in production if not fixed.`);
           class: "back-btn",
           onClick: $setup.goBack
         }, [
-          vue.createCommentVNode(" 使用图片作为返回按钮 "),
           vue.createElementVNode("image", {
             src: _imports_0$7,
             class: "back-icon"
@@ -14290,11 +13990,9 @@ This will fail in production if not fixed.`);
         vue.createElementVNode("view", { class: "header-right" })
       ]),
       vue.createElementVNode("view", { class: "content-container" }, [
-        vue.createCommentVNode(" 反馈说明 "),
         vue.createElementVNode("view", { class: "feedback-intro" }, [
           vue.createElementVNode("text", null, "感谢您对我们的支持！请填写以下信息，我们会尽快处理您的反馈。")
         ]),
-        vue.createCommentVNode(" 反馈类型 "),
         vue.createElementVNode("view", { class: "form-item" }, [
           vue.createElementVNode("text", { class: "form-label" }, "反馈类型"),
           vue.createElementVNode("picker", {
@@ -14313,7 +14011,6 @@ This will fail in production if not fixed.`);
             ])
           ], 40, ["value"])
         ]),
-        vue.createCommentVNode(" 反馈内容 "),
         vue.createElementVNode("view", { class: "form-item" }, [
           vue.createElementVNode("text", { class: "form-label" }, "反馈内容"),
           vue.withDirectives(vue.createElementVNode(
@@ -14340,7 +14037,6 @@ This will fail in production if not fixed.`);
             /* TEXT */
           )
         ]),
-        vue.createCommentVNode(" 联系方式 "),
         vue.createElementVNode("view", { class: "form-item" }, [
           vue.createElementVNode("text", { class: "form-label" }, "联系方式"),
           vue.withDirectives(vue.createElementVNode(
@@ -14358,7 +14054,6 @@ This will fail in production if not fixed.`);
             [vue.vModelText, $setup.contactInfo]
           ])
         ]),
-        vue.createCommentVNode(" 提交按钮 "),
         vue.createElementVNode("button", {
           class: "submit-btn",
           onClick: $setup.submitFeedback,
@@ -14367,7 +14062,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesCommonFeedback = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-14faa9d4"], ["__file", "F:/new/success/frontapp/pages/common/feedback.vue"]]);
+  const PagesCommonFeedback = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-14faa9d4"], ["__file", "F:/new/success/uniappandroid/pages/common/feedback.vue"]]);
   __definePage("pages/home/index", PagesHomeIndex);
   __definePage("pages/login/index", PagesLoginIndex);
   __definePage("pages/register/index", PagesRegisterIndex);
@@ -14513,7 +14208,6 @@ This will fail in production if not fixed.`);
   };
   function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "app-root" }, [
-      vue.createCommentVNode(" 隐私政策弹窗 "),
       $setup.showPrivacyDialog ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 0,
         class: "privacy-mask",
@@ -14570,7 +14264,6 @@ This will fail in production if not fixed.`);
           ])
         ])
       ])) : vue.createCommentVNode("v-if", true),
-      vue.createCommentVNode(" 常驻隐私入口（悬浮按钮，审核可见） "),
       vue.createElementVNode("view", {
         class: "privacy-fab",
         onClick: $setup.openPrivacyMenu,
@@ -14602,7 +14295,7 @@ This will fail in production if not fixed.`);
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "F:/new/success/frontapp/App.vue"]]);
+  const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "F:/new/success/uniappandroid/App.vue"]]);
   function createApp() {
     const app = vue.createVueApp(App);
     app.use(createPinia());
