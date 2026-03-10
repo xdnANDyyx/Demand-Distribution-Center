@@ -42,6 +42,22 @@
               <text class="info-value">{{ project.bid_count }}</text>
             </view>
           </view>
+          <view class="project-actions">
+            <button class="project-action-btn detail-btn" @click="goToProjectDetail(project.id)">查看详情</button>
+            <button
+              class="project-action-btn edit-btn"
+              @click="handleEditProject(project.id)"
+              :disabled="project.status === 3 || project.status === 4"
+            >
+              修改信息
+            </button>
+            <button
+              class="project-action-btn cancel-btn"
+              @click="deleteProject(project.id)"
+            >
+              删除项目
+            </button>
+          </view>
         </view>
         
         <!-- 投标情况区域 -->
@@ -139,294 +155,278 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { useProjectStore } from '../../store/project.js'
 import { useUserStore } from '../../store/user.js'
 import { useMessageStore } from '../../store/message.js'
 
 const messageStore = useMessageStore()
-
 const projectStore = useProjectStore()
 const userStore = useUserStore()
 
-// 响应式数据
 const loading = ref(false)
 const activeTab = ref('all')
 const projects = ref([])
-const projectBids = ref({}) // 项目ID -> 投标列表的映射
-const selectedBids = ref({}) // 记录已选中的投标 {projectId: bidId}
+const projectBids = ref({})
+const selectedBids = ref({})
 
-// 选项卡
 const tabs = [
-  { label: '全部', value: 'all' },
-  { label: '招标中', value: 'bidding' },
-  { label: '进行中', value: 'in_progress' },
-  { label: '已完成', value: 'completed' }
+  { label: '\u5168\u90e8', value: 'all' },
+  { label: '\u62db\u6807\u4e2d', value: 'bidding' },
+  { label: '\u8fdb\u884c\u4e2d', value: 'in_progress' },
+  { label: '\u5df2\u5b8c\u6210', value: 'completed' }
 ]
 
-// 过滤项目
+const statusMap = {
+  0: 'bidding',
+  1: 'selected',
+  2: 'in_progress',
+  3: 'completed',
+  4: 'cancelled',
+  bidding: 'bidding',
+  in_progress: 'in_progress',
+  completed: 'completed',
+  cancelled: 'cancelled'
+}
+
+const normalizeProject = (project = {}) => ({
+  ...project,
+  statusKey: statusMap[project.status] || 'unknown',
+  bid_count: Number(project.bid_count || 0)
+})
+
 const filteredProjects = computed(() => {
   if (activeTab.value === 'all') {
     return projects.value
   }
-  return projects.value.filter(project => project.status === activeTab.value)
+  return projects.value.filter(project => project.statusKey === activeTab.value)
 })
 
-// 初始化函数
 const initData = () => {
-  loadProjectBids(true)
+  loadProjectData()
 }
 
-// 在 onMounted 中调用初始化函数
-onMounted(() => {
-  console.log("这里是最先执行的")
+onShow(() => {
   initData()
 })
 
-// 加载项目投标 (修改版)
-const loadProjectBids = async (refresh = false) => {
+const loadProjectData = async () => {
   try {
-    loading.value = true;
+    loading.value = true
 
-    const bidsRes = await projectStore.getPublisherBids({ user_id: userStore.userInfo?.id });
-    console.log("获取的当前用户项目投标列表", bidsRes);
-
-    const tempProjectsMap = {};
-    const tempBidsMap = {};
-    const tempSelectedBids = {};
-
-    if (bidsRes && bidsRes.list && Array.isArray(bidsRes.list)) {
-      bidsRes.list.forEach(bidItem => {
-        const projectId = bidItem.project_id;
-        const project = bidItem.project;
-
-        if (project && project.id && !tempProjectsMap[project.id]) {
-          tempProjectsMap[project.id] = project;
-        }
-
-        if (!tempBidsMap[projectId]) {
-          tempBidsMap[projectId] = [];
-        }
-        tempBidsMap[projectId].push(bidItem);
-        
-        // 记录已选中的投标
-        if (project && project.selected_bid_id) {
-          tempSelectedBids[projectId] = project.selected_bid_id;
-        }
-      });
+    const userId = userStore.userInfo?.id
+    if (!userId) {
+      projects.value = []
+      projectBids.value = {}
+      selectedBids.value = {}
+      return
     }
 
-    const uniqueProjectsArray = Object.values(tempProjectsMap);
-    projects.value = uniqueProjectsArray;
-    projectBids.value = tempBidsMap;
-    selectedBids.value = tempSelectedBids; // 更新已选中投标记录
+    const [projectsRes, bidsRes] = await Promise.all([
+      projectStore.getUserProjects(userId, { page: 1, size: 100 }),
+      projectStore.getPublisherBids({ user_id: userId, page: 1, size: 200 })
+    ])
 
-    console.log('已处理并加载项目和投标列表:', projects.value.length, Object.keys(projectBids.value).length);
-	console.log('返回的投标信息有哪些？',projectBids.value)
+    const nextProjects = Array.isArray(projectsRes?.list)
+      ? projectsRes.list.map(normalizeProject)
+      : []
+    const nextProjectBids = {}
+    const nextSelectedBids = {}
 
+    nextProjects.forEach(project => {
+      nextProjectBids[project.id] = []
+      if (project.selected_bid_id) {
+        nextSelectedBids[project.id] = project.selected_bid_id
+      }
+    })
+
+    if (Array.isArray(bidsRes?.list)) {
+      bidsRes.list.forEach(bidItem => {
+        const projectId = bidItem.project_id
+        if (!projectId) {
+          return
+        }
+
+        if (!nextProjectBids[projectId]) {
+          nextProjectBids[projectId] = []
+        }
+        nextProjectBids[projectId].push(bidItem)
+
+        if (bidItem.project?.selected_bid_id) {
+          nextSelectedBids[projectId] = bidItem.project.selected_bid_id
+        }
+      })
+    }
+
+    projects.value = nextProjects.map(project => ({
+      ...project,
+      bid_count: nextProjectBids[project.id]?.length || project.bid_count || 0
+    }))
+    projectBids.value = nextProjectBids
+    selectedBids.value = nextSelectedBids
   } catch (error) {
-    console.error('加载投标列表失败:', error);
+    console.error('\u52a0\u8f7d\u6211\u7684\u9879\u76ee\u5931\u8d25:', error)
     uni.showToast({
-      title: '加载失败',
+      title: '\u52a0\u8f7d\u5931\u8d25',
       icon: 'none'
-    });
+    })
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
-// 切换选项卡
 const switchTab = (tab) => {
   if (activeTab.value === tab) return
-  
   activeTab.value = tab
-  loadProjectBids(true)
 }
 
-// 联系投标人
 const handleContact = async (bidderId) => {
   if (!userStore.hasLogin) {
-    uni.navigateTo({ url: '/pages/login/index' });
-    return;
+    uni.navigateTo({ url: '/pages/login/index' })
+    return
   }
-  
-  if (!bidderId) {
-    uni.showToast({ title: '无法联系投标人', icon: 'none' });
-    return;
-  }
-  
-  const bidderInfo = findBidderInfo(bidderId);
-  if (!bidderInfo) {
-    uni.showToast({ title: '找不到投标人信息', icon: 'none' });
-    return;
-  }
-  
-  try {
-    uni.showLoading({ title: '正在创建会话...' });
-    
-    const chatData = await messageStore.createChat(bidderId);
-    uni.hideLoading();
-    
-    if (chatData && chatData.id) {
-      uni.showToast({ title: '已创建会话', icon: 'success' });
-      
-      uni.navigateTo({
-        url: `/pages/messages/chat?id=${chatData.id}&chatId=${chatData.id}&targetUserId=${bidderId}&targetUserName=${encodeURIComponent(bidderInfo.username || '投标人')}`,
-      });
-    } else {
-      throw new Error('创建会话失败');
-    }
-  } catch (error) {
-    uni.hideLoading();
-    console.error('创建会话失败:', error);
-    const errorMsg = error.message || '操作失败';
-    uni.showToast({ title: errorMsg, icon: 'none' });
-  }
-};
 
-// 根据投标人ID查找投标人信息
+  if (!bidderId) {
+    uni.showToast({ title: '\u65e0\u6cd5\u8054\u7cfb\u6295\u6807\u4eba', icon: 'none' })
+    return
+  }
+
+  const bidderInfo = findBidderInfo(bidderId)
+  if (!bidderInfo) {
+    uni.showToast({ title: '\u627e\u4e0d\u5230\u6295\u6807\u4eba\u4fe1\u606f', icon: 'none' })
+    return
+  }
+
+  try {
+    uni.showLoading({ title: '\u6b63\u5728\u521b\u5efa\u4f1a\u8bdd...' })
+    const chatData = await messageStore.createChat(bidderId)
+    uni.hideLoading()
+
+    if (!chatData?.id) {
+      throw new Error('\u521b\u5efa\u4f1a\u8bdd\u5931\u8d25')
+    }
+
+    uni.showToast({ title: '\u5df2\u521b\u5efa\u4f1a\u8bdd', icon: 'success' })
+    uni.navigateTo({
+      url: `/pages/messages/chat?id=${chatData.id}&chatId=${chatData.id}&targetUserId=${bidderId}&targetUserName=${encodeURIComponent(bidderInfo.username || '\u6295\u6807\u4eba')}`,
+    })
+  } catch (error) {
+    uni.hideLoading()
+    console.error('\u521b\u5efa\u4f1a\u8bdd\u5931\u8d25:', error)
+    uni.showToast({ title: error.message || '\u64cd\u4f5c\u5931\u8d25', icon: 'none' })
+  }
+}
+
 const findBidderInfo = (bidderId) => {
   for (const projectId in projectBids.value) {
-    const bids = projectBids.value[projectId];
-    if (bids && Array.isArray(bids)) {
-      for (const bid of bids) {
-        if (bid.bidder && bid.bidder.id === bidderId) {
-          return bid.bidder;
-        }
+    const bids = projectBids.value[projectId]
+    if (!Array.isArray(bids)) {
+      continue
+    }
+    for (const bid of bids) {
+      if (bid.bidder?.id === bidderId) {
+        return bid.bidder
       }
     }
   }
-  return null;
-};
+  return null
+}
 
-// 跳转到项目详情
 const goToProjectDetail = (projectId) => {
-  if (projectId) {
-    uni.navigateTo({
-      url: `/pages/projects/detail?id=${projectId}`
-    })
-  }
-}
-
-// 🎯 修改：选择中标者
-const handleSelectBid = async (bidId) => {
-  console.log("投标id是空的？", bidId)
-  
-  const res = await uni.showModal({
-    title: '确认选择',
-    content: '确定选择该投标方案吗？此操作不可撤销。',
-  });
-  
-  if (res.confirm) {
-    try {
-      uni.showLoading({ title: '处理中' });
-      const result = await projectStore.selectBid(bidId);
-      uni.hideLoading();
-      uni.showToast({ title: '选择成功', icon: 'success' });
-      console.log("是不是就没有结果返回过来了？",result)
-      // 🎯 关键修改：更新本地状态
-      if (result && result.project_id) {
-        // 1. 记录已选中的投标
-        selectedBids.value[result.project_id] = bidId;
-        
-        // 2. 更新项目状态为进行中
-        const projectIndex = projects.value.findIndex(p => p.id === result.project_id);
-        if (projectIndex !== -1) {
-          projects.value[projectIndex].status = 'in_progress';
-          projects.value[projectIndex].selected_bid_id = bidId;
-        }
-        
-        // 3. 如果当前在"招标中"选项卡，可能需要刷新数据或切换到"进行中"
-        if (activeTab.value === 'bidding') {
-          // 可选：自动切换到进行中选项卡
-          // activeTab.value = 'in_progress';
-          // loadProjectBids(true);
-        }
-      }
-      
-      // 重新加载项目列表和投标信息（可选，如果需要完全刷新）
-      // loadProjectBids(true);
-      
-    } catch (error) {
-      uni.hideLoading();
-      console.error('选择投标失败:', error);
-      const errorMsg = error?.response?.data?.message || error?.message || '操作失败';
-      uni.showToast({ title: errorMsg, icon: 'none' });
-    }
-  }
-};
-
-// 🎯 新增：检查投标是否已被选中
-const isBidSelected = (projectId, bidId) => {
-  return selectedBids.value[projectId] === bidId;
-};
-
-// 🎯 新增：检查项目是否有已选中的投标
-const hasSelectedBid = (projectId) => {
-  return !!selectedBids.value[projectId];
-};
-
-// 取消项目
-const cancelProject = async (projectId) => {
-  if (!projectId) {
-     uni.showToast({ title: '无效的项目ID', icon: 'none' });
-     return;
-  }
-  const res = await uni.showModal({
-    title: '确认取消',
-    content: '确定要取消这个项目吗？此操作不可撤销。'
+  if (!projectId) return
+  uni.navigateTo({
+    url: `/pages/projects/detail?id=${projectId}`
   })
-  
-  if (res.confirm) {
-    try {
-      uni.showLoading({
-        title: '正在取消...'
-      })
-      await projectStore.cancelProject(projectId)
-      uni.hideLoading()
-      uni.showToast({
-        title: '项目已取消',
-        icon: 'success'
-      })
-      loadProjectBids(true)
-    } catch (error) {
-      uni.hideLoading()
-      uni.showToast({
-        title: '取消失败',
-        icon: 'none'
-      })
-      console.error('取消项目失败:', error)
-    }
+}
+
+const handleEditProject = (projectId) => {
+  if (!projectId) {
+    uni.showToast({ title: '\u65e0\u6548\u7684\u9879\u76eeID', icon: 'none' })
+    return
+  }
+
+  uni.navigateTo({
+    url: `/pages/projects/publish?id=${projectId}&edit=true`
+  })
+}
+
+const handleSelectBid = async (bidId) => {
+  const res = await uni.showModal({
+    title: '\u786e\u8ba4\u9009\u62e9',
+    content: '\u786e\u5b9a\u9009\u62e9\u8be5\u6295\u6807\u65b9\u6848\u5417\uff1f\u6b64\u64cd\u4f5c\u4e0d\u53ef\u64a4\u9500\u3002'
+  })
+
+  if (!res.confirm) {
+    return
+  }
+
+  try {
+    uni.showLoading({ title: '\u5904\u7406\u4e2d...' })
+    await projectStore.selectBid(bidId)
+    uni.hideLoading()
+    uni.showToast({ title: '\u9009\u62e9\u6210\u529f', icon: 'success' })
+    await loadProjectData()
+  } catch (error) {
+    uni.hideLoading()
+    console.error('\u9009\u62e9\u6295\u6807\u5931\u8d25:', error)
+    uni.showToast({ title: error?.message || '\u64cd\u4f5c\u5931\u8d25', icon: 'none' })
   }
 }
 
-// 返回上一页
+const isBidSelected = (projectId, bidId) => selectedBids.value[projectId] === bidId
+
+const hasSelectedBid = (projectId) => !!selectedBids.value[projectId]
+
+const deleteProject = async (projectId) => {
+  if (!projectId) {
+    uni.showToast({ title: '\u65e0\u6548\u7684\u9879\u76eeID', icon: 'none' })
+    return
+  }
+
+  const res = await uni.showModal({
+    title: '\u786e\u8ba4\u5220\u9664',
+    content: '\u786e\u5b9a\u8981\u4ece\u6570\u636e\u5e93\u4e2d\u5220\u9664\u8fd9\u6761\u9700\u6c42\u5417\uff1f\u6b64\u64cd\u4f5c\u4e0d\u53ef\u6062\u590d\u3002'
+  })
+
+  if (!res.confirm) {
+    return
+  }
+
+  try {
+    uni.showLoading({ title: '\u6b63\u5728\u5220\u9664...' })
+    await projectStore.deleteProject(projectId)
+    uni.hideLoading()
+    uni.showToast({ title: '\u5220\u9664\u6210\u529f', icon: 'success' })
+    await loadProjectData()
+  } catch (error) {
+    uni.hideLoading()
+    uni.showToast({ title: '\u5220\u9664\u5931\u8d25', icon: 'none' })
+    console.error('\u5220\u9664\u9879\u76ee\u5931\u8d25:', error)
+  }
+}
+
 const goBack = () => {
   uni.navigateBack()
 }
 
-//2025.22.27新增
-// 解析附件字符串为 URL 数组
 const parseAttachments = (attachmentsStr) => {
   if (!attachmentsStr) return []
   return attachmentsStr.split(',').map(url => url.trim()).filter(url => url)
 }
 
-// 判断是否为图片 URL
 const isImageUrl = (url) => {
   const imgExts = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp']
   const lowerUrl = url.toLowerCase()
   return imgExts.some(ext => lowerUrl.endsWith(ext))
 }
 
-// 判断是否为视频 URL
 const isVideoUrl = (url) => {
   const videoExts = ['.mp4', '.mov', '.avi', '.mkv', '.wmv', '.flv', '.webm']
   const lowerUrl = url.toLowerCase()
   return videoExts.some(ext => lowerUrl.endsWith(ext))
 }
 
-// 预览图片（支持点击放大）
 const previewImage = (url) => {
   uni.previewImage({
     urls: [url]
@@ -577,6 +577,33 @@ const previewImage = (url) => {
   padding: 30rpx;
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8rpx 32rpx 0 rgba(0, 0, 0, 0.1);
+}
+
+.project-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.project-action-btn {
+  flex: 1;
+  height: 68rpx;
+  border-radius: 34rpx;
+  border: none;
+  color: #fff;
+  font-size: 24rpx;
+}
+
+.detail-btn {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.edit-btn {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.cancel-btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
 }
 
 .project-title {

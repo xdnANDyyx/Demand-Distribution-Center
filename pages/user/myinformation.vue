@@ -60,7 +60,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { useUserStore } from '../../store/user.js'
 import { uploadImage } from '../../api/upload.js'
@@ -74,6 +74,10 @@ const formData = ref({
 	realName: '',
 	companyName: ''
 })
+
+const isEnterpriseMember = computed(() => (userInfo.value?.user_type ?? 0) !== 0)
+const membershipLabel = computed(() => isEnterpriseMember.value ? '企业会员' : '个体/公司会员')
+const taxRateLabel = computed(() => isEnterpriseMember.value ? '可开13%税额发票' : '可开1%税额发票')
 
 // 页面加载时初始化数据
 onLoad(() => {
@@ -275,6 +279,41 @@ const handleSubmit = async () => {
 	font-size: 24rpx;
 	color: #999;
 	margin-top: 10rpx;
+}
+
+.member-type-line {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+	flex-wrap: wrap;
+	min-height: 88rpx;
+}
+
+.member-type-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10rpx 20rpx;
+	border-radius: 999rpx;
+	font-size: 24rpx;
+	font-weight: 600;
+}
+
+.tax-rate-text {
+	font-size: 24rpx;
+	color: #4b5563;
+}
+
+.individual-badge {
+	background: #eff6ff;
+	color: #1d4ed8;
+	border: 1px solid #bfdbfe;
+}
+
+.enterprise-badge {
+	background: #fffbeb;
+	color: #b45309;
+	border: 1px solid #fcd34d;
 }
 
 .submit-btn {

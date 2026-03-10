@@ -1,7 +1,7 @@
 /**
  * 项目相关API
  */
-import { post, upload } from '../utils/request.js'
+import { get, post, put, upload } from '../utils/request.js'
 
 /**
  * 发布项目
@@ -10,6 +10,35 @@ import { post, upload } from '../utils/request.js'
  */
 export function publishProject(projectData) {
   return post('/projects', projectData)
+}
+
+/**
+ * 更新项目
+ * @param {string|number} projectId - 项目ID
+ * @param {Object} projectData - 项目数据
+ * @returns {Promise}
+ */
+export function updateProject(projectId, projectData) {
+  return put(`/projects/${projectId}`, projectData)
+}
+
+/**
+ * 获取项目详情
+ * @param {string|number} projectId - 项目ID
+ * @returns {Promise}
+ */
+export function getProjectDetail(projectId) {
+  return get(`/projects/${projectId}`)
+}
+
+/**
+ * 获取指定用户发布的项目列表
+ * @param {string|number} userId - 用户ID
+ * @param {Object} params - 查询参数
+ * @returns {Promise}
+ */
+export function getUserProjects(userId, params = {}) {
+  return get(`/projects/user/${userId}`, params)
 }
 
 /**
@@ -38,7 +67,7 @@ export function getProjectList(params) {
  * @param {String} id - 项目ID
  * @returns {Promise} - 返回Promise对象
  */
-export function getProjectDetail(id) {
+export function getProjectDetailLegacy(id) {
   return post('/api/projects/detail', { id })
 }
 

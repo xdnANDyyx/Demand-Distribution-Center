@@ -47,17 +47,18 @@ export const useOrderStore = defineStore('order', {
     
     // 创建订单
     async createOrder(orderData) {
-		let testdata = {
-			"project_id":6,
-			"bid_id":5,
-			"publisher_id":2,
-			"bidder_id":1,
-			"amount":1.1,
-		}
 		console.log("创建订单传入的什么？",orderData)
+		console.log("订单数据详细检查:", {
+			project_id: orderData.project_id,
+			bid_id: orderData.bid_id,
+			publisher_id: orderData.publisher_id,
+			bidder_id: orderData.bidder_id,
+			amount: orderData.amount,
+			"所有字段": Object.keys(orderData)
+		})
       try {
         // 调用实际API创建订单
-        const order = await post('/orders', testdata)
+        const order = await post('/orders', orderData)
         return order
       } catch (error) {
         console.error('创建订单失败:', error)

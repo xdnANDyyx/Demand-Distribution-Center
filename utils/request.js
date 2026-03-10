@@ -108,7 +108,7 @@ function errorHandler(error) {
  * @param {Object} options 请求配置
  * @returns {Promise} Promise对象
  */
-function request(options) {
+export function request(options) {
   // 合并配置
   const mergedOptions = {
     ...config,
@@ -350,6 +350,7 @@ export function download(url, params = {}, options = {}) {
 }
 
 export default {
+  request,
   get,
   post,
   put,

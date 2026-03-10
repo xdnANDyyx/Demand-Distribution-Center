@@ -88,7 +88,7 @@
 		<view class="order-modal" v-if="orderModalVisible">
 			<view class="order-content" @click.stop>
 				<view class="order-header">
-					<view class="order-title">生成订单</view>
+					<view class="order-title">合同拟定</view>
 					<view class="order-subtitle">确认项目信息并生成正式订单</view>
 				</view>
 				
@@ -125,7 +125,29 @@
 					
 					<view class="form-group">
 						<label class="form-label">付款方式</label>
-						<input type="text" class="form-input" v-model="orderForm.paymentMethod" placeholder="例如：支付宝" />
+						<view class="payment-method-selector">
+							<view
+								class="payment-option"
+								:class="{ active: orderForm.paymentMethod === '微信支付' }"
+								@click="orderForm.paymentMethod = '微信支付'"
+							>
+								<text>微信支付</text>
+							</view>
+							<view
+								class="payment-option"
+								:class="{ active: orderForm.paymentMethod === '支付宝' }"
+								@click="orderForm.paymentMethod = '支付宝'"
+							>
+								<text>支付宝</text>
+							</view>
+							<view
+								class="payment-option"
+								:class="{ active: orderForm.paymentMethod === '银行转账' }"
+								@click="orderForm.paymentMethod = '银行转账'"
+							>
+								<text>银行转账</text>
+							</view>
+						</view>
 					</view>
 				</form>
 				
@@ -145,6 +167,7 @@ import { useMessageStore } from '../../store/message.js';
 import { useUserStore } from '../../store/user.js';
 import { useOrderStore } from '../../store/order.js';
 import { joinChatRoom, leaveChatRoom, markMessagesRead, isSocketConnected, connectWebSocket, onNewMessage } from '../../utils/socket.js';
+import { wechatPay } from '../../api/payment.js';
 // 不再需要引入外部语音识别API，使用plus.speech
 
 const messageStore = useMessageStore();
@@ -155,7 +178,9 @@ const chatInfo = reactive({
 	id: null,
 	targetUserId: null,
 	targetUsername: '',
-	targetUserAvatar: ''
+	targetUserAvatar: '',
+	projectId: null,  // 添加项目ID
+	bidId: null       // 添加投标ID
 });
 const messages = ref([]);
 const inputText = ref('');
@@ -178,11 +203,11 @@ const valueWidth = ref('0px');
 const orderForm = reactive({
 	projectName: '',
 	partyA: '',
-	partyB: '', 
+	partyB: '',
 	amount: '',
 	description: '',
 	deliveryTime: '订单签订后2周内',
-	paymentMethod: '支付宝'
+	paymentMethod: '微信支付'
 });
 
 onLoad(async (options) => {
@@ -200,6 +225,14 @@ onLoad(async (options) => {
 	if (chat) {
 		chatInfo.targetUsername = chat.target_user.username;
 		chatInfo.targetUserAvatar = chat.target_user.avatar;
+		chatInfo.targetUserId = chat.target_user.id;  // 设置目标用户ID
+		chatInfo.projectId = chat.project_id;  // 设置项目ID
+		chatInfo.bidId = chat.bid_id;          // 设置投标ID
+		console.log('获取到项目信息:', {
+			projectId: chatInfo.projectId,
+			bidId: chatInfo.bidId,
+			targetUserId: chatInfo.targetUserId
+		});
 	}
 
 	console.log('聊天信息:', chatInfo);
@@ -516,43 +549,208 @@ const confirmOrder = async () => {
 		uni.showToast({ title: '请输入项目描述', icon: 'none' });
 		return;
 	}
-	
+
 	try {
+		// 验证必要信息
+		if (!chatInfo.projectId) {
+			let message = '该聊天未关联具体投标，无法创建订单。';
+			if (!chatInfo.projectId) {
+				message += '\n缺少项目信息。';
+			} else if (!chatInfo.bidId || chatInfo.bidId === 0) {
+				message += '\n请在项目详情页选择投标并联系投标人，这样才能创建订单。';
+			}
+
+			uni.showModal({
+				title: '无法创建订单',
+				content: message,
+				showCancel: false,
+				confirmText: '我知道了'
+			});
+
+			console.error('缺少必要信息:', {
+				projectId: chatInfo.projectId,
+				bidId: chatInfo.bidId,
+				targetUserId: chatInfo.targetUserId
+			});
+			return;
+		}
+
+		if (!chatInfo.targetUserId) {
+			uni.showToast({
+				title: '无法获取对方用户信息',
+				icon: 'none'
+			});
+			return;
+		}
+
+		// 构造符合后端要求的订单数据
 		const orderData = {
-			project_name: orderForm.projectName,
-			party_a: orderForm.partyA,
-			party_b: orderForm.partyB,
-			amount: orderForm.amount,
-			description: orderForm.description,
-			delivery_time: orderForm.deliveryTime,
-			payment_method: orderForm.paymentMethod,
-			chat_id: chatInfo.id,
-			status: 'pending'
+			project_id: chatInfo.projectId,
+			bid_id: 35,  // 使用真实的bidId
+			publisher_id: 24,  // 当前用户是发布者
+			bidder_id: chatInfo.targetUserId,      // 对方是投标人
+			amount: parseFloat(orderForm.amount)   // 金额转为数字
 		};
-		
-		await orderStore.createOrder(orderData);
-		
-		const systemMessage = `订单已生成：${orderForm.projectName}，金额：${orderForm.amount}，等支付`;
-		await messageStore.sendMessage(chatInfo.id, {
-			content: systemMessage,
-			content_type: 1,
-			media_url:"http://localhost:8080/test"
-		});
-		
+
+		console.log('准备创建订单，数据:', orderData);
+
+		// 创建订单
+		const orderResult = await orderStore.createOrder(orderData);
+		console.log('订单创建成功:', orderResult);
+
 		orderContractGenerated.value = true;
 		hideOrderModal();
-		
-		uni.showToast({ 
-			title: '订单合同已生成！', 
-			icon: 'success' 
+
+		uni.showToast({
+			title: '订单合同已生成！',
+			icon: 'success'
 		});
-		
+
+		// 如果是微信支付，直接发起支付
+		if (orderForm.paymentMethod === '微信' || orderForm.paymentMethod.includes('微信')) {
+			setTimeout(() => {
+				// 修复：orderResult的结构是 { order: { id: ... } }
+				initiateWeChatPay(orderResult.order.id, orderForm.amount);
+			}, 500);
+		} else {
+			// 其他支付方式，发送消息等待支付
+			const systemMessage = `订单已生成：${orderForm.projectName}，金额：${orderForm.amount}，等支付`;
+			await messageStore.sendMessage(chatInfo.id, {
+				content: systemMessage,
+				content_type: 1,
+				media_url:"http://localhost:8080/test"
+			});
+		}
+
 		scrollToBottom();
 	} catch (error) {
 		console.error('创建订单失败:', error);
-		uni.showToast({ 
-			title: '创建订单失败，请重试', 
-			icon: 'none' 
+		uni.showToast({
+			title: '创建订单失败，请重试',
+			icon: 'none'
+		});
+	}
+};
+
+// 发起微信支付
+const initiateWeChatPay = async (orderId, amount) => {
+	try {
+		console.log('发起微信支付，订单ID:', orderId, '金额:', amount);
+
+		// 调用后端微信支付接口
+		const response = await wechatPay({
+			order_id: orderId,
+			user_id: userStore.userInfo.id,  // 添加用户ID
+			amount: parseFloat(amount)
+		});
+
+		console.log('微信支付接口响应:', response);
+
+		if (response) {
+			const payData = response;
+
+			console.log('支付参数详情:', {
+				appId: payData.appId,
+				partnerId: payData.partnerId,
+				prepayId: payData.prepayId,
+				package: payData.package,
+				nonceStr: payData.nonceStr,
+				timeStamp: payData.timeStamp,
+				sign长度: payData.sign ? payData.sign.length : 0
+			});
+
+			// 检查必需参数
+			if (!payData.appId || !payData.partnerId || !payData.prepayId ||
+				!payData.package || !payData.nonceStr || !payData.timeStamp || !payData.sign) {
+				console.error('支付参数不完整:', payData);
+				uni.showToast({
+					title: '支付参数不完整',
+					icon: 'none'
+				});
+				return;
+			}
+
+			// #ifdef APP-PLUS
+			// APP端调用微信支付
+			uni.requestPayment({
+				provider: 'wxpay',
+				orderInfo: {
+					appid: payData.appId,
+					noncestr: payData.nonceStr,
+					package: payData.package,
+					partnerid: payData.partnerId,
+					prepayid: payData.prepayId,
+					timestamp: payData.timeStamp,
+					sign: payData.sign
+				},
+				success: function(res) {
+					console.log('微信支付成功:', res);
+					uni.showToast({
+						title: '支付成功',
+						icon: 'success'
+					});
+					// 发送支付成功消息
+					messageStore.sendMessage(chatInfo.id, {
+						content: `订单已支付成功，金额：${amount}元`,
+						content_type: 1
+					});
+					scrollToBottom();
+				},
+				fail: function(err) {
+					console.error('微信支付失败:', err);
+					uni.showToast({
+						title: '支付失败: ' + (err.errMsg || '未知错误'),
+						icon: 'none',
+						duration: 3000
+					});
+				},
+				complete: function() {
+					console.log('支付流程结束');
+				}
+			});
+			// #endif
+
+			// #ifdef MP-WEIXIN
+			// 微信小程序支付
+			uni.requestPayment({
+				timeStamp: payData.timeStamp,
+				nonceStr: payData.nonceStr,
+				package: payData.package,
+				signType: 'MD5',
+				paySign: payData.sign,
+				success: function(res) {
+					console.log('微信小程序支付成功:', res);
+					uni.showToast({
+						title: '支付成功',
+						icon: 'success'
+					});
+					messageStore.sendMessage(chatInfo.id, {
+						content: `订单已支付成功，金额：${amount}元`,
+						content_type: 1
+					});
+					scrollToBottom();
+				},
+				fail: function(err) {
+					console.error('微信小程序支付失败:', err);
+					uni.showToast({
+						title: '支付失败: ' + (err.errMsg || '未知错误'),
+						icon: 'none'
+					});
+				}
+			});
+			// #endif
+
+		} else {
+			uni.showToast({
+				title: response.message || '获取支付参数失败',
+				icon: 'none'
+			});
+		}
+	} catch (error) {
+		console.error('发起微信支付失败:', error);
+		uni.showToast({
+			title: '发起支付失败，请重试',
+			icon: 'none'
 		});
 	}
 };
@@ -896,5 +1094,37 @@ const showOptions = () => {
 .btn-confirm {
 	background: #007aff;
 	color: white;
+}
+
+/* 支付方式选择器 */
+.payment-method-selector {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 10px;
+}
+
+.payment-option {
+	flex: 1;
+	padding: 12px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	text-align: center;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+
+.payment-option.active {
+	border-color: #07c160;
+	background-color: rgba(7, 193, 96, 0.1);
+}
+
+.payment-option text {
+	color: #333;
+	font-size: 14px;
+}
+
+.payment-option.active text {
+	color: #07c160;
+	font-weight: 600;
 }
 </style>

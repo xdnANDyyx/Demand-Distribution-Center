@@ -309,3 +309,31 @@
 	background: #007aff;
 	color: white;
 }
+
+/* 支付方式选择器 */
+.payment-method-selector[data-v-56908723] {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 10px;
+}
+.payment-option[data-v-56908723] {
+	flex: 1;
+	padding: 12px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	text-align: center;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+.payment-option.active[data-v-56908723] {
+	border-color: #07c160;
+	background-color: rgba(7, 193, 96, 0.1);
+}
+.payment-option uni-text[data-v-56908723] {
+	color: #333;
+	font-size: 14px;
+}
+.payment-option.active uni-text[data-v-56908723] {
+	color: #07c160;
+	font-weight: 600;
+}

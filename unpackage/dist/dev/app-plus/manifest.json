@@ -22,6 +22,7 @@
     "Record": {},
     "VideoPlayer": {},
     "Speech": {},
+    "Payment": {},
     "UniNView": {
       "description": "UniNView原生渲染"
     }
@@ -54,7 +55,9 @@
       "splashscreen": {
         "androidStyle": "default",
         "android": {
-          "xhdpi": "C:/Users/PC/Pictures/good.png"
+          "xhdpi": "E:\\Dowloads\\load.png",
+          "xxhdpi": "E:\\Dowloads\\load.png",
+          "hdpi": "E:\\Dowloads\\load.png"
         },
         "useOriginalMsgbox": true
       },
@@ -104,6 +107,15 @@
             "appid": "119786021",
             "apikey": "JFDx2SIRq99RmFgOdFf4GSfO",
             "secretkey": "m8s1M02iKpEwfXLU91nRPkRc968WF895"
+          }
+        },
+        "payment": {
+          "weixin": {
+            "__platform__": [
+              "android"
+            ],
+            "appid": "wx88d138e103b2f6a7",
+            "UniversalLinks": ""
           }
         },
         "audio": {

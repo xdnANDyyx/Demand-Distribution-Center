@@ -2,9 +2,12 @@
 
 // 声音文件路径配置
 const SOUND_FILES = {
-  DEFAULT: '/static/sounds/notification.mp3',
-  IMPORTANT: '/static/sounds/notification.mp3' // 可以根据需要添加不同的声音文件
+  DEFAULT: typeof plus !== 'undefined' ? '_www/static/sounds/notification.mp3' : '/static/sounds/notification.mp3',
+  IMPORTANT: typeof plus !== 'undefined' ? '_www/static/sounds/notification.mp3' : '/static/sounds/notification.mp3'
 };
+
+let lastNotificationAt = 0;
+const NOTIFICATION_COOLDOWN = 1500;
 
 /**
  * 触发短震动提醒（安卓端专用）
@@ -144,6 +147,12 @@ export function playSoundByType(messageType) {
  * @param {string} messageType 消息类型
  */
 export function triggerNotification(messageType) {
+  const now = Date.now();
+  if (now - lastNotificationAt < NOTIFICATION_COOLDOWN) {
+    return;
+  }
+  lastNotificationAt = now;
+
   // 触发震动
   triggerVibrationByType(messageType);
   

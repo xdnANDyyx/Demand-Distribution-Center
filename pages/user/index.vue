@@ -17,6 +17,12 @@
 						<view class="rating-line">
 							<text class="rating-label">信誉分: </text>
 							<text class="rating-score">{{ user.rating }}</text>
+						
+							<text
+								v-if="membershipLabel"
+								class="member-badge"
+								:class="membershipBadgeClass"
+							>{{ membershipLabel }}</text>
 						</view>
 					</view>
 					<view class="arrow">
@@ -30,7 +36,7 @@
 						<text class="balance-label">账户余额 (元)</text>
 						<text class="balance-amount">{{ user.balance.toFixed(2) }}</text>
 					</view>
-					<button class="recharge-btn" @click="goToWallet">充值</button>
+					<!-- <button class="recharge-btn" @click="goToWallet">充值</button> -->
 				</view>
 
 				<!-- 功能菜单 -->
@@ -91,6 +97,14 @@ const userStore = useUserStore()
 
 // 使用 computed 属性确保数据响应性
 const user = computed(() => userStore.userInfo)
+const isEnterpriseMember = computed(() => (user.value?.user_type ?? 0) !== 0)
+const membershipLabel = computed(() => {
+	if (!user.value) return ''
+	return isEnterpriseMember.value ? '企业会员：可开13%税额发票' : '个体公司会员：可开1%税额发票'
+})
+const membershipBadgeClass = computed(() => (
+	isEnterpriseMember.value ? 'enterprise-badge' : 'individual-badge'
+))
 
 // 每次进入页面时，刷新用户信息
 onShow(async () => {
@@ -220,8 +234,32 @@ const goToWebSocketDebug = () => {
 }
 
 .rating-line {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+	flex-wrap: wrap;
 	font-size: 28rpx;
 	opacity: 0.8;
+}
+
+.member-badge {
+	padding: 6rpx 16rpx;
+	border-radius: 999rpx;
+	font-size: 22rpx;
+	line-height: 1;
+	font-weight: 600;
+}
+
+.individual-badge {
+	background: rgba(255, 255, 255, 0.18);
+	color: #eef2ff;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.enterprise-badge {
+	background: rgba(251, 191, 36, 0.2);
+	color: #fde68a;
+	border: 1px solid rgba(251, 191, 36, 0.35);
 }
 
 .arrow {

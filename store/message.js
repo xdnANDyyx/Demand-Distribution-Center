@@ -57,11 +57,24 @@ export const useMessageStore = defineStore('message', {
       try {
         // 调用实际API获取聊天列表 - 修正API路径
         const data = await get('/chats')
-        
-        console.log('获取聊天列表成功:', data)
+
+        console.log('========== 聊天列表数据 ==========')
+        console.log('原始数据:', data)
+        if (Array.isArray(data)) {
+          data.forEach((chat, index) => {
+            console.log(`聊天${index + 1}:`, {
+              id: chat.id,
+              project_id: chat.project_id,
+              bid_id: chat.bid_id,
+              target_user: chat.target_user
+            })
+          })
+        }
+        console.log('================================')
+
         this.setChatList(Array.isArray(data) ? data : [])
         this.updateUnreadChatCount()
-        
+
         return data
       } catch (error) {
         console.error('获取聊天列表失败:', error)

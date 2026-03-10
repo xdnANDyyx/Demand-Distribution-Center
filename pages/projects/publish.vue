@@ -227,7 +227,7 @@
         </view>
       </view>
       <!-- 提交按钮 -->
-      <view class="submit-btn glow-effect" @click="submitProject">发布项目</view>
+      <view class="submit-btn glow-effect" @click="submitProject">{{ isEditMode ? '保存修改' : '发布项目' }}</view>
     </scroll-view>
   </view>
 </template>
@@ -236,12 +236,15 @@
 // 正确导入所需的函数
 import { ref, computed, onMounted } from 'vue'
 import { onLoad, onReady } from '@dcloudio/uni-app'
-import { publishProject, uploadProjectAttachment } from '../../api/project.js'
+import { publishProject, getProjectDetail, updateProject } from '../../api/project.js'
 import { uploadImage, uploadPdf, uploadMultiple, uploadFilesSequentially, uploadVideo } from '../../api/upload.js'
 import { APP_CONFIG } from '../../config/index.js'
+import { resolveAssetUrl } from '../../utils/url.js'
 
 // 数据
 const categoryInfo = ref(null)
+const isEditMode = ref(false)
+const editingProjectId = ref('')
 const formData = ref({
   title: '',
   budget_min: '',
@@ -258,6 +261,63 @@ const formData = ref({
   contactName: '',
   contactPhone: '' 
 })
+
+const mapAttachment = (url) => ({
+  url,
+  name: decodeURIComponent(url.split('/').pop() || '附件')
+})
+
+const fillAttachments = (attachments = '') => {
+  formData.value.images = []
+  formData.value.documents = []
+  formData.value.cadFiles = []
+  formData.value.video = null
+
+  attachments
+    .split(',')
+    .map(item => item.trim())
+    .filter(Boolean)
+    .forEach((url) => {
+      const lowerUrl = url.toLowerCase()
+      const file = mapAttachment(url)
+
+      if (/\.(jpg|jpeg|png|gif|webp|bmp)$/.test(lowerUrl)) {
+        formData.value.images.push(file)
+      } else if (/\.(mp4|mov|avi|mkv|wmv|flv|webm)$/.test(lowerUrl)) {
+        formData.value.video = file
+      } else if (/\.pdf$/.test(lowerUrl)) {
+        formData.value.documents.push(file)
+      } else {
+        formData.value.cadFiles.push(file)
+      }
+    })
+}
+
+const fillFormForEdit = (project) => {
+  formData.value.title = project.title || ''
+  formData.value.budget_min = String(project.budget_min || '')
+  formData.value.budget_max = String(project.budget_max || '')
+  formData.value.deadline = String(project.deadline || '').slice(0, 10)
+  formData.value.location = project.location || ''
+  formData.value.description = project.description || ''
+  formData.value.contactName = project.contact_name || ''
+  formData.value.contactPhone = project.contact_phone || ''
+  fillAttachments(project.attachments || '')
+
+  categoryInfo.value = {
+    mainCategory: categoryInfo.value?.mainCategory || null,
+    subCategory: categoryInfo.value?.subCategory || null,
+    childCategory: {
+      id: project.category_id,
+      name: project.category?.name || '当前分类'
+    }
+  }
+}
+
+const loadProjectForEdit = async (projectId) => {
+  const project = await getProjectDetail(projectId)
+  fillFormForEdit(project)
+}
 
 // 🎯 新增：选择图片的方法
 // 选择图片
@@ -437,8 +497,11 @@ const categoryPath = computed(() => {
 })
 
 // 生命周期钩子
-onLoad(() => {
+onLoad(async (options) => {
   console.log("Publish page onLoad triggered");
+  isEditMode.value = options?.edit === 'true'
+  editingProjectId.value = options?.id || ''
+
   try {
     const storedCategoryPath = uni.getStorageSync('selectedCategoryPath')
     if (storedCategoryPath) {
@@ -457,6 +520,18 @@ onLoad(() => {
     }
   } catch (e) {
     console.error("Failed to get user info for prefilling:", e);
+  }
+
+  if (isEditMode.value && editingProjectId.value) {
+    try {
+      uni.showLoading({ title: '加载中...' })
+      await loadProjectForEdit(editingProjectId.value)
+    } catch (error) {
+      console.error('加载项目详情失败:', error)
+      uni.showToast({ title: '加载项目失败', icon: 'none' })
+    } finally {
+      uni.hideLoading()
+    }
   }
 })
 
@@ -758,7 +833,7 @@ const handleSelectedCadFile = async (filePath) => {
 							url = url.replace(/\\/g, '/');
 							// 如果URL不是以http或https开头，添加基础URL
 							if (!url.startsWith('http://') && !url.startsWith('https://')) {
-								url = "http://115.190.38.218" +"/api"+ url;
+								url = resolveAssetUrl(url);
 							}
 							resolve({ url });
 						} else {
@@ -907,7 +982,11 @@ const submitProject = () => {
                   []
   };
   console.log("提交项目数据--》:", projectData);
-  publishProject(projectData)
+  const request = isEditMode.value && editingProjectId.value
+    ? updateProject(editingProjectId.value, projectData).then(() => ({ id: editingProjectId.value }))
+    : publishProject(projectData)
+
+  request
     .then((res) => {
       uni.hideLoading();
       uni.showToast({ title: '发布成功', icon: 'success' });

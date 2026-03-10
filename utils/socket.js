@@ -372,6 +372,12 @@ const handleChatMessage = (data) => {
   // 更新消息store
   messageStore.updateChatWithNewMessage(data)
   
+  const currentUserId = uni.getStorageSync('userInfo')?.id
+  const isIncomingMessage = data.message.sender_id !== currentUserId
+  if (isIncomingMessage) {
+    triggerNotification('new_message')
+  }
+  
   // 调用所有注册的消息回调
   log('info', `准备调用${messageCallbacks.length}个消息回调`);
   messageCallbacks.forEach(callback => {
@@ -393,7 +399,7 @@ const handleChatMessage = (data) => {
     const isInCurrentChat = currentRoute.includes('messages/chat') && 
                            currentPage.options?.id == data.chat_id
     
-    if (!isInCurrentChat) {
+    if (isIncomingMessage && !isInCurrentChat) {
       // 显示新消息通知
       uni.showToast({
         title: '收到新消息',

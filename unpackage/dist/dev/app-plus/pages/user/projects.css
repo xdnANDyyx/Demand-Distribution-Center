@@ -140,6 +140,28 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 0.25rem 1rem 0 rgba(0, 0, 0, 0.1);
 }
+.project-actions[data-v-d7d59219] {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.project-action-btn[data-v-d7d59219] {
+  flex: 1;
+  height: 2.125rem;
+  border-radius: 1.0625rem;
+  border: none;
+  color: #fff;
+  font-size: 0.75rem;
+}
+.detail-btn[data-v-d7d59219] {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+.edit-btn[data-v-d7d59219] {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+.cancel-btn[data-v-d7d59219] {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
 .project-title[data-v-d7d59219] {
   font-size: 1.125rem;
   font-weight: bold;

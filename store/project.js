@@ -1,7 +1,8 @@
 // src/store/project.js
 import { defineStore } from 'pinia'
-import { get, post, put } from '../utils/request.js'
+import { get, post, put, del } from '../utils/request.js'
 import { useUserStore } from './user.js'
+import { getUserProjects as fetchUserProjects } from '../api/project.js'
 // --- 新增：静态导入所有需要的 API 函数 ---
 // 假设您的 api/bid.js 文件导出了这些函数
 import { getProjectBids, getUserBids, getPublisherBids, submitBid, selectBid } from '../api/bid.js'
@@ -101,13 +102,30 @@ export const useProjectStore = defineStore('project', {
     // 发布项目
     async publishProject(projectData) {
       try {
-        // 如果 publishProject 也移到了 api/project.js 并静态导入了，就直接调用
-        // const project = await publishProject(projectData)
-        // 否则保留原来的调用
         const project = await post('/projects/', projectData)
         return project
       } catch (error) {
         console.error('发布项目失败:', error)
+        throw error
+      }
+    },
+
+    async getUserProjects(userId, params = {}) {
+      try {
+        const res = await fetchUserProjects(userId, params)
+        return res
+      } catch (error) {
+        console.error('获取用户发布项目列表失败:', error)
+        throw error
+      }
+    },
+
+    async updateProject(projectId, projectData) {
+      try {
+        await put(`/projects/${projectId}`, projectData)
+        return { success: true }
+      } catch (error) {
+        console.error('更新项目失败:', error)
         throw error
       }
     },
@@ -145,6 +163,16 @@ export const useProjectStore = defineStore('project', {
         return { success: true }
       } catch (error) {
         console.error('取消项目失败:', error)
+        throw error
+      }
+    },
+
+    async deleteProject(projectId) {
+      try {
+        await del(`/projects/${projectId}`, {})
+        return { success: true }
+      } catch (error) {
+        console.error('删除项目失败:', error)
         throw error
       }
     },

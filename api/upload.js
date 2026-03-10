@@ -1,5 +1,6 @@
 import { APP_CONFIG } from '../config/index.js'
 import { useUserStore } from '../store/user.js'
+import { resolveAssetUrl } from '../utils/url.js'
 
 /**
  * 处理图片URL，确保格式正确
@@ -15,7 +16,7 @@ function processImageUrl(url) {
   // 如果URL不是以http或https开头，添加基础URL  http://localhost:8080/static/img/1755013155818_IMG_20190205_105453_20250812233915_82851700.jpg
   if (!processedUrl.startsWith('http://') && !processedUrl.startsWith('https://')) {
 	  console.log('如果替换处理后的图片URL:', processedUrl)
-    processedUrl = "http://115.190.38.218" +"/api"+ processedUrl
+    processedUrl = resolveAssetUrl(processedUrl)
 	//processedUrl = "http://192.168.0.103:8080"+ processedUrl
   }
   

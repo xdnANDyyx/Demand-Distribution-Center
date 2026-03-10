@@ -477,7 +477,7 @@ onUnload(() => {
 .search-input {
   flex: 1;
   height: 60rpx;
-  color: white;
+  color: black;
   font-size: 28rpx;
 }
 
