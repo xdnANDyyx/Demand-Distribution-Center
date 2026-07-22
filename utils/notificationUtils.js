@@ -1,161 +1,167 @@
-// 通知工具函数，处理震动和声音提醒
+// 通知工具函数，处理安卓端震动和提示音
 
-// 声音文件路径配置
 const SOUND_FILES = {
-  DEFAULT: typeof plus !== 'undefined' ? '_www/static/sounds/notification.mp3' : '/static/sounds/notification.mp3',
-  IMPORTANT: typeof plus !== 'undefined' ? '_www/static/sounds/notification.mp3' : '/static/sounds/notification.mp3'
-};
+  DEFAULT: '_www/static/sounds/notification.mp3',
+  IMPORTANT: '_www/static/sounds/notification.mp3'
+}
 
-let lastNotificationAt = 0;
-const NOTIFICATION_COOLDOWN = 1500;
+let lastNotificationAt = 0
+let currentAudioContext = null
+let currentPlusPlayer = null
+const NOTIFICATION_COOLDOWN = 1500
 
-/**
- * 触发短震动提醒（安卓端专用）
- * @returns {boolean} 是否成功触发震动
- */
+const isAndroidApp = () => {
+  try {
+    return uni.getSystemInfoSync().platform === 'android'
+  } catch (error) {
+    console.error('读取系统信息失败:', error)
+    return false
+  }
+}
+
+const stopCurrentSound = () => {
+  if (currentAudioContext) {
+    currentAudioContext.stop()
+    currentAudioContext.destroy()
+    currentAudioContext = null
+  }
+
+  if (currentPlusPlayer) {
+    try {
+      currentPlusPlayer.stop()
+    } catch (error) {
+      console.error('停止提示音失败:', error)
+    }
+    currentPlusPlayer = null
+  }
+}
+
 export function triggerShortVibration() {
   try {
-    // 检查是否在安卓平台
-    if (uni.getSystemInfoSync().platform === 'android') {
-      // 使用uni.vibrateShort API触发短震动
-      uni.vibrateShort({
-        success: () => {
-          console.log('震动提醒触发成功');
-        },
-        fail: (error) => {
-          console.error('震动提醒触发失败:', error);
-        }
-      });
-      return true;
-    } else {
-      console.log('非安卓平台，不触发震动提醒');
-      return false;
+    if (!isAndroidApp()) {
+      return false
     }
+
+    // #ifdef APP-PLUS
+    if (typeof plus !== 'undefined' && plus.device && typeof plus.device.vibrate === 'function') {
+      plus.device.vibrate(80)
+      return true
+    }
+    // #endif
+
+    uni.vibrateShort({
+      fail: (error) => {
+        console.error('短震动触发失败:', error)
+      }
+    })
+    return true
   } catch (error) {
-    console.error('触发震动时发生错误:', error);
-    return false;
+    console.error('触发短震动失败:', error)
+    return false
   }
 }
 
-/**
- * 触发长震动提醒（安卓端专用）
- * @returns {boolean} 是否成功触发震动
- */
 export function triggerLongVibration() {
   try {
-    // 检查是否在安卓平台
-    if (uni.getSystemInfoSync().platform === 'android') {
-      // 使用uni.vibrateLong API触发长震动
-      uni.vibrateLong({
-        success: () => {
-          console.log('长震动提醒触发成功');
-        },
-        fail: (error) => {
-          console.error('长震动提醒触发失败:', error);
-        }
-      });
-      return true;
-    } else {
-      console.log('非安卓平台，不触发震动提醒');
-      return false;
+    if (!isAndroidApp()) {
+      return false
     }
+
+    // #ifdef APP-PLUS
+    if (typeof plus !== 'undefined' && plus.device && typeof plus.device.vibrate === 'function') {
+      plus.device.vibrate(200)
+      return true
+    }
+    // #endif
+
+    uni.vibrateLong({
+      fail: (error) => {
+        console.error('长震动触发失败:', error)
+      }
+    })
+    return true
   } catch (error) {
-    console.error('触发长震动时发生错误:', error);
-    return false;
+    console.error('触发长震动失败:', error)
+    return false
   }
 }
 
-/**
- * 根据消息类型触发不同强度的震动
- * @param {string} messageType 消息类型
- * @returns {boolean} 是否成功触发震动
- */
 export function triggerVibrationByType(messageType) {
   switch (messageType) {
-    case 'bid_accepted': // 投标被接受
-    case 'bid_won':      // 中标
-      return triggerLongVibration(); // 重要消息使用长震动
-    case 'new_message':  // 新消息
-    case 'new_bid':      // 新投标
-    case 'project_update': // 项目更新
+    case 'bid_accepted':
+    case 'bid_won':
+      return triggerLongVibration()
+    case 'new_message':
+    case 'new_bid':
+    case 'project_update':
     default:
-      return triggerShortVibration(); // 普通消息使用短震动
+      return triggerShortVibration()
   }
 }
 
-/**
- * 播放通知声音（安卓端专用）
- * @param {string} soundType 声音类型，默认为DEFAULT
- * @returns {boolean} 是否成功播放声音
- */
 export function playNotificationSound(soundType = 'DEFAULT') {
   try {
-    // 检查是否在安卓平台
-    if (uni.getSystemInfoSync().platform === 'android') {
-      // 创建音频上下文
-      const innerAudioContext = uni.createInnerAudioContext();
-      
-      // 设置音频源
-      innerAudioContext.src = SOUND_FILES[soundType] || SOUND_FILES.DEFAULT;
-      
-      // 播放完成后自动销毁，避免资源泄露
-      innerAudioContext.onEnded(() => {
-        innerAudioContext.destroy();
-        console.log('通知声音播放完成');
-      });
-      
-      // 播放错误处理
-      innerAudioContext.onError((error) => {
-        console.error('播放通知声音失败:', error);
-        innerAudioContext.destroy();
-      });
-      
-      // 尝试播放音频
-      innerAudioContext.play();
-      console.log('通知声音开始播放');
-      return true;
-    } else {
-      console.log('非安卓平台，不播放通知声音');
-      return false;
+    if (!isAndroidApp()) {
+      return false
     }
+
+    const soundSrc = SOUND_FILES[soundType] || SOUND_FILES.DEFAULT
+    stopCurrentSound()
+
+    // #ifdef APP-PLUS
+    if (typeof plus !== 'undefined' && plus.audio && typeof plus.audio.createPlayer === 'function') {
+      currentPlusPlayer = plus.audio.createPlayer(soundSrc)
+      currentPlusPlayer.play(
+        () => {
+          currentPlusPlayer = null
+        },
+        (error) => {
+          console.error('播放通知提示音失败:', error)
+          currentPlusPlayer = null
+        }
+      )
+      return true
+    }
+    // #endif
+
+    currentAudioContext = uni.createInnerAudioContext()
+    currentAudioContext.src = '/static/sounds/notification.mp3'
+    currentAudioContext.onEnded(() => {
+      stopCurrentSound()
+    })
+    currentAudioContext.onError((error) => {
+      console.error('播放通知提示音失败:', error)
+      stopCurrentSound()
+    })
+    currentAudioContext.play()
+    return true
   } catch (error) {
-    console.error('播放通知声音时发生错误:', error);
-    return false;
+    console.error('播放通知提示音失败:', error)
+    stopCurrentSound()
+    return false
   }
 }
 
-/**
- * 根据消息类型播放不同的通知声音
- * @param {string} messageType 消息类型
- * @returns {boolean} 是否成功播放声音
- */
 export function playSoundByType(messageType) {
   switch (messageType) {
-    case 'bid_accepted': // 投标被接受
-    case 'bid_won':      // 中标
-      return playNotificationSound('IMPORTANT'); // 重要消息使用重要声音
-    case 'new_message':  // 新消息
-    case 'new_bid':      // 新投标
-    case 'project_update': // 项目更新
+    case 'bid_accepted':
+    case 'bid_won':
+      return playNotificationSound('IMPORTANT')
+    case 'new_message':
+    case 'new_bid':
+    case 'project_update':
     default:
-      return playNotificationSound('DEFAULT'); // 普通消息使用默认声音
+      return playNotificationSound('DEFAULT')
   }
 }
 
-/**
- * 同时触发震动和声音提醒
- * @param {string} messageType 消息类型
- */
 export function triggerNotification(messageType) {
-  const now = Date.now();
+  const now = Date.now()
   if (now - lastNotificationAt < NOTIFICATION_COOLDOWN) {
-    return;
+    return
   }
-  lastNotificationAt = now;
 
-  // 触发震动
-  triggerVibrationByType(messageType);
-  
-  // 播放声音
-  playSoundByType(messageType);
+  lastNotificationAt = now
+  triggerVibrationByType(messageType)
+  playSoundByType(messageType)
 }

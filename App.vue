@@ -50,16 +50,19 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, watch } from 'vue'
 import { onLaunch, onShow, onHide } from '@dcloudio/uni-app'
 import { useGlobalStore } from './store/global.js'
 import { useUserStore } from './store/user.js'
 import { usePrivacyStore } from './store/privacy.js'
+import { useMessageStore } from './store/message.js'
 import { connectWebSocket } from './utils/socket.js'
+import { syncMessageTabBadge } from './utils/tabBarBadge.js'
 
 const globalStore = useGlobalStore()
 const userStore = useUserStore()
 const privacyStore = usePrivacyStore()
+const messageStore = useMessageStore()
 const hasInitialized = ref(false)
 const showPrivacyDialog = ref(false)
 const showFabMenu = ref(false)
@@ -102,10 +105,25 @@ const runPostConsentInit = async () => {
   globalStore.initApp()
   await userStore.checkLoginStatus()
   if (userStore.hasLogin) {
+    await Promise.allSettled([
+      messageStore.getChatList(),
+      messageStore.fetchUnreadNotificationCount()
+    ])
+    messageStore.syncTabBarBadge()
     connectWebSocket(userStore.token)
+  } else {
+    syncMessageTabBadge(0)
   }
   privacyStore.collectOaid()
 }
+
+watch(
+  () => messageStore.totalUnreadCount,
+  (count) => {
+    syncMessageTabBadge(count)
+  },
+  { immediate: true }
+)
 
 // 处理用户同意
 const handleAccept = async () => {

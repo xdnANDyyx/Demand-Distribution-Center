@@ -49,15 +49,16 @@
     "distribute": {
       "icons": {
         "android": {
-          "xxxhdpi": "C:/Users/PC/Pictures/log.png"
+          "xxxhdpi": "D:/MyProJect/Guozhongbao/log.png",
+          "xxhdpi": "D:/MyProJect/Guozhongbao/log.png"
         }
       },
       "splashscreen": {
         "androidStyle": "default",
         "android": {
-          "xhdpi": "E:\\Dowloads\\load.png",
-          "xxhdpi": "E:\\Dowloads\\load.png",
-          "hdpi": "E:\\Dowloads\\load.png"
+          "xhdpi": "D:/MyProJect/Guozhongbao/load.png",
+          "xxhdpi": "D:/MyProJect/Guozhongbao/load.png",
+          "hdpi": "D:/MyProJect/Guozhongbao/load.png"
         },
         "useOriginalMsgbox": true
       },
@@ -70,6 +71,7 @@
           "android.permission.ACCESS_NETWORK_STATE",
           "android.permission.ACCESS_WIFI_STATE",
           "android.permission.INTERNET",
+          "android.permission.VIBRATE",
           "android.permission.READ_PHONE_STATE",
           "android.permission.WRITE_EXTERNAL_STORAGE",
           "android.permission.READ_EXTERNAL_STORAGE"
@@ -181,7 +183,7 @@
     "uni-app": {
       "control": "uni-v3",
       "vueVersion": "3",
-      "compilerVersion": "4.87",
+      "compilerVersion": "5.03",
       "nvueCompiler": "uni-app",
       "renderer": "auto",
       "nvue": {

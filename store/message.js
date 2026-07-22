@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { get, post, put } from '../utils/request.js'
 import { sendSocketMessage, isSocketConnected } from'../utils/socket.js'
+import { syncMessageTabBadge } from '../utils/tabBarBadge.js'
 import { 
   getNotifications, 
   markNotificationsAsRead, 
@@ -23,6 +24,10 @@ export const useMessageStore = defineStore('message', {
   },
   
   actions: {
+    syncTabBarBadge() {
+      syncMessageTabBadge(this.totalUnreadCount)
+    },
+
     // 创建或获取聊天会话
     async createChat(targetUserId, options = {}) {
       try {
@@ -270,6 +275,7 @@ async getNotifications(params = { page: 1, size: 20 }) {
         }
         
         this.unreadNotificationCount = count
+        this.syncTabBarBadge()
         return count
       } catch (error) {
         console.error('获取未读通知数量失败:', error)
@@ -362,23 +368,44 @@ async getNotifications(params = { page: 1, size: 20 }) {
     },
     
     // 设置聊天列表
+    markChatAsRead(chatId) {
+      const chatList = [...this.chatList]
+      const chatIndex = chatList.findIndex(chat => Number(chat.id) === Number(chatId))
+
+      if (chatIndex === -1 || (chatList[chatIndex].unread_count || 0) === 0) {
+        return
+      }
+
+      chatList[chatIndex] = {
+        ...chatList[chatIndex],
+        unread_count: 0
+      }
+
+      this.setChatList(chatList)
+      this.updateUnreadChatCount()
+    },
+    
     setChatList(chatList) {
       this.chatList = chatList
+      this.syncTabBarBadge()
     },
     
     // 设置通知列表
     setNotifications(notifications) {
       this.notifications = notifications
+      this.syncTabBarBadge()
     },
     
     // 更新未读聊天数
     updateUnreadChatCount() {
       this.unreadChatCount = this.chatList.reduce((count, chat) => count + (chat.unread_count || 0), 0)
+      this.syncTabBarBadge()
     },
     
     // 更新未读通知数
     updateUnreadNotificationCount() {
       this.unreadNotificationCount = this.notifications.filter(notification => !notification.is_read).length
+      this.syncTabBarBadge()
     }
   }
 })

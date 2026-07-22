@@ -253,6 +253,7 @@ onLoad(async (options) => {
 				console.log('WebSocket重连成功，加入聊天房间');
 				joinChatRoom(chatInfo.id);
 				markMessagesRead(chatInfo.id);
+				messageStore.markChatAsRead(chatInfo.id);
 			} else {
 				console.error('WebSocket重连失败');
 				uni.showToast({
@@ -266,6 +267,7 @@ onLoad(async (options) => {
 		console.log('WebSocket已连接，直接加入聊天房间');
 		joinChatRoom(chatInfo.id);
 		markMessagesRead(chatInfo.id);
+		messageStore.markChatAsRead(chatInfo.id);
 	}
 });
 
@@ -312,6 +314,7 @@ const handleSocketMessage = (event) => {
 			console.log('收到当前聊天的新消息:', data.data);
 			
 			if (data.data.message.sender_id !== userStore.userInfo.id) {
+				messageStore.markChatAsRead(chatInfo.id);
 				const existingMsg = messages.value.find(msg => msg.id === data.data.message.id);
 				if (!existingMsg) {
 					messages.value.push(data.data.message);
@@ -393,6 +396,7 @@ const handleNewMessage = (data) => {
 	if (data.chat_id == chatInfo.id) {
 		console.log('处理当前会话消息:', data.message);
 		if (data.message.sender_id !== userStore.userInfo.id) {
+			messageStore.markChatAsRead(chatInfo.id);
 			const existingMsg = messages.value.find(msg => msg.id === data.message.id);
 			if (!existingMsg) {
 				messages.value.push(data.message);

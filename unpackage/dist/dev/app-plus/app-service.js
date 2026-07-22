@@ -93,7 +93,7 @@ if (uni.restoreGlobal) {
   const APP_ORIGIN = `https://${APP_HOST}`;
   const buildEnv = (debug) => ({
     baseURL: `${APP_ORIGIN}/api/api/v1`,
-    socketURL: `wss://${APP_HOST}/api/v1/ws`,
+    socketURL: `wss://${APP_HOST}/api/api/v1/ws`,
     staticURL: `${APP_ORIGIN}/api/static`,
     debug
   });
@@ -2247,7 +2247,43 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesHomeIndex = /* @__PURE__ */ _export_sfc(_sfc_main$w, [["render", _sfc_render$w], ["__scopeId", "data-v-4978fed5"], ["__file", "F:/new/success/uniappandroid/pages/home/index.vue"]]);
+  const PagesHomeIndex = /* @__PURE__ */ _export_sfc(_sfc_main$w, [["render", _sfc_render$w], ["__scopeId", "data-v-4978fed5"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/home/index.vue"]]);
+  const MESSAGE_TAB_INDEX = 2;
+  const getBadgeText = (count) => {
+    if (!count || count <= 0) {
+      return "";
+    }
+    return count > 99 ? "99+" : String(count);
+  };
+  const syncMessageTabBadge = (count) => {
+    try {
+      if (typeof uni === "undefined") {
+        return;
+      }
+      const badgeText = getBadgeText(count);
+      if (!badgeText) {
+        uni.removeTabBarBadge({
+          index: MESSAGE_TAB_INDEX,
+          fail: () => {
+          }
+        });
+        return;
+      }
+      uni.setTabBarBadge({
+        index: MESSAGE_TAB_INDEX,
+        text: badgeText,
+        fail: () => {
+          uni.showTabBarRedDot({
+            index: MESSAGE_TAB_INDEX,
+            fail: () => {
+            }
+          });
+        }
+      });
+    } catch (error) {
+      formatAppLog("error", "at utils/tabBarBadge.js:38", "同步消息角标失败:", error);
+    }
+  };
   const useMessageStore = defineStore("message", {
     state: () => ({
       chatList: [],
@@ -2261,6 +2297,9 @@ This will fail in production if not fixed.`);
       }
     },
     actions: {
+      syncTabBarBadge() {
+        syncMessageTabBadge(this.totalUnreadCount);
+      },
       // 创建或获取聊天会话
       async createChat(targetUserId, options = {}) {
         try {
@@ -2280,7 +2319,7 @@ This will fail in production if not fixed.`);
             ...res
           };
         } catch (error) {
-          formatAppLog("error", "at store/message.js:50", "创建聊天会话失败:", error);
+          formatAppLog("error", "at store/message.js:55", "创建聊天会话失败:", error);
           throw error;
         }
       },
@@ -2288,11 +2327,11 @@ This will fail in production if not fixed.`);
       async getChatList() {
         try {
           const data = await get("/chats");
-          formatAppLog("log", "at store/message.js:61", "========== 聊天列表数据 ==========");
-          formatAppLog("log", "at store/message.js:62", "原始数据:", data);
+          formatAppLog("log", "at store/message.js:66", "========== 聊天列表数据 ==========");
+          formatAppLog("log", "at store/message.js:67", "原始数据:", data);
           if (Array.isArray(data)) {
             data.forEach((chat, index) => {
-              formatAppLog("log", "at store/message.js:65", `聊天${index + 1}:`, {
+              formatAppLog("log", "at store/message.js:70", `聊天${index + 1}:`, {
                 id: chat.id,
                 project_id: chat.project_id,
                 bid_id: chat.bid_id,
@@ -2300,12 +2339,12 @@ This will fail in production if not fixed.`);
               });
             });
           }
-          formatAppLog("log", "at store/message.js:73", "================================");
+          formatAppLog("log", "at store/message.js:78", "================================");
           this.setChatList(Array.isArray(data) ? data : []);
           this.updateUnreadChatCount();
           return data;
         } catch (error) {
-          formatAppLog("error", "at store/message.js:80", "获取聊天列表失败:", error);
+          formatAppLog("error", "at store/message.js:85", "获取聊天列表失败:", error);
           throw error;
         }
       },
@@ -2313,7 +2352,7 @@ This will fail in production if not fixed.`);
       async getNotifications(params = { page: 1, size: 20 }) {
         try {
           const response = await getNotifications(params);
-          formatAppLog("log", "at store/message.js:91", "获取通知列表成功:", response);
+          formatAppLog("log", "at store/message.js:96", "获取通知列表成功:", response);
           let notificationData = [];
           if (response && response.list) {
             notificationData = response.list || [];
@@ -2322,12 +2361,12 @@ This will fail in production if not fixed.`);
           } else if (Array.isArray(response)) {
             notificationData = response;
           }
-          formatAppLog("log", "at store/message.js:106", "提取的通知数据:", notificationData);
+          formatAppLog("log", "at store/message.js:111", "提取的通知数据:", notificationData);
           this.setNotifications(notificationData);
           this.updateUnreadNotificationCount();
           return notificationData;
         } catch (error) {
-          formatAppLog("error", "at store/message.js:112", "获取通知列表失败:", error);
+          formatAppLog("error", "at store/message.js:117", "获取通知列表失败:", error);
           throw error;
         }
       },
@@ -2341,16 +2380,16 @@ This will fail in production if not fixed.`);
           const res = await get(url);
           return res;
         } catch (error) {
-          formatAppLog("error", "at store/message.js:127", "获取聊天记录失败:", error);
+          formatAppLog("error", "at store/message.js:132", "获取聊天记录失败:", error);
           throw error;
         }
       },
       // 发送消息
       async sendMessage(chatId, messageData) {
         try {
-          formatAppLog("log", "at store/message.js:138", "发送消息到聊天:", chatId, messageData);
+          formatAppLog("log", "at store/message.js:143", "发送消息到聊天:", chatId, messageData);
           if (isSocketConnected()) {
-            formatAppLog("log", "at store/message.js:142", "使用WebSocket发送消息");
+            formatAppLog("log", "at store/message.js:147", "使用WebSocket发送消息");
             const socketMessage = {
               type: "send_message",
               data: {
@@ -2359,10 +2398,10 @@ This will fail in production if not fixed.`);
                 content_type: messageData.content_type || 0
               }
             };
-            formatAppLog("log", "at store/message.js:152", "发送了什么消息？", socketMessage);
+            formatAppLog("log", "at store/message.js:157", "发送了什么消息？", socketMessage);
             const success = sendSocketMessage(socketMessage);
             if (success) {
-              formatAppLog("log", "at store/message.js:156", "WebSocket消息发送成功");
+              formatAppLog("log", "at store/message.js:161", "WebSocket消息发送成功");
               return {
                 id: Date.now(),
                 chat_id: chatId,
@@ -2370,16 +2409,16 @@ This will fail in production if not fixed.`);
                 created_at: (/* @__PURE__ */ new Date()).toISOString()
               };
             } else {
-              formatAppLog("warn", "at store/message.js:165", "WebSocket发送失败，回退到HTTP请求");
+              formatAppLog("warn", "at store/message.js:170", "WebSocket发送失败，回退到HTTP请求");
             }
           } else {
-            formatAppLog("warn", "at store/message.js:168", "WebSocket未连接，使用HTTP请求发送消息");
+            formatAppLog("warn", "at store/message.js:173", "WebSocket未连接，使用HTTP请求发送消息");
           }
           const res = await post(`/chats/${chatId}/messages`, messageData);
-          formatAppLog("log", "at store/message.js:173", "HTTP消息发送成功:", res);
+          formatAppLog("log", "at store/message.js:178", "HTTP消息发送成功:", res);
           return res;
         } catch (error) {
-          formatAppLog("error", "at store/message.js:178", "发送消息失败:", error);
+          formatAppLog("error", "at store/message.js:183", "发送消息失败:", error);
           throw error;
         }
       },
@@ -2396,7 +2435,7 @@ This will fail in production if not fixed.`);
           }
           return result;
         } catch (error) {
-          formatAppLog("error", "at store/message.js:201", "标记消息已读失败:", error);
+          formatAppLog("error", "at store/message.js:206", "标记消息已读失败:", error);
           throw error;
         }
       },
@@ -2416,7 +2455,7 @@ This will fail in production if not fixed.`);
           this.updateUnreadNotificationCount();
           return result;
         } catch (error) {
-          formatAppLog("error", "at store/message.js:229", "标记通知已读失败:", error);
+          formatAppLog("error", "at store/message.js:234", "标记通知已读失败:", error);
           throw error;
         }
       },
@@ -2432,7 +2471,7 @@ This will fail in production if not fixed.`);
           this.updateUnreadNotificationCount();
           return result;
         } catch (error) {
-          formatAppLog("error", "at store/message.js:251", "标记所有通知已读失败:", error);
+          formatAppLog("error", "at store/message.js:256", "标记所有通知已读失败:", error);
           throw error;
         }
       },
@@ -2449,9 +2488,10 @@ This will fail in production if not fixed.`);
             count = response.count;
           }
           this.unreadNotificationCount = count;
+          this.syncTabBarBadge();
           return count;
         } catch (error) {
-          formatAppLog("error", "at store/message.js:275", "获取未读通知数量失败:", error);
+          formatAppLog("error", "at store/message.js:281", "获取未读通知数量失败:", error);
           return 0;
         }
       },
@@ -2519,20 +2559,37 @@ This will fail in production if not fixed.`);
         this.setChatList(chatList);
       },
       // 设置聊天列表
+      markChatAsRead(chatId) {
+        const chatList = [...this.chatList];
+        const chatIndex = chatList.findIndex((chat) => Number(chat.id) === Number(chatId));
+        if (chatIndex === -1 || (chatList[chatIndex].unread_count || 0) === 0) {
+          return;
+        }
+        chatList[chatIndex] = {
+          ...chatList[chatIndex],
+          unread_count: 0
+        };
+        this.setChatList(chatList);
+        this.updateUnreadChatCount();
+      },
       setChatList(chatList) {
         this.chatList = chatList;
+        this.syncTabBarBadge();
       },
       // 设置通知列表
       setNotifications(notifications) {
         this.notifications = notifications;
+        this.syncTabBarBadge();
       },
       // 更新未读聊天数
       updateUnreadChatCount() {
         this.unreadChatCount = this.chatList.reduce((count, chat) => count + (chat.unread_count || 0), 0);
+        this.syncTabBarBadge();
       },
       // 更新未读通知数
       updateUnreadNotificationCount() {
         this.unreadNotificationCount = this.notifications.filter((notification) => !notification.is_read).length;
+        this.syncTabBarBadge();
       }
     }
   });
@@ -2733,50 +2790,73 @@ This will fail in production if not fixed.`);
     }
   });
   const SOUND_FILES = {
-    DEFAULT: typeof plus !== "undefined" ? "_www/static/sounds/notification.mp3" : "/static/sounds/notification.mp3",
-    IMPORTANT: typeof plus !== "undefined" ? "_www/static/sounds/notification.mp3" : "/static/sounds/notification.mp3"
+    DEFAULT: "_www/static/sounds/notification.mp3",
+    IMPORTANT: "_www/static/sounds/notification.mp3"
   };
   let lastNotificationAt = 0;
+  let currentAudioContext = null;
+  let currentPlusPlayer = null;
   const NOTIFICATION_COOLDOWN = 1500;
+  const isAndroidApp = () => {
+    try {
+      return uni.getSystemInfoSync().platform === "android";
+    } catch (error) {
+      formatAppLog("error", "at utils/notificationUtils.js:17", "读取系统信息失败:", error);
+      return false;
+    }
+  };
+  const stopCurrentSound = () => {
+    if (currentAudioContext) {
+      currentAudioContext.stop();
+      currentAudioContext.destroy();
+      currentAudioContext = null;
+    }
+    if (currentPlusPlayer) {
+      try {
+        currentPlusPlayer.stop();
+      } catch (error) {
+        formatAppLog("error", "at utils/notificationUtils.js:33", "停止提示音失败:", error);
+      }
+      currentPlusPlayer = null;
+    }
+  };
   function triggerShortVibration() {
     try {
-      if (uni.getSystemInfoSync().platform === "android") {
-        uni.vibrateShort({
-          success: () => {
-            formatAppLog("log", "at utils/notificationUtils.js:23", "震动提醒触发成功");
-          },
-          fail: (error) => {
-            formatAppLog("error", "at utils/notificationUtils.js:26", "震动提醒触发失败:", error);
-          }
-        });
-        return true;
-      } else {
-        formatAppLog("log", "at utils/notificationUtils.js:31", "非安卓平台，不触发震动提醒");
+      if (!isAndroidApp()) {
         return false;
       }
+      if (typeof plus !== "undefined" && plus.device && typeof plus.device.vibrate === "function") {
+        plus.device.vibrate(80);
+        return true;
+      }
+      uni.vibrateShort({
+        fail: (error) => {
+          formatAppLog("error", "at utils/notificationUtils.js:54", "短震动触发失败:", error);
+        }
+      });
+      return true;
     } catch (error) {
-      formatAppLog("error", "at utils/notificationUtils.js:35", "触发震动时发生错误:", error);
+      formatAppLog("error", "at utils/notificationUtils.js:59", "触发短震动失败:", error);
       return false;
     }
   }
   function triggerLongVibration() {
     try {
-      if (uni.getSystemInfoSync().platform === "android") {
-        uni.vibrateLong({
-          success: () => {
-            formatAppLog("log", "at utils/notificationUtils.js:51", "长震动提醒触发成功");
-          },
-          fail: (error) => {
-            formatAppLog("error", "at utils/notificationUtils.js:54", "长震动提醒触发失败:", error);
-          }
-        });
-        return true;
-      } else {
-        formatAppLog("log", "at utils/notificationUtils.js:59", "非安卓平台，不触发震动提醒");
+      if (!isAndroidApp()) {
         return false;
       }
+      if (typeof plus !== "undefined" && plus.device && typeof plus.device.vibrate === "function") {
+        plus.device.vibrate(200);
+        return true;
+      }
+      uni.vibrateLong({
+        fail: (error) => {
+          formatAppLog("error", "at utils/notificationUtils.js:79", "长震动触发失败:", error);
+        }
+      });
+      return true;
     } catch (error) {
-      formatAppLog("error", "at utils/notificationUtils.js:63", "触发长震动时发生错误:", error);
+      formatAppLog("error", "at utils/notificationUtils.js:84", "触发长震动失败:", error);
       return false;
     }
   }
@@ -2794,26 +2874,38 @@ This will fail in production if not fixed.`);
   }
   function playNotificationSound(soundType = "DEFAULT") {
     try {
-      if (uni.getSystemInfoSync().platform === "android") {
-        const innerAudioContext = uni.createInnerAudioContext();
-        innerAudioContext.src = SOUND_FILES[soundType] || SOUND_FILES.DEFAULT;
-        innerAudioContext.onEnded(() => {
-          innerAudioContext.destroy();
-          formatAppLog("log", "at utils/notificationUtils.js:104", "通知声音播放完成");
-        });
-        innerAudioContext.onError((error) => {
-          formatAppLog("error", "at utils/notificationUtils.js:109", "播放通知声音失败:", error);
-          innerAudioContext.destroy();
-        });
-        innerAudioContext.play();
-        formatAppLog("log", "at utils/notificationUtils.js:115", "通知声音开始播放");
-        return true;
-      } else {
-        formatAppLog("log", "at utils/notificationUtils.js:118", "非安卓平台，不播放通知声音");
+      if (!isAndroidApp()) {
         return false;
       }
+      const soundSrc = SOUND_FILES[soundType] || SOUND_FILES.DEFAULT;
+      stopCurrentSound();
+      if (typeof plus !== "undefined" && plus.audio && typeof plus.audio.createPlayer === "function") {
+        currentPlusPlayer = plus.audio.createPlayer(soundSrc);
+        currentPlusPlayer.play(
+          () => {
+            currentPlusPlayer = null;
+          },
+          (error) => {
+            formatAppLog("error", "at utils/notificationUtils.js:119", "播放通知提示音失败:", error);
+            currentPlusPlayer = null;
+          }
+        );
+        return true;
+      }
+      currentAudioContext = uni.createInnerAudioContext();
+      currentAudioContext.src = "/static/sounds/notification.mp3";
+      currentAudioContext.onEnded(() => {
+        stopCurrentSound();
+      });
+      currentAudioContext.onError((error) => {
+        formatAppLog("error", "at utils/notificationUtils.js:133", "播放通知提示音失败:", error);
+        stopCurrentSound();
+      });
+      currentAudioContext.play();
+      return true;
     } catch (error) {
-      formatAppLog("error", "at utils/notificationUtils.js:122", "播放通知声音时发生错误:", error);
+      formatAppLog("error", "at utils/notificationUtils.js:139", "播放通知提示音失败:", error);
+      stopCurrentSound();
       return false;
     }
   }
@@ -3536,7 +3628,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesLoginIndex = /* @__PURE__ */ _export_sfc(_sfc_main$v, [["render", _sfc_render$v], ["__file", "F:/new/success/uniappandroid/pages/login/index.vue"]]);
+  const PagesLoginIndex = /* @__PURE__ */ _export_sfc(_sfc_main$v, [["render", _sfc_render$v], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/login/index.vue"]]);
   function validatePhone(phone) {
     const reg = /^1[3-9]\d{9}$/;
     return reg.test(phone);
@@ -3924,7 +4016,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesRegisterIndex = /* @__PURE__ */ _export_sfc(_sfc_main$u, [["render", _sfc_render$u], ["__file", "F:/new/success/uniappandroid/pages/register/index.vue"]]);
+  const PagesRegisterIndex = /* @__PURE__ */ _export_sfc(_sfc_main$u, [["render", _sfc_render$u], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/register/index.vue"]]);
   const _imports_0$7 = "/static/icons/arrow_left.png";
   const _sfc_main$t = {
     __name: "forget-password",
@@ -4089,7 +4181,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesLoginForgetPassword = /* @__PURE__ */ _export_sfc(_sfc_main$t, [["render", _sfc_render$t], ["__file", "F:/new/success/uniappandroid/pages/login/forget-password.vue"]]);
+  const PagesLoginForgetPassword = /* @__PURE__ */ _export_sfc(_sfc_main$t, [["render", _sfc_render$t], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/login/forget-password.vue"]]);
   const projectCategories = [
     // 1. 工业标单需求（已存在）
     {
@@ -5029,7 +5121,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const ProjectCard = /* @__PURE__ */ _export_sfc(_sfc_main$s, [["render", _sfc_render$s], ["__scopeId", "data-v-05ca8cb4"], ["__file", "F:/new/success/uniappandroid/components/ProjectCard.vue"]]);
+  const ProjectCard = /* @__PURE__ */ _export_sfc(_sfc_main$s, [["render", _sfc_render$s], ["__scopeId", "data-v-05ca8cb4"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/components/ProjectCard.vue"]]);
   const _imports_1$4 = "/static/images/empty-box.png";
   const _sfc_main$r = {
     __name: "list",
@@ -5334,7 +5426,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesProjectsList = /* @__PURE__ */ _export_sfc(_sfc_main$r, [["render", _sfc_render$r], ["__scopeId", "data-v-16e737a9"], ["__file", "F:/new/success/uniappandroid/pages/projects/list.vue"]]);
+  const PagesProjectsList = /* @__PURE__ */ _export_sfc(_sfc_main$r, [["render", _sfc_render$r], ["__scopeId", "data-v-16e737a9"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/projects/list.vue"]]);
   function trimTrailingSlash(value = "") {
     return value.replace(/\/+$/, "");
   }
@@ -6695,7 +6787,7 @@ This will fail in production if not fixed.`);
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesProjectsDetail = /* @__PURE__ */ _export_sfc(_sfc_main$q, [["render", _sfc_render$q], ["__scopeId", "data-v-4d934d6f"], ["__file", "F:/new/success/uniappandroid/pages/projects/detail.vue"]]);
+  const PagesProjectsDetail = /* @__PURE__ */ _export_sfc(_sfc_main$q, [["render", _sfc_render$q], ["__scopeId", "data-v-4d934d6f"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/projects/detail.vue"]]);
   const _imports_0$5 = "/static/icons/arrow_right.png";
   const _imports_1$3 = "/static/icons/check.png";
   const _sfc_main$p = {
@@ -6897,7 +6989,7 @@ This will fail in production if not fixed.`);
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesProjectsCategorySelect = /* @__PURE__ */ _export_sfc(_sfc_main$p, [["render", _sfc_render$p], ["__scopeId", "data-v-0433eecd"], ["__file", "F:/new/success/uniappandroid/pages/projects/category-select.vue"]]);
+  const PagesProjectsCategorySelect = /* @__PURE__ */ _export_sfc(_sfc_main$p, [["render", _sfc_render$p], ["__scopeId", "data-v-0433eecd"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/projects/category-select.vue"]]);
   const _imports_0$4 = "/static/icons/voice.png";
   const _imports_2$2 = "/static/icons/location.png";
   const _sfc_main$o = {
@@ -7921,7 +8013,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesProjectsPublish = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["render", _sfc_render$o], ["__scopeId", "data-v-68ebeda0"], ["__file", "F:/new/success/uniappandroid/pages/projects/publish.vue"]]);
+  const PagesProjectsPublish = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["render", _sfc_render$o], ["__scopeId", "data-v-68ebeda0"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/projects/publish.vue"]]);
   const _sfc_main$n = {
     __name: "ConversationCard",
     props: {
@@ -8003,7 +8095,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const ConversationCard = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$n], ["__scopeId", "data-v-72739596"], ["__file", "F:/new/success/uniappandroid/components/ConversationCard.vue"]]);
+  const ConversationCard = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$n], ["__scopeId", "data-v-72739596"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/components/ConversationCard.vue"]]);
   const _sfc_main$m = {
     __name: "NotificationCard",
     props: {
@@ -8109,7 +8201,7 @@ This will fail in production if not fixed.`);
       /* CLASS */
     );
   }
-  const NotificationCard = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$m], ["__scopeId", "data-v-731e4415"], ["__file", "F:/new/success/uniappandroid/components/NotificationCard.vue"]]);
+  const NotificationCard = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$m], ["__scopeId", "data-v-731e4415"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/components/NotificationCard.vue"]]);
   const _sfc_main$l = {
     __name: "SubscriptionNotificationCard",
     props: {
@@ -8203,7 +8295,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const SubscriptionNotificationCard = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$l], ["__scopeId", "data-v-54e0d8da"], ["__file", "F:/new/success/uniappandroid/components/SubscriptionNotificationCard.vue"]]);
+  const SubscriptionNotificationCard = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$l], ["__scopeId", "data-v-54e0d8da"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/components/SubscriptionNotificationCard.vue"]]);
   const _imports_0$3 = "/static/icons/empty-box.png";
   const _sfc_main$k = {
     __name: "index",
@@ -8716,7 +8808,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesMessagesIndex = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$k], ["__scopeId", "data-v-aedce2fc"], ["__file", "F:/new/success/uniappandroid/pages/messages/index.vue"]]);
+  const PagesMessagesIndex = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$k], ["__scopeId", "data-v-aedce2fc"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/messages/index.vue"]]);
   const useOrderStore = defineStore("order", {
     state: () => ({
       orderList: [],
@@ -8916,8 +9008,9 @@ This will fail in production if not fixed.`);
               formatAppLog("log", "at pages/messages/chat.vue:253", "WebSocket重连成功，加入聊天房间");
               joinChatRoom(chatInfo.id);
               markMessagesRead(chatInfo.id);
+              messageStore.markChatAsRead(chatInfo.id);
             } else {
-              formatAppLog("error", "at pages/messages/chat.vue:257", "WebSocket重连失败");
+              formatAppLog("error", "at pages/messages/chat.vue:258", "WebSocket重连失败");
               uni.showToast({
                 title: "连接失败，部分功能可能不可用",
                 icon: "none",
@@ -8926,13 +9019,14 @@ This will fail in production if not fixed.`);
             }
           }, 2e3);
         } else {
-          formatAppLog("log", "at pages/messages/chat.vue:266", "WebSocket已连接，直接加入聊天房间");
+          formatAppLog("log", "at pages/messages/chat.vue:267", "WebSocket已连接，直接加入聊天房间");
           joinChatRoom(chatInfo.id);
           markMessagesRead(chatInfo.id);
+          messageStore.markChatAsRead(chatInfo.id);
         }
       });
       vue.onMounted(() => {
-        formatAppLog("log", "at pages/messages/chat.vue:273", "注册新消息监听器");
+        formatAppLog("log", "at pages/messages/chat.vue:275", "注册新消息监听器");
         onNewMessage(handleNewMessage);
         uni.onSocketMessage(handleSocketMessage);
         initRecorder();
@@ -8948,7 +9042,7 @@ This will fail in production if not fixed.`);
         plus.speech.addEventListener("end", onEnd, false);
       });
       vue.onUnmounted(() => {
-        formatAppLog("log", "at pages/messages/chat.vue:292", "离开聊天房间并移除监听器");
+        formatAppLog("log", "at pages/messages/chat.vue:294", "离开聊天房间并移除监听器");
         leaveChatRoom(chatInfo.id);
         onNewMessage(null);
         plus.speech.removeEventListener("start", ontStart);
@@ -8960,30 +9054,31 @@ This will fail in production if not fixed.`);
       const handleSocketMessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          formatAppLog("log", "at pages/messages/chat.vue:309", "聊天页面直接收到WebSocket消息:", data);
+          formatAppLog("log", "at pages/messages/chat.vue:311", "聊天页面直接收到WebSocket消息:", data);
           if (data.type === "message" && data.data && data.data.chat_id == chatInfo.id) {
-            formatAppLog("log", "at pages/messages/chat.vue:312", "收到当前聊天的新消息:", data.data);
+            formatAppLog("log", "at pages/messages/chat.vue:314", "收到当前聊天的新消息:", data.data);
             if (data.data.message.sender_id !== userStore.userInfo.id) {
+              messageStore.markChatAsRead(chatInfo.id);
               const existingMsg = messages.value.find((msg) => msg.id === data.data.message.id);
               if (!existingMsg) {
                 messages.value.push(data.data.message);
                 scrollToBottom();
-                formatAppLog("log", "at pages/messages/chat.vue:319", "对方消息已添加到列表，当前消息数:", messages.value.length);
+                formatAppLog("log", "at pages/messages/chat.vue:322", "对方消息已添加到列表，当前消息数:", messages.value.length);
               } else {
-                formatAppLog("log", "at pages/messages/chat.vue:321", "消息已存在，不重复添加");
+                formatAppLog("log", "at pages/messages/chat.vue:324", "消息已存在，不重复添加");
               }
             } else {
-              formatAppLog("log", "at pages/messages/chat.vue:324", "忽略自己发送的消息");
+              formatAppLog("log", "at pages/messages/chat.vue:327", "忽略自己发送的消息");
             }
           }
         } catch (error) {
-          formatAppLog("error", "at pages/messages/chat.vue:328", "处理WebSocket消息失败:", error);
+          formatAppLog("error", "at pages/messages/chat.vue:331", "处理WebSocket消息失败:", error);
         }
       };
       vue.watch(() => messageStore.chatList, (newChatList) => {
         const currentChat = newChatList.find((chat) => chat.id === chatInfo.id);
         if (currentChat) {
-          formatAppLog("log", "at pages/messages/chat.vue:335", "聊天列表更新，重新加载消息");
+          formatAppLog("log", "at pages/messages/chat.vue:338", "聊天列表更新，重新加载消息");
           loadMessages();
         }
       }, { deep: true });
@@ -8995,14 +9090,14 @@ This will fail in production if not fixed.`);
             scrollToBottom();
           }
         } catch (error) {
-          formatAppLog("error", "at pages/messages/chat.vue:348", "加载消息失败:", error);
+          formatAppLog("error", "at pages/messages/chat.vue:351", "加载消息失败:", error);
         }
       };
       const handleSend = async () => {
         if (!inputText.value.trim())
           return;
         if (!isSocketConnected()) {
-          formatAppLog("error", "at pages/messages/chat.vue:356", "WebSocket未连接，无法发送消息");
+          formatAppLog("error", "at pages/messages/chat.vue:359", "WebSocket未连接，无法发送消息");
           uni.showToast({
             title: "WebSocket未连接，正在重连...",
             icon: "none",
@@ -9015,7 +9110,7 @@ This will fail in production if not fixed.`);
           content: inputText.value,
           content_type: 0
         };
-        formatAppLog("log", "at pages/messages/chat.vue:371", "发送消息:", messageData);
+        formatAppLog("log", "at pages/messages/chat.vue:374", "发送消息:", messageData);
         try {
           await messageStore.sendMessage(chatInfo.id, messageData);
           const optimisticMessage = {
@@ -9027,34 +9122,35 @@ This will fail in production if not fixed.`);
           messages.value.push(optimisticMessage);
           inputText.value = "";
           scrollToBottom();
-          formatAppLog("log", "at pages/messages/chat.vue:384", "消息发送成功");
+          formatAppLog("log", "at pages/messages/chat.vue:387", "消息发送成功");
         } catch (error) {
-          formatAppLog("error", "at pages/messages/chat.vue:386", "发送失败:", error);
+          formatAppLog("error", "at pages/messages/chat.vue:389", "发送失败:", error);
           uni.showToast({ title: "发送失败", icon: "none" });
         }
       };
       const handleNewMessage = (data) => {
-        formatAppLog("log", "at pages/messages/chat.vue:392", "收到新消息回调:", data);
+        formatAppLog("log", "at pages/messages/chat.vue:395", "收到新消息回调:", data);
         if (data.chat_id == chatInfo.id) {
-          formatAppLog("log", "at pages/messages/chat.vue:394", "处理当前会话消息:", data.message);
+          formatAppLog("log", "at pages/messages/chat.vue:397", "处理当前会话消息:", data.message);
           if (data.message.sender_id !== userStore.userInfo.id) {
+            messageStore.markChatAsRead(chatInfo.id);
             const existingMsg = messages.value.find((msg) => msg.id === data.message.id);
             if (!existingMsg) {
               messages.value.push(data.message);
               scrollToBottom();
-              formatAppLog("log", "at pages/messages/chat.vue:400", "对方消息已添加到列表，当前消息数:", messages.value.length);
+              formatAppLog("log", "at pages/messages/chat.vue:404", "对方消息已添加到列表，当前消息数:", messages.value.length);
             } else {
-              formatAppLog("log", "at pages/messages/chat.vue:402", "消息已存在，不重复添加");
+              formatAppLog("log", "at pages/messages/chat.vue:406", "消息已存在，不重复添加");
             }
           } else {
-            formatAppLog("log", "at pages/messages/chat.vue:405", "忽略自己发送的消息");
+            formatAppLog("log", "at pages/messages/chat.vue:409", "忽略自己发送的消息");
           }
         } else {
-          formatAppLog("log", "at pages/messages/chat.vue:408", "非当前会话消息，忽略");
+          formatAppLog("log", "at pages/messages/chat.vue:412", "非当前会话消息，忽略");
         }
       };
       const initRecorder = () => {
-        formatAppLog("log", "at pages/messages/chat.vue:415", "语音识别初始化完成");
+        formatAppLog("log", "at pages/messages/chat.vue:419", "语音识别初始化完成");
       };
       const toggleInputMode = () => {
         inputMode.value = inputMode.value === "text" ? "voice" : "text";
@@ -9062,22 +9158,22 @@ This will fail in production if not fixed.`);
       const ontStart = () => {
         title.value = "...倾听中...";
         result.value = "";
-        formatAppLog("log", "at pages/messages/chat.vue:426", "Event: start");
+        formatAppLog("log", "at pages/messages/chat.vue:430", "Event: start");
         isRecording.value = true;
       };
       const onVolumeChange = (e) => {
         valueWidth.value = 100 * e.volume + "px";
-        formatAppLog("log", "at pages/messages/chat.vue:432", "Event: volumeChange " + valueWidth.value);
+        formatAppLog("log", "at pages/messages/chat.vue:436", "Event: volumeChange " + valueWidth.value);
       };
       const onRecognizing = (e) => {
         partialResult.value = e.partialResult;
-        formatAppLog("log", "at pages/messages/chat.vue:437", "Event: recognizing");
+        formatAppLog("log", "at pages/messages/chat.vue:441", "Event: recognizing");
       };
       const onRecognition = (e) => {
         result.value += e.result;
         result.value ? result.value += " " : result.value = "";
         partialResult.value = e.result;
-        formatAppLog("log", "at pages/messages/chat.vue:444", "Event: recognition");
+        formatAppLog("log", "at pages/messages/chat.vue:448", "Event: recognition");
       };
       const onEnd = () => {
         if (!result.value || result.value == "") {
@@ -9094,26 +9190,26 @@ This will fail in production if not fixed.`);
         isRecording.value = false;
       };
       const startRecord = () => {
-        formatAppLog("log", "at pages/messages/chat.vue:465", "startRecognize");
+        formatAppLog("log", "at pages/messages/chat.vue:469", "startRecognize");
         isRecording.value = true;
         title.value = "...倾听中...";
         result.value = "";
         var options = {
           engine: "baidu"
         };
-        formatAppLog("log", "at pages/messages/chat.vue:474", "开始语音识别：");
+        formatAppLog("log", "at pages/messages/chat.vue:478", "开始语音识别：");
         plus.speech.startRecognize(options, function(s) {
-          formatAppLog("log", "at pages/messages/chat.vue:476", "识别结果:", s);
+          formatAppLog("log", "at pages/messages/chat.vue:480", "识别结果:", s);
           result.value += s;
         }, function(e) {
-          formatAppLog("log", "at pages/messages/chat.vue:479", "语音识别失败：" + JSON.stringify(e));
+          formatAppLog("log", "at pages/messages/chat.vue:483", "语音识别失败：" + JSON.stringify(e));
           uni.showToast({ title: "语音识别失败", icon: "none" });
           isRecording.value = false;
           title.value = "未开始";
         });
       };
       const handleVoiceEnd = () => {
-        formatAppLog("log", "at pages/messages/chat.vue:488", "endRecognize");
+        formatAppLog("log", "at pages/messages/chat.vue:492", "endRecognize");
         plus.speech.stopRecognize();
         if (result.value && result.value.trim()) {
           inputText.value = result.value.trim();
@@ -9132,7 +9228,7 @@ This will fail in production if not fixed.`);
         });
       };
       const loadMore = () => {
-        formatAppLog("log", "at pages/messages/chat.vue:515", "触发加载更多");
+        formatAppLog("log", "at pages/messages/chat.vue:519", "触发加载更多");
       };
       const shouldShowTime = (message, index) => {
         if (index === 0)
@@ -9179,7 +9275,7 @@ This will fail in production if not fixed.`);
               showCancel: false,
               confirmText: "我知道了"
             });
-            formatAppLog("error", "at pages/messages/chat.vue:570", "缺少必要信息:", {
+            formatAppLog("error", "at pages/messages/chat.vue:574", "缺少必要信息:", {
               projectId: chatInfo.projectId,
               bidId: chatInfo.bidId,
               targetUserId: chatInfo.targetUserId
@@ -9204,9 +9300,9 @@ This will fail in production if not fixed.`);
             amount: parseFloat(orderForm.amount)
             // 金额转为数字
           };
-          formatAppLog("log", "at pages/messages/chat.vue:595", "准备创建订单，数据:", orderData);
+          formatAppLog("log", "at pages/messages/chat.vue:599", "准备创建订单，数据:", orderData);
           const orderResult = await orderStore.createOrder(orderData);
-          formatAppLog("log", "at pages/messages/chat.vue:599", "订单创建成功:", orderResult);
+          formatAppLog("log", "at pages/messages/chat.vue:603", "订单创建成功:", orderResult);
           orderContractGenerated.value = true;
           hideOrderModal();
           uni.showToast({
@@ -9227,7 +9323,7 @@ This will fail in production if not fixed.`);
           }
           scrollToBottom();
         } catch (error) {
-          formatAppLog("error", "at pages/messages/chat.vue:627", "创建订单失败:", error);
+          formatAppLog("error", "at pages/messages/chat.vue:631", "创建订单失败:", error);
           uni.showToast({
             title: "创建订单失败，请重试",
             icon: "none"
@@ -9236,17 +9332,17 @@ This will fail in production if not fixed.`);
       };
       const initiateWeChatPay = async (orderId, amount) => {
         try {
-          formatAppLog("log", "at pages/messages/chat.vue:638", "发起微信支付，订单ID:", orderId, "金额:", amount);
+          formatAppLog("log", "at pages/messages/chat.vue:642", "发起微信支付，订单ID:", orderId, "金额:", amount);
           const response = await wechatPay({
             order_id: orderId,
             user_id: userStore.userInfo.id,
             // 添加用户ID
             amount: parseFloat(amount)
           });
-          formatAppLog("log", "at pages/messages/chat.vue:647", "微信支付接口响应:", response);
+          formatAppLog("log", "at pages/messages/chat.vue:651", "微信支付接口响应:", response);
           if (response) {
             const payData = response;
-            formatAppLog("log", "at pages/messages/chat.vue:652", "支付参数详情:", {
+            formatAppLog("log", "at pages/messages/chat.vue:656", "支付参数详情:", {
               appId: payData.appId,
               partnerId: payData.partnerId,
               prepayId: payData.prepayId,
@@ -9256,7 +9352,7 @@ This will fail in production if not fixed.`);
               sign长度: payData.sign ? payData.sign.length : 0
             });
             if (!payData.appId || !payData.partnerId || !payData.prepayId || !payData.package || !payData.nonceStr || !payData.timeStamp || !payData.sign) {
-              formatAppLog("error", "at pages/messages/chat.vue:665", "支付参数不完整:", payData);
+              formatAppLog("error", "at pages/messages/chat.vue:669", "支付参数不完整:", payData);
               uni.showToast({
                 title: "支付参数不完整",
                 icon: "none"
@@ -9275,7 +9371,7 @@ This will fail in production if not fixed.`);
                 sign: payData.sign
               },
               success: function(res) {
-                formatAppLog("log", "at pages/messages/chat.vue:687", "微信支付成功:", res);
+                formatAppLog("log", "at pages/messages/chat.vue:691", "微信支付成功:", res);
                 uni.showToast({
                   title: "支付成功",
                   icon: "success"
@@ -9287,7 +9383,7 @@ This will fail in production if not fixed.`);
                 scrollToBottom();
               },
               fail: function(err) {
-                formatAppLog("error", "at pages/messages/chat.vue:700", "微信支付失败:", err);
+                formatAppLog("error", "at pages/messages/chat.vue:704", "微信支付失败:", err);
                 uni.showToast({
                   title: "支付失败: " + (err.errMsg || "未知错误"),
                   icon: "none",
@@ -9295,7 +9391,7 @@ This will fail in production if not fixed.`);
                 });
               },
               complete: function() {
-                formatAppLog("log", "at pages/messages/chat.vue:708", "支付流程结束");
+                formatAppLog("log", "at pages/messages/chat.vue:712", "支付流程结束");
               }
             });
           } else {
@@ -9305,7 +9401,7 @@ This will fail in production if not fixed.`);
             });
           }
         } catch (error) {
-          formatAppLog("error", "at pages/messages/chat.vue:750", "发起微信支付失败:", error);
+          formatAppLog("error", "at pages/messages/chat.vue:754", "发起微信支付失败:", error);
           uni.showToast({
             title: "发起支付失败，请重试",
             icon: "none"
@@ -9699,7 +9795,7 @@ This will fail in production if not fixed.`);
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesMessagesChat = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$j], ["__scopeId", "data-v-56908723"], ["__file", "F:/new/success/uniappandroid/pages/messages/chat.vue"]]);
+  const PagesMessagesChat = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$j], ["__scopeId", "data-v-56908723"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/messages/chat.vue"]]);
   const _imports_0$2 = "/static/images/empty-order.png";
   const _sfc_main$i = {
     __name: "index",
@@ -10172,7 +10268,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesOrdersIndex = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$i], ["__scopeId", "data-v-e1e6274e"], ["__file", "F:/new/success/uniappandroid/pages/orders/index.vue"]]);
+  const PagesOrdersIndex = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$i], ["__scopeId", "data-v-e1e6274e"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/orders/index.vue"]]);
   const _sfc_main$h = {
     __name: "detail",
     setup(__props, { expose: __expose }) {
@@ -10602,7 +10698,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesOrdersDetail = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$h], ["__scopeId", "data-v-bc4602bd"], ["__file", "F:/new/success/uniappandroid/pages/orders/detail.vue"]]);
+  const PagesOrdersDetail = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$h], ["__scopeId", "data-v-bc4602bd"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/orders/detail.vue"]]);
   const _imports_0$1 = "/static/icons/projects.png";
   const _imports_2 = "/static/icons/order.png";
   const _imports_3 = "/static/icons/verify.png";
@@ -10823,7 +10919,7 @@ This will fail in production if not fixed.`);
       ]))
     ]);
   }
-  const PagesUserIndex = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["render", _sfc_render$g], ["__scopeId", "data-v-79e6a490"], ["__file", "F:/new/success/uniappandroid/pages/user/index.vue"]]);
+  const PagesUserIndex = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["render", _sfc_render$g], ["__scopeId", "data-v-79e6a490"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/user/index.vue"]]);
   const _sfc_main$f = {
     __name: "projects",
     setup(__props, { expose: __expose }) {
@@ -11332,7 +11428,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesUserProjects = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$f], ["__scopeId", "data-v-d7d59219"], ["__file", "F:/new/success/uniappandroid/pages/user/projects.vue"]]);
+  const PagesUserProjects = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$f], ["__scopeId", "data-v-d7d59219"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/user/projects.vue"]]);
   const _imports_0 = "/static/images/empty-notification.png";
   const _sfc_main$e = {
     __name: "index",
@@ -11600,7 +11696,7 @@ This will fail in production if not fixed.`);
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesNotificationsIndex = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["render", _sfc_render$e], ["__scopeId", "data-v-4e9da382"], ["__file", "F:/new/success/uniappandroid/pages/notifications/index.vue"]]);
+  const PagesNotificationsIndex = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["render", _sfc_render$e], ["__scopeId", "data-v-4e9da382"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/notifications/index.vue"]]);
   const _sfc_main$d = {
     __name: "verify",
     setup(__props, { expose: __expose }) {
@@ -11889,7 +11985,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesUserVerify = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$d], ["__scopeId", "data-v-71a5fc89"], ["__file", "F:/new/success/uniappandroid/pages/user/verify.vue"]]);
+  const PagesUserVerify = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$d], ["__scopeId", "data-v-71a5fc89"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/user/verify.vue"]]);
   const _sfc_main$c = {
     __name: "settings",
     setup(__props, { expose: __expose }) {
@@ -12178,7 +12274,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesUserSettings = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$c], ["__scopeId", "data-v-ce914230"], ["__file", "F:/new/success/uniappandroid/pages/user/settings.vue"]]);
+  const PagesUserSettings = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$c], ["__scopeId", "data-v-ce914230"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/user/settings.vue"]]);
   const _sfc_main$b = {
     __name: "profile",
     setup(__props, { expose: __expose }) {
@@ -12459,7 +12555,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesUserProfile = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$b], ["__file", "F:/new/success/uniappandroid/pages/user/profile.vue"]]);
+  const PagesUserProfile = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$b], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/user/profile.vue"]]);
   const _sfc_main$a = {
     __name: "myinformation",
     setup(__props, { expose: __expose }) {
@@ -12653,7 +12749,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesUserMyinformation = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$a], ["__file", "F:/new/success/uniappandroid/pages/user/myinformation.vue"]]);
+  const PagesUserMyinformation = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$a], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/user/myinformation.vue"]]);
   function getUserSubscriptions() {
     return get("/notifications/subscriptions");
   }
@@ -12982,7 +13078,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesBidsIndex = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$9], ["__scopeId", "data-v-54397df0"], ["__file", "F:/new/success/uniappandroid/pages/bids/index.vue"]]);
+  const PagesBidsIndex = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$9], ["__scopeId", "data-v-54397df0"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/bids/index.vue"]]);
   const _imports_1$1 = "/static/icons/secondhand.png";
   const _sfc_main$8 = {
     __name: "mybids",
@@ -13376,7 +13472,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesUserMybids = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$8], ["__scopeId", "data-v-42641889"], ["__file", "F:/new/success/uniappandroid/pages/user/mybids.vue"]]);
+  const PagesUserMybids = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$8], ["__scopeId", "data-v-42641889"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/user/mybids.vue"]]);
   const _sfc_main$7 = {
     __name: "video-player",
     setup(__props, { expose: __expose }) {
@@ -13482,7 +13578,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesCommonVideoPlayer = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$7], ["__scopeId", "data-v-dfe2500e"], ["__file", "F:/new/success/uniappandroid/pages/common/video-player.vue"]]);
+  const PagesCommonVideoPlayer = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$7], ["__scopeId", "data-v-dfe2500e"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/common/video-player.vue"]]);
   const _sfc_main$6 = {};
   function _sfc_render$6(_ctx, _cache) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "agreement-page" }, [
@@ -13521,7 +13617,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesCommonUserAgreement = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6], ["__scopeId", "data-v-7b2724bd"], ["__file", "F:/new/success/uniappandroid/pages/common/user-agreement.vue"]]);
+  const PagesCommonUserAgreement = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6], ["__scopeId", "data-v-7b2724bd"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/common/user-agreement.vue"]]);
   const useGlobalStore = defineStore("global", {
     state: () => ({
       appLoaded: false,
@@ -13747,7 +13843,7 @@ This will fail in production if not fixed.`);
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesCommonPrivacyPolicy = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["__scopeId", "data-v-8d87e98c"], ["__file", "F:/new/success/uniappandroid/pages/common/privacy-policy.vue"]]);
+  const PagesCommonPrivacyPolicy = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["__scopeId", "data-v-8d87e98c"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/common/privacy-policy.vue"]]);
   const _sfc_main$4 = {
     __name: "security",
     setup(__props, { expose: __expose }) {
@@ -13954,7 +14050,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesUserSecurity = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["__scopeId", "data-v-b48a6a9f"], ["__file", "F:/new/success/uniappandroid/pages/user/security.vue"]]);
+  const PagesUserSecurity = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["__scopeId", "data-v-b48a6a9f"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/user/security.vue"]]);
   const _sfc_main$3 = {
     __name: "account-cancel",
     setup(__props, { expose: __expose }) {
@@ -14164,7 +14260,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesUserAccountCancel = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["__scopeId", "data-v-a6bc6d93"], ["__file", "F:/new/success/uniappandroid/pages/user/account-cancel.vue"]]);
+  const PagesUserAccountCancel = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["__scopeId", "data-v-a6bc6d93"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/user/account-cancel.vue"]]);
   const _imports_1 = "/static/logo.png";
   const _sfc_main$2 = {
     __name: "about",
@@ -14245,7 +14341,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesCommonAbout = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["__scopeId", "data-v-d75f624b"], ["__file", "F:/new/success/uniappandroid/pages/common/about.vue"]]);
+  const PagesCommonAbout = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["__scopeId", "data-v-d75f624b"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/common/about.vue"]]);
   const _sfc_main$1 = {
     __name: "feedback",
     setup(__props, { expose: __expose }) {
@@ -14375,7 +14471,7 @@ This will fail in production if not fixed.`);
       ])
     ]);
   }
-  const PagesCommonFeedback = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-14faa9d4"], ["__file", "F:/new/success/uniappandroid/pages/common/feedback.vue"]]);
+  const PagesCommonFeedback = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-14faa9d4"], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/pages/common/feedback.vue"]]);
   __definePage("pages/home/index", PagesHomeIndex);
   __definePage("pages/login/index", PagesLoginIndex);
   __definePage("pages/register/index", PagesRegisterIndex);
@@ -14411,6 +14507,7 @@ This will fail in production if not fixed.`);
       const globalStore = useGlobalStore();
       const userStore = useUserStore$1();
       const privacyStore = usePrivacyStore();
+      const messageStore = useMessageStore();
       const hasInitialized = vue.ref(false);
       const showPrivacyDialog = vue.ref(false);
       const showFabMenu = vue.ref(false);
@@ -14419,10 +14516,10 @@ This will fail in production if not fixed.`);
         uni.navigateTo({
           url,
           success: () => {
-            formatAppLog("log", "at App.vue:72", "成功打开协议页面:", url);
+            formatAppLog("log", "at App.vue:75", "成功打开协议页面:", url);
           },
           fail: (err) => {
-            formatAppLog("error", "at App.vue:75", "打开协议页面失败:", err);
+            formatAppLog("error", "at App.vue:78", "打开协议页面失败:", err);
             uni.showToast({
               title: "打开页面失败",
               icon: "none"
@@ -14447,10 +14544,24 @@ This will fail in production if not fixed.`);
         globalStore.initApp();
         await userStore.checkLoginStatus();
         if (userStore.hasLogin) {
+          await Promise.allSettled([
+            messageStore.getChatList(),
+            messageStore.fetchUnreadNotificationCount()
+          ]);
+          messageStore.syncTabBarBadge();
           connectWebSocket(userStore.token);
+        } else {
+          syncMessageTabBadge(0);
         }
         privacyStore.collectOaid();
       };
+      vue.watch(
+        () => messageStore.totalUnreadCount,
+        (count) => {
+          syncMessageTabBadge(count);
+        },
+        { immediate: true }
+      );
       const handleAccept = async () => {
         privacyStore.accept();
         showPrivacyDialog.value = false;
@@ -14478,29 +14589,29 @@ This will fail in production if not fixed.`);
         }, 200);
       };
       onLaunch(async () => {
-        formatAppLog("log", "at App.vue:146", "App onLaunch 开始");
+        formatAppLog("log", "at App.vue:164", "App onLaunch 开始");
         privacyStore.bootstrap();
-        formatAppLog("log", "at App.vue:150", "隐私状态检查 - hasAgreed:", privacyStore.hasAgreed);
-        formatAppLog("log", "at App.vue:151", "存储中的值:", uni.getStorageSync("privacy_policy_agreed_v1"));
+        formatAppLog("log", "at App.vue:168", "隐私状态检查 - hasAgreed:", privacyStore.hasAgreed);
+        formatAppLog("log", "at App.vue:169", "存储中的值:", uni.getStorageSync("privacy_policy_agreed_v1"));
         await vue.nextTick();
         if (!privacyStore.hasAgreed) {
-          formatAppLog("log", "at App.vue:158", "用户未同意隐私政策，立即跳转协议页强制查看");
+          formatAppLog("log", "at App.vue:176", "用户未同意隐私政策，立即跳转协议页强制查看");
           uni.reLaunch({
             url: "/pages/common/privacy-policy?gate=1"
           });
           return;
         } else {
-          formatAppLog("log", "at App.vue:165", "用户已同意隐私政策，开始初始化");
+          formatAppLog("log", "at App.vue:183", "用户已同意隐私政策，开始初始化");
           await runPostConsentInit();
         }
       });
       onShow(() => {
-        formatAppLog("log", "at App.vue:172", "App 显示");
+        formatAppLog("log", "at App.vue:190", "App 显示");
       });
       onHide(() => {
-        formatAppLog("log", "at App.vue:176", "App 隐藏");
+        formatAppLog("log", "at App.vue:194", "App 隐藏");
       });
-      const __returned__ = { globalStore, userStore, privacyStore, hasInitialized, showPrivacyDialog, showFabMenu, openAgreementPage, openPrivacyMenu, closeFabMenu, openConsentDialog, runPostConsentInit, handleAccept, handleReject, showAppPrivacyDialog, ref: vue.ref, nextTick: vue.nextTick, get onLaunch() {
+      const __returned__ = { globalStore, userStore, privacyStore, messageStore, hasInitialized, showPrivacyDialog, showFabMenu, openAgreementPage, openPrivacyMenu, closeFabMenu, openConsentDialog, runPostConsentInit, handleAccept, handleReject, showAppPrivacyDialog, ref: vue.ref, nextTick: vue.nextTick, watch: vue.watch, get onLaunch() {
         return onLaunch;
       }, get onShow() {
         return onShow;
@@ -14512,8 +14623,12 @@ This will fail in production if not fixed.`);
         return useUserStore$1;
       }, get usePrivacyStore() {
         return usePrivacyStore;
+      }, get useMessageStore() {
+        return useMessageStore;
       }, get connectWebSocket() {
         return connectWebSocket;
+      }, get syncMessageTabBadge() {
+        return syncMessageTabBadge;
       } };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
@@ -14608,7 +14723,7 @@ This will fail in production if not fixed.`);
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "F:/new/success/uniappandroid/App.vue"]]);
+  const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "D:/MyProJect/Guozhongbao/uniappandroid/App.vue"]]);
   function createApp() {
     const app = vue.createVueApp(App);
     app.use(createPinia());

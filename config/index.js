@@ -3,7 +3,7 @@ const APP_ORIGIN = `https://${APP_HOST}`
 
 const buildEnv = (debug) => ({
   baseURL: `${APP_ORIGIN}/api/api/v1`,
-  socketURL: `wss://${APP_HOST}/api/v1/ws`,
+  socketURL: `wss://${APP_HOST}/api/api/v1/ws`,
   staticURL: `${APP_ORIGIN}/api/static`,
   debug
 })
