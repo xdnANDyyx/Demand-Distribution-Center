@@ -35,6 +35,21 @@
 	font-size: 17px;
 	font-weight: 600;
 }
+.header-title-wrapper[data-v-56908723] {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex: 1;
+	overflow: hidden;
+}
+.header-subtitle[data-v-56908723] {
+	font-size: 11px;
+	color: #888;
+	max-width: 200px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
 .options-icon[data-v-56908723] {
 	font-size: 24px;
 	width: 30px;

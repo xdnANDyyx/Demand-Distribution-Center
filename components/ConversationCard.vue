@@ -9,6 +9,9 @@
 				<text class="username">{{ chat.target_user.username }}</text>
 				<text class="time">{{ formattedTime }}</text>
 			</view>
+			<view v-if="chat.project_title" class="project-tag">
+				<text class="project-tag-text">{{ chat.project_title }}</text>
+			</view>
 			<text class="last-message">{{ chat.last_message }}</text>
 		</view>
 	</view>
@@ -95,6 +98,24 @@ const formattedTime = computed(() => {
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 10rpx;
+}
+
+.project-tag {
+	margin-bottom: 8rpx;
+}
+
+.project-tag-text {
+	font-size: 22rpx;
+	color: rgba(255, 255, 255, 0.9);
+	background: rgba(255, 255, 255, 0.15);
+	padding: 4rpx 14rpx;
+	border-radius: 8rpx;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	max-width: 400rpx;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	display: inline-block;
 }
 
 .username {

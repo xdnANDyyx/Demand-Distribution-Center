@@ -130,7 +130,7 @@
 						<view class="bid-time">{{ formatDate(bid.created_at) }}</view>
 						<view class="bid-actions" v-if="isOwner && project.status === 'bidding'">
 							<button class="select-bid-btn" @click="handleSelectBid(bid.id)">选择此方案</button>
-							<button class="contact-bidder-btn" @click="contactUser(bid.bidder.id)">联系投标人</button>
+							<button class="contact-bidder-btn" @click="contactUser(bid.bidder.id, bid.bidder.username)">联系投标人</button>
 						</view>
 					</view>
 				</view>
@@ -913,12 +913,27 @@ const viewBids = () => {
 	});
 }
 
-const contactUser = (userId) => {
+const contactUser = async (userId, username) => {
 	if (!userId) return;
-	
-	uni.navigateTo({
-		url: `/pages/messages/chat?targetUserId=${userId}`
-	});
+	if (!userStore.hasLogin) {
+		goToLogin();
+		return;
+	}
+	try {
+		uni.showLoading({ title: '正在创建会话...' });
+		const chatData = await messageStore.createChat(userId, {
+			projectId: Number(projectId.value),
+			projectTitle: project.value.title
+		});
+		uni.hideLoading();
+		uni.navigateTo({
+			url: `/pages/messages/chat?chatId=${chatData.id}&targetUserId=${userId}&targetUserName=${username || ''}&projectId=${projectId.value}`
+		});
+	} catch (error) {
+		uni.hideLoading();
+		uni.showToast({ title: '无法发起沟通', icon: 'none' });
+		console.error('创建会话失败:', error);
+	}
 }
 
 const goToLogin = () => {

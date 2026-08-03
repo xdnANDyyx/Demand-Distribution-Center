@@ -4,7 +4,10 @@
 		<view class="header-fixed">
 			<view class="header-glass">
 				<text class="back-icon" @click="uni.navigateBack()">‹</text>
-				<text class="header-title">{{ chatInfo.targetUsername || '聊天' }}</text>
+				<view class="header-title-wrapper">
+					<text class="header-title">{{ chatInfo.targetUsername || '聊天' }}</text>
+					<text v-if="chatInfo.projectTitle" class="header-subtitle">{{ chatInfo.projectTitle }}</text>
+				</view>
 				<text class="options-icon" @click="showOptions">···</text>
 			</view>
 		</view>
@@ -81,7 +84,7 @@
 		
 		<!-- 悬浮订单按钮 -->
 		<view class="floating-order-btn" @click="showOrderModal">
-			<image class="order-icon" src="/static/icons/hr.png"></image>
+			<image class="order-icon" src="/static/icons/ht.png"></image>
 		</view>
 		
 		<!-- 订单弹窗 -->
@@ -168,6 +171,7 @@ import { useUserStore } from '../../store/user.js';
 import { useOrderStore } from '../../store/order.js';
 import { joinChatRoom, leaveChatRoom, markMessagesRead, isSocketConnected, connectWebSocket, onNewMessage } from '../../utils/socket.js';
 import { wechatPay } from '../../api/payment.js';
+import { getProjectDetail } from '../../api/project.js';
 // 不再需要引入外部语音识别API，使用plus.speech
 
 const messageStore = useMessageStore();
@@ -180,6 +184,7 @@ const chatInfo = reactive({
 	targetUsername: '',
 	targetUserAvatar: '',
 	projectId: null,  // 添加项目ID
+	projectTitle: '', // 项目标题
 	bidId: null       // 添加投标ID
 });
 const messages = ref([]);
@@ -227,9 +232,11 @@ onLoad(async (options) => {
 		chatInfo.targetUserAvatar = chat.target_user.avatar;
 		chatInfo.targetUserId = chat.target_user.id;  // 设置目标用户ID
 		chatInfo.projectId = chat.project_id;  // 设置项目ID
+		chatInfo.projectTitle = chat.project_title || '';  // 设置项目标题
 		chatInfo.bidId = chat.bid_id;          // 设置投标ID
 		console.log('获取到项目信息:', {
 			projectId: chatInfo.projectId,
+			projectTitle: chatInfo.projectTitle,
 			bidId: chatInfo.bidId,
 			targetUserId: chatInfo.targetUserId
 		});
@@ -555,12 +562,12 @@ const confirmOrder = async () => {
 	}
 
 	try {
-		// 验证必要信息
-		if (!chatInfo.projectId) {
+		// 验证必要信息（项目和投标缺一不可）
+		if (!chatInfo.projectId || !chatInfo.bidId || Number(chatInfo.bidId) === 0) {
 			let message = '该聊天未关联具体投标，无法创建订单。';
 			if (!chatInfo.projectId) {
 				message += '\n缺少项目信息。';
-			} else if (!chatInfo.bidId || chatInfo.bidId === 0) {
+			} else {
 				message += '\n请在项目详情页选择投标并联系投标人，这样才能创建订单。';
 			}
 
@@ -587,13 +594,37 @@ const confirmOrder = async () => {
 			return;
 		}
 
+		const currentUserId = userStore.userInfo && userStore.userInfo.id;
+		if (!currentUserId) {
+			uni.showToast({ title: '登录状态失效，请重新登录', icon: 'none' });
+			return;
+		}
+
+		// 权限预检：只有项目发布者才能创建订单，提前明确告知用户
+		try {
+			const projectDetail = await getProjectDetail(chatInfo.projectId);
+			const publisherId = projectDetail && (projectDetail.publisher_id || (projectDetail.publisher && projectDetail.publisher.id));
+			if (publisherId && Number(publisherId) !== Number(currentUserId)) {
+				uni.showModal({
+					title: '无法创建订单',
+					content: '只有项目发布者才能创建订单。您是该项目的投标人，请等待发布者接受投标后下单。',
+					showCancel: false,
+					confirmText: '我知道了'
+				});
+				return;
+			}
+		} catch (e) {
+			// 获取项目信息失败时继续尝试创建订单，后端会返回明确错误提示
+			console.warn('获取项目信息失败:', e);
+		}
+
 		// 构造符合后端要求的订单数据
 		const orderData = {
-			project_id: chatInfo.projectId,
-			bid_id: 35,  // 使用真实的bidId
-			publisher_id: 24,  // 当前用户是发布者
-			bidder_id: chatInfo.targetUserId,      // 对方是投标人
-			amount: parseFloat(orderForm.amount)   // 金额转为数字
+			project_id: Number(chatInfo.projectId),
+			bid_id: Number(chatInfo.bidId),            // 当前聊天关联的投标ID
+			publisher_id: Number(currentUserId),       // 当前登录用户（须为项目发布者）
+			bidder_id: Number(chatInfo.targetUserId),  // 对方是投标人
+			amount: parseFloat(orderForm.amount)       // 金额转为数字
 		};
 
 		console.log('准备创建订单，数据:', orderData);
@@ -629,9 +660,13 @@ const confirmOrder = async () => {
 		scrollToBottom();
 	} catch (error) {
 		console.error('创建订单失败:', error);
-		uni.showToast({
-			title: '创建订单失败，请重试',
-			icon: 'none'
+		// 把后端返回的具体失败原因明确展示给用户，而不是只在控制台报错
+		const errMsg = (error && error.message) ? error.message : '创建订单失败，请重试';
+		uni.showModal({
+			title: '创建订单失败',
+			content: errMsg,
+			showCancel: false,
+			confirmText: '我知道了'
 		});
 	}
 };
@@ -821,6 +856,21 @@ const showOptions = () => {
 .header-title {
 	font-size: 17px;
 	font-weight: 600;
+}
+.header-title-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex: 1;
+	overflow: hidden;
+}
+.header-subtitle {
+	font-size: 11px;
+	color: #888;
+	max-width: 200px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 .options-icon {
 	font-size: 24px;

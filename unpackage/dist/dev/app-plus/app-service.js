@@ -5454,15 +5454,74 @@ This will fail in production if not fixed.`);
     }
     return `${getStaticBaseUrl()}/${trimLeadingSlash(normalizedUrl.replace(/^\/?api\/static\//, "").replace(/^\/?static\//, ""))}`;
   }
+  function ensureLocalFile(filePath, fallbackExt) {
+    return new Promise((resolve) => {
+      if (typeof plus === "undefined" || !/^(content|file):\/\//i.test(filePath)) {
+        resolve(filePath);
+        return;
+      }
+      plus.io.resolveLocalFileSystemURL(filePath, (srcEntry) => {
+        plus.io.resolveLocalFileSystemURL("_doc/", (docDir) => {
+          docDir.getDirectory("upload_temp", { create: true }, (tempDir) => {
+            let ext = "";
+            const srcName = srcEntry.name || "";
+            const dotIndex = srcName.lastIndexOf(".");
+            if (dotIndex > -1) {
+              ext = srcName.substring(dotIndex).toLowerCase();
+            }
+            if (!ext) {
+              const cleanUri = filePath.split(/[?#]/)[0];
+              const uriDot = cleanUri.lastIndexOf(".");
+              const uriSlash = cleanUri.lastIndexOf("/");
+              if (uriDot > -1 && uriDot > uriSlash) {
+                ext = cleanUri.substring(uriDot).toLowerCase();
+              }
+            }
+            if (!ext || ext.length > 6) {
+              ext = fallbackExt || "";
+            }
+            const newName = "upload_" + Date.now() + "_" + Math.floor(Math.random() * 1e6) + ext;
+            srcEntry.copyTo(tempDir, newName, (newEntry) => {
+              const localUrl = typeof newEntry.toLocalURL === "function" && newEntry.toLocalURL() || newEntry.fullPath;
+              formatAppLog("log", "at api/upload.js:46", "文件已转换为本地临时文件:", localUrl);
+              resolve(localUrl);
+            }, (err) => {
+              formatAppLog("error", "at api/upload.js:49", "复制文件到临时目录失败:", JSON.stringify(err));
+              resolve(filePath);
+            });
+          }, (err) => {
+            formatAppLog("error", "at api/upload.js:53", "创建上传临时目录失败:", JSON.stringify(err));
+            resolve(filePath);
+          });
+        }, (err) => {
+          formatAppLog("error", "at api/upload.js:57", "访问_doc目录失败:", JSON.stringify(err));
+          resolve(filePath);
+        });
+      }, (err) => {
+        formatAppLog("error", "at api/upload.js:61", "解析文件路径失败:", JSON.stringify(err));
+        resolve(filePath);
+      });
+    });
+  }
+  function extractUploadErrorMessage(res, fallback) {
+    try {
+      const data = typeof res.data === "string" ? JSON.parse(res.data) : res.data;
+      if (data && data.message) {
+        return data.message;
+      }
+    } catch (e) {
+    }
+    return fallback;
+  }
   function processImageUrl(url) {
     if (!url)
       return url;
     let processedUrl = url.replace(/\\/g, "/");
     if (!processedUrl.startsWith("http://") && !processedUrl.startsWith("https://")) {
-      formatAppLog("log", "at api/upload.js:18", "如果替换处理后的图片URL:", processedUrl);
+      formatAppLog("log", "at api/upload.js:102", "如果替换处理后的图片URL:", processedUrl);
       processedUrl = resolveAssetUrl(processedUrl);
     }
-    formatAppLog("log", "at api/upload.js:23", "处理后的图片URL:", processedUrl);
+    formatAppLog("log", "at api/upload.js:107", "处理后的图片URL:", processedUrl);
     return processedUrl;
   }
   function uploadImage(filePath) {
@@ -5473,16 +5532,16 @@ This will fail in production if not fixed.`);
       }
       const userStore = useUserStore$1();
       const token = userStore.token;
-      formatAppLog("log", "at api/upload.js:45", "准备上传图片:", filePath);
+      formatAppLog("log", "at api/upload.js:129", "准备上传图片:", filePath);
       uni.uploadFile({
         url: APP_CONFIG.API_BASE_URL + "/upload/image",
         filePath,
         name: "file",
         header: token ? { "Authorization": `Bearer ${token}` } : {},
         success: (res) => {
-          formatAppLog("log", "at api/upload.js:53", "上传图片响应:", res.statusCode, res.data);
+          formatAppLog("log", "at api/upload.js:137", "上传图片响应:", res.statusCode, res.data);
           if (res.statusCode !== 200) {
-            reject(new Error(`上传失败，状态码: ${res.statusCode}`));
+            reject(new Error(extractUploadErrorMessage(res, `上传失败，状态码: ${res.statusCode}`)));
             return;
           }
           try {
@@ -5494,35 +5553,35 @@ This will fail in production if not fixed.`);
               reject(new Error(data.message || "上传失败"));
             }
           } catch (error) {
-            formatAppLog("error", "at api/upload.js:71", "解析上传响应失败:", error, res.data);
+            formatAppLog("error", "at api/upload.js:155", "解析上传响应失败:", error, res.data);
             reject(new Error("解析上传响应失败"));
           }
         },
         fail: (error) => {
-          formatAppLog("error", "at api/upload.js:76", "上传图片请求失败:", error);
+          formatAppLog("error", "at api/upload.js:160", "上传图片请求失败:", error);
           reject(error);
         }
       });
     });
   }
-  function uploadPdf(filePath) {
+  async function uploadPdf(filePath) {
+    if (!filePath) {
+      throw new Error("文件路径不能为空");
+    }
+    const finalPath = await ensureLocalFile(filePath, ".pdf");
     return new Promise((resolve, reject) => {
-      if (!filePath) {
-        reject(new Error("文件路径不能为空"));
-        return;
-      }
       const userStore = useUserStore$1();
       const token = userStore.token;
-      formatAppLog("log", "at api/upload.js:99", "准备上传PDF:", filePath);
+      formatAppLog("log", "at api/upload.js:186", "准备上传PDF:", finalPath);
       uni.uploadFile({
         url: APP_CONFIG.API_BASE_URL + "/upload/pdf",
-        filePath,
+        filePath: finalPath,
         name: "file",
         header: token ? { "Authorization": `Bearer ${token}` } : {},
         success: (res) => {
-          formatAppLog("log", "at api/upload.js:107", "上传PDF响应:", res.statusCode, res.data);
+          formatAppLog("log", "at api/upload.js:194", "上传PDF响应:", res.statusCode, res.data);
           if (res.statusCode !== 200) {
-            reject(new Error(`上传失败，状态码: ${res.statusCode}`));
+            reject(new Error(extractUploadErrorMessage(res, `上传失败，状态码: ${res.statusCode}`)));
             return;
           }
           try {
@@ -5534,12 +5593,12 @@ This will fail in production if not fixed.`);
               reject(new Error(data.message || "上传失败"));
             }
           } catch (error) {
-            formatAppLog("error", "at api/upload.js:125", "解析上传响应失败:", error, res.data);
+            formatAppLog("error", "at api/upload.js:212", "解析上传响应失败:", error, res.data);
             reject(new Error("解析上传响应失败"));
           }
         },
         fail: (error) => {
-          formatAppLog("error", "at api/upload.js:130", "上传PDF请求失败:", error);
+          formatAppLog("error", "at api/upload.js:217", "上传PDF请求失败:", error);
           reject(error);
         }
       });
@@ -5557,7 +5616,7 @@ This will fail in production if not fixed.`);
       }
       const userStore = useUserStore$1();
       const token = userStore.token;
-      formatAppLog("log", "at api/upload.js:158", "准备批量上传文件:", filePaths.length, "个文件");
+      formatAppLog("log", "at api/upload.js:245", "准备批量上传文件:", filePaths.length, "个文件");
       filePaths.forEach((path, index) => {
       });
       uni.uploadFile({
@@ -5568,7 +5627,7 @@ This will fail in production if not fixed.`);
         })),
         header: token ? { "Authorization": `Bearer ${token}` } : {},
         success: (res) => {
-          formatAppLog("log", "at api/upload.js:176", "批量上传响应:", res.statusCode, res.data);
+          formatAppLog("log", "at api/upload.js:263", "批量上传响应:", res.statusCode, res.data);
           if (res.statusCode !== 200) {
             reject(new Error(`上传失败，状态码: ${res.statusCode}`));
             return;
@@ -5582,12 +5641,12 @@ This will fail in production if not fixed.`);
               reject(new Error(data.message || "上传失败"));
             }
           } catch (error) {
-            formatAppLog("error", "at api/upload.js:193", "解析上传响应失败:", error, res.data);
+            formatAppLog("error", "at api/upload.js:280", "解析上传响应失败:", error, res.data);
             reject(new Error("解析上传响应失败"));
           }
         },
         fail: (error) => {
-          formatAppLog("error", "at api/upload.js:198", "批量上传请求失败:", error);
+          formatAppLog("error", "at api/upload.js:285", "批量上传请求失败:", error);
           reject(error);
         }
       });
@@ -5605,19 +5664,20 @@ This will fail in production if not fixed.`);
     const token = userStore.token;
     for (const filePath of filePaths) {
       try {
-        formatAppLog("log", "at api/upload.js:227", "准备上传文件:", filePath);
-        const isPdf = filePath.toLowerCase().endsWith(".pdf");
+        const isPdf = filePath.toLowerCase().split(/[?#]/)[0].endsWith(".pdf");
         const uploadUrl = isPdf ? APP_CONFIG.API_BASE_URL + "/upload/pdf" : APP_CONFIG.API_BASE_URL + "/upload/image";
+        const finalPath = await ensureLocalFile(filePath, isPdf ? ".pdf" : ".jpg");
+        formatAppLog("log", "at api/upload.js:323", "准备上传文件:", finalPath);
         const uploadResult = await new Promise((resolve, reject) => {
           uni.uploadFile({
             url: uploadUrl,
-            filePath,
+            filePath: finalPath,
             name: "file",
             header: token ? { "Authorization": `Bearer ${token}` } : {},
             success: (res) => {
-              formatAppLog("log", "at api/upload.js:243", "上传响应:", res.statusCode, res.data);
+              formatAppLog("log", "at api/upload.js:333", "上传响应:", res.statusCode, res.data);
               if (res.statusCode !== 200) {
-                reject(new Error(`上传失败，状态码: ${res.statusCode}`));
+                reject(new Error(extractUploadErrorMessage(res, `上传失败，状态码: ${res.statusCode}`)));
                 return;
               }
               try {
@@ -5629,12 +5689,12 @@ This will fail in production if not fixed.`);
                   reject(new Error(data.message || "上传失败"));
                 }
               } catch (error) {
-                formatAppLog("error", "at api/upload.js:260", "解析上传响应失败:", error, res.data);
+                formatAppLog("error", "at api/upload.js:350", "解析上传响应失败:", error, res.data);
                 reject(new Error("解析上传响应失败"));
               }
             },
             fail: (error) => {
-              formatAppLog("error", "at api/upload.js:265", "上传请求失败:", error);
+              formatAppLog("error", "at api/upload.js:355", "上传请求失败:", error);
               reject(error);
             }
           });
@@ -5643,7 +5703,7 @@ This will fail in production if not fixed.`);
           urls.push(uploadResult.url);
         }
       } catch (error) {
-        formatAppLog("error", "at api/upload.js:275", "上传文件失败:", filePath, error);
+        formatAppLog("error", "at api/upload.js:365", "上传文件失败:", filePath, error);
       }
     }
     return { urls };
@@ -5656,7 +5716,7 @@ This will fail in production if not fixed.`);
       }
       const userStore = useUserStore$1();
       const token = userStore.token;
-      formatAppLog("log", "at api/upload.js:299", "准备上传视频:", filePath);
+      formatAppLog("log", "at api/upload.js:389", "准备上传视频:", filePath);
       uni.uploadFile({
         url: APP_CONFIG.API_BASE_URL + "/upload/video",
         filePath,
@@ -5665,9 +5725,9 @@ This will fail in production if not fixed.`);
         timeout: 12e4,
         // 2分钟超时
         success: (res) => {
-          formatAppLog("log", "at api/upload.js:309", "上传视频响应:", res.statusCode, res.data);
+          formatAppLog("log", "at api/upload.js:399", "上传视频响应:", res.statusCode, res.data);
           if (res.statusCode !== 200) {
-            let errorMsg = `上传失败，状态码: ${res.statusCode}`;
+            let errorMsg = extractUploadErrorMessage(res, `上传失败，状态码: ${res.statusCode}`);
             if (res.statusCode === 502) {
               errorMsg = "服务器暂时不可用，请稍后重试";
             } else if (res.statusCode === 413) {
@@ -5687,12 +5747,12 @@ This will fail in production if not fixed.`);
               reject(new Error(data.message || "上传失败"));
             }
           } catch (error) {
-            formatAppLog("error", "at api/upload.js:333", "解析上传响应失败:", error, res.data);
+            formatAppLog("error", "at api/upload.js:423", "解析上传响应失败:", error, res.data);
             reject(new Error("解析上传响应失败"));
           }
         },
         fail: (error) => {
-          formatAppLog("error", "at api/upload.js:338", "上传视频请求失败:", error);
+          formatAppLog("error", "at api/upload.js:428", "上传视频请求失败:", error);
           let errorMsg = "上传失败";
           if (error.errMsg) {
             if (error.errMsg.includes("timeout")) {
@@ -6169,12 +6229,28 @@ This will fail in production if not fixed.`);
           url: `/pages/user/projects?id=${projectId.value}&view=bids`
         });
       };
-      const contactUser = (userId) => {
+      const contactUser = async (userId, username) => {
         if (!userId)
           return;
-        uni.navigateTo({
-          url: `/pages/messages/chat?targetUserId=${userId}`
-        });
+        if (!userStore.hasLogin) {
+          goToLogin();
+          return;
+        }
+        try {
+          uni.showLoading({ title: "正在创建会话..." });
+          const chatData = await messageStore.createChat(userId, {
+            projectId: Number(projectId.value),
+            projectTitle: project.value.title
+          });
+          uni.hideLoading();
+          uni.navigateTo({
+            url: `/pages/messages/chat?chatId=${chatData.id}&targetUserId=${userId}&targetUserName=${username || ""}&projectId=${projectId.value}`
+          });
+        } catch (error) {
+          uni.hideLoading();
+          uni.showToast({ title: "无法发起沟通", icon: "none" });
+          formatAppLog("error", "at pages/projects/detail.vue:935", "创建会话失败:", error);
+        }
       };
       const goToLogin = () => {
         uni.navigateTo({ url: "/pages/login/index" });
@@ -6494,7 +6570,7 @@ This will fail in production if not fixed.`);
                     }, "选择此方案", 8, ["onClick"]),
                     vue.createElementVNode("button", {
                       class: "contact-bidder-btn",
-                      onClick: ($event) => $setup.contactUser(bid.bidder.id)
+                      onClick: ($event) => $setup.contactUser(bid.bidder.id, bid.bidder.username)
                     }, "联系投标人", 8, ["onClick"])
                   ])) : vue.createCommentVNode("v-if", true)
                 ]);
@@ -7287,7 +7363,12 @@ This will fail in production if not fixed.`);
         } catch (error) {
           uni.hideLoading();
           formatAppLog("error", "at pages/projects/publish.vue:641", "上传PDF失败:", error);
-          uni.showToast({ title: "上传失败", icon: "none" });
+          uni.showModal({
+            title: "上传失败",
+            content: error && error.message ? error.message : "PDF上传失败，请重试",
+            showCancel: false,
+            confirmText: "我知道了"
+          });
         }
       };
       const removeDocument = (index) => {
@@ -7333,7 +7414,7 @@ This will fail in production if not fixed.`);
               }
             } catch (error) {
               uni.hideLoading();
-              formatAppLog("error", "at pages/projects/publish.vue:698", "上传视频失败:", error);
+              formatAppLog("error", "at pages/projects/publish.vue:703", "上传视频失败:", error);
               let errorMsg = "上传失败";
               if (error.message.includes("502")) {
                 errorMsg = "服务器暂时不可用，请稍后重试";
@@ -7358,7 +7439,7 @@ This will fail in production if not fixed.`);
             }
           },
           fail: (error) => {
-            formatAppLog("error", "at pages/projects/publish.vue:727", "选择视频失败:", error);
+            formatAppLog("error", "at pages/projects/publish.vue:732", "选择视频失败:", error);
             uni.showToast({ title: "选择视频失败", icon: "none" });
           }
         });
@@ -7367,7 +7448,7 @@ This will fail in production if not fixed.`);
         let lastError = null;
         for (let i = 0; i < maxRetries; i++) {
           try {
-            formatAppLog("log", "at pages/projects/publish.vue:739", `视频上传尝试 ${i + 1}/${maxRetries}`);
+            formatAppLog("log", "at pages/projects/publish.vue:744", `视频上传尝试 ${i + 1}/${maxRetries}`);
             if (i > 0) {
               uni.showLoading({
                 title: `重试中... (${i + 1}/${maxRetries})`,
@@ -7376,14 +7457,14 @@ This will fail in production if not fixed.`);
             }
             const result = await uploadVideo(filePath);
             if (result && result.url) {
-              formatAppLog("log", "at pages/projects/publish.vue:752", "视频上传成功:", result);
+              formatAppLog("log", "at pages/projects/publish.vue:757", "视频上传成功:", result);
               return result;
             } else {
               throw new Error("上传返回结果无效");
             }
           } catch (error) {
             lastError = error;
-            formatAppLog("error", "at pages/projects/publish.vue:759", `视频上传第 ${i + 1} 次尝试失败:`, error);
+            formatAppLog("error", "at pages/projects/publish.vue:764", `视频上传第 ${i + 1} 次尝试失败:`, error);
             if (i < maxRetries - 1) {
               await new Promise((resolve) => setTimeout(resolve, 2e3 * (i + 1)));
             }
@@ -7426,7 +7507,7 @@ This will fail in production if not fixed.`);
               name: "file",
               header: token ? { "Authorization": `Bearer ${token}` } : {},
               success: (res) => {
-                formatAppLog("log", "at pages/projects/publish.vue:819", "上传CAD/STP响应:", res.statusCode, res.data);
+                formatAppLog("log", "at pages/projects/publish.vue:824", "上传CAD/STP响应:", res.statusCode, res.data);
                 if (res.statusCode !== 200) {
                   reject(new Error(`上传失败，状态码: ${res.statusCode}`));
                   return;
@@ -7444,12 +7525,12 @@ This will fail in production if not fixed.`);
                     reject(new Error(data.message || "上传失败"));
                   }
                 } catch (error) {
-                  formatAppLog("error", "at pages/projects/publish.vue:843", "解析上传响应失败:", error, res.data);
+                  formatAppLog("error", "at pages/projects/publish.vue:848", "解析上传响应失败:", error, res.data);
                   reject(new Error("解析上传响应失败"));
                 }
               },
               fail: (error) => {
-                formatAppLog("error", "at pages/projects/publish.vue:848", "上传CAD/STP请求失败:", error);
+                formatAppLog("error", "at pages/projects/publish.vue:853", "上传CAD/STP请求失败:", error);
                 reject(error);
               }
             });
@@ -7466,7 +7547,7 @@ This will fail in production if not fixed.`);
           }
         } catch (error) {
           uni.hideLoading();
-          formatAppLog("error", "at pages/projects/publish.vue:867", "上传CAD/STP文件失败:", error);
+          formatAppLog("error", "at pages/projects/publish.vue:872", "上传CAD/STP文件失败:", error);
           uni.showToast({ title: "上传失败", icon: "none" });
         }
       };
@@ -7571,7 +7652,7 @@ This will fail in production if not fixed.`);
           categoryId: (_b = (_a = categoryInfo.value) == null ? void 0 : _a.childCategory) == null ? void 0 : _b.id,
           categoryPath: ((_d = (_c = categoryInfo.value) == null ? void 0 : _c.mainCategory) == null ? void 0 : _d.id) && ((_f = (_e = categoryInfo.value) == null ? void 0 : _e.subCategory) == null ? void 0 : _f.id) && ((_h = (_g = categoryInfo.value) == null ? void 0 : _g.childCategory) == null ? void 0 : _h.id) ? [categoryInfo.value.mainCategory.id, categoryInfo.value.subCategory.id, categoryInfo.value.childCategory.id] : []
         };
-        formatAppLog("log", "at pages/projects/publish.vue:984", "提交项目数据--》:", projectData);
+        formatAppLog("log", "at pages/projects/publish.vue:989", "提交项目数据--》:", projectData);
         const request2 = isEditMode.value && editingProjectId.value ? updateProject(editingProjectId.value, projectData).then(() => ({ id: editingProjectId.value })) : publishProject(projectData);
         request2.then((res) => {
           uni.hideLoading();
@@ -7584,7 +7665,7 @@ This will fail in production if not fixed.`);
           uni.hideLoading();
           const errMsg = ((_b2 = (_a2 = err == null ? void 0 : err.response) == null ? void 0 : _a2.data) == null ? void 0 : _b2.message) || (err == null ? void 0 : err.message) || "发布失败";
           uni.showToast({ title: errMsg, icon: "none" });
-          formatAppLog("error", "at pages/projects/publish.vue:1001", "发布失败:", err);
+          formatAppLog("error", "at pages/projects/publish.vue:1006", "发布失败:", err);
         });
       };
       const __returned__ = { categoryInfo, isEditMode, editingProjectId, formData, mapAttachment, fillAttachments, fillFormForEdit, loadProjectForEdit, chooseImage, removeImage, getCurrentLocation, minDate, isRecording, currentField, startVoiceRecognition, stopVoiceRecognition, categoryPath, goBack, changeCategory, formatDate, onDateChange, chooseDocument, handleSelectedDocument, removeDocument, chooseVideo, uploadVideoWithRetry, removeVideo, chooseCadFile, handleSelectedCadFile, removeCadFile, previewVideo, validateForm, submitProject, ref: vue.ref, computed: vue.computed, onMounted: vue.onMounted, get onLoad() {
@@ -8085,6 +8166,18 @@ This will fail in production if not fixed.`);
             /* TEXT */
           )
         ]),
+        $props.chat.project_title ? (vue.openBlock(), vue.createElementBlock("view", {
+          key: 0,
+          class: "project-tag"
+        }, [
+          vue.createElementVNode(
+            "text",
+            { class: "project-tag-text" },
+            vue.toDisplayString($props.chat.project_title),
+            1
+            /* TEXT */
+          )
+        ])) : vue.createCommentVNode("v-if", true),
         vue.createElementVNode(
           "text",
           { class: "last-message" },
@@ -8934,7 +9027,7 @@ This will fail in production if not fixed.`);
     });
   }
   const _imports_1$2 = "/static/icons/Sending.png";
-  const _imports_2$1 = "/static/icons/hr.png";
+  const _imports_2$1 = "/static/icons/ht.png";
   const _sfc_main$j = {
     __name: "chat",
     setup(__props, { expose: __expose }) {
@@ -8949,6 +9042,8 @@ This will fail in production if not fixed.`);
         targetUserAvatar: "",
         projectId: null,
         // 添加项目ID
+        projectTitle: "",
+        // 项目标题
         bidId: null
         // 添加投标ID
       });
@@ -8975,7 +9070,7 @@ This will fail in production if not fixed.`);
         paymentMethod: "微信支付"
       });
       onLoad(async (options) => {
-        formatAppLog("log", "at pages/messages/chat.vue:214", "聊天页面加载，参数:", options);
+        formatAppLog("log", "at pages/messages/chat.vue:219", "聊天页面加载，参数:", options);
         chatInfo.id = options.chatId || options.id;
         chatInfo.targetUserId = options.targetUserId;
         chatInfo.targetUsername = options.targetUserName || options.targetUsername || "用户";
@@ -8988,29 +9083,31 @@ This will fail in production if not fixed.`);
           chatInfo.targetUserAvatar = chat.target_user.avatar;
           chatInfo.targetUserId = chat.target_user.id;
           chatInfo.projectId = chat.project_id;
+          chatInfo.projectTitle = chat.project_title || "";
           chatInfo.bidId = chat.bid_id;
-          formatAppLog("log", "at pages/messages/chat.vue:231", "获取到项目信息:", {
+          formatAppLog("log", "at pages/messages/chat.vue:237", "获取到项目信息:", {
             projectId: chatInfo.projectId,
+            projectTitle: chatInfo.projectTitle,
             bidId: chatInfo.bidId,
             targetUserId: chatInfo.targetUserId
           });
         }
-        formatAppLog("log", "at pages/messages/chat.vue:238", "聊天信息:", chatInfo);
+        formatAppLog("log", "at pages/messages/chat.vue:245", "聊天信息:", chatInfo);
         orderForm.partyA = chatInfo.targetUsername;
         orderForm.partyB = userStore.userInfo.username || "我方企业";
         await loadMessages(true);
-        formatAppLog("log", "at pages/messages/chat.vue:245", "检查WebSocket连接状态:", isSocketConnected());
+        formatAppLog("log", "at pages/messages/chat.vue:252", "检查WebSocket连接状态:", isSocketConnected());
         if (!isSocketConnected()) {
-          formatAppLog("log", "at pages/messages/chat.vue:248", "WebSocket未连接，尝试重新连接");
+          formatAppLog("log", "at pages/messages/chat.vue:255", "WebSocket未连接，尝试重新连接");
           connectWebSocket(userStore.token);
           setTimeout(() => {
             if (isSocketConnected()) {
-              formatAppLog("log", "at pages/messages/chat.vue:253", "WebSocket重连成功，加入聊天房间");
+              formatAppLog("log", "at pages/messages/chat.vue:260", "WebSocket重连成功，加入聊天房间");
               joinChatRoom(chatInfo.id);
               markMessagesRead(chatInfo.id);
               messageStore.markChatAsRead(chatInfo.id);
             } else {
-              formatAppLog("error", "at pages/messages/chat.vue:258", "WebSocket重连失败");
+              formatAppLog("error", "at pages/messages/chat.vue:265", "WebSocket重连失败");
               uni.showToast({
                 title: "连接失败，部分功能可能不可用",
                 icon: "none",
@@ -9019,14 +9116,14 @@ This will fail in production if not fixed.`);
             }
           }, 2e3);
         } else {
-          formatAppLog("log", "at pages/messages/chat.vue:267", "WebSocket已连接，直接加入聊天房间");
+          formatAppLog("log", "at pages/messages/chat.vue:274", "WebSocket已连接，直接加入聊天房间");
           joinChatRoom(chatInfo.id);
           markMessagesRead(chatInfo.id);
           messageStore.markChatAsRead(chatInfo.id);
         }
       });
       vue.onMounted(() => {
-        formatAppLog("log", "at pages/messages/chat.vue:275", "注册新消息监听器");
+        formatAppLog("log", "at pages/messages/chat.vue:282", "注册新消息监听器");
         onNewMessage(handleNewMessage);
         uni.onSocketMessage(handleSocketMessage);
         initRecorder();
@@ -9042,7 +9139,7 @@ This will fail in production if not fixed.`);
         plus.speech.addEventListener("end", onEnd, false);
       });
       vue.onUnmounted(() => {
-        formatAppLog("log", "at pages/messages/chat.vue:294", "离开聊天房间并移除监听器");
+        formatAppLog("log", "at pages/messages/chat.vue:301", "离开聊天房间并移除监听器");
         leaveChatRoom(chatInfo.id);
         onNewMessage(null);
         plus.speech.removeEventListener("start", ontStart);
@@ -9054,31 +9151,31 @@ This will fail in production if not fixed.`);
       const handleSocketMessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          formatAppLog("log", "at pages/messages/chat.vue:311", "聊天页面直接收到WebSocket消息:", data);
+          formatAppLog("log", "at pages/messages/chat.vue:318", "聊天页面直接收到WebSocket消息:", data);
           if (data.type === "message" && data.data && data.data.chat_id == chatInfo.id) {
-            formatAppLog("log", "at pages/messages/chat.vue:314", "收到当前聊天的新消息:", data.data);
+            formatAppLog("log", "at pages/messages/chat.vue:321", "收到当前聊天的新消息:", data.data);
             if (data.data.message.sender_id !== userStore.userInfo.id) {
               messageStore.markChatAsRead(chatInfo.id);
               const existingMsg = messages.value.find((msg) => msg.id === data.data.message.id);
               if (!existingMsg) {
                 messages.value.push(data.data.message);
                 scrollToBottom();
-                formatAppLog("log", "at pages/messages/chat.vue:322", "对方消息已添加到列表，当前消息数:", messages.value.length);
+                formatAppLog("log", "at pages/messages/chat.vue:329", "对方消息已添加到列表，当前消息数:", messages.value.length);
               } else {
-                formatAppLog("log", "at pages/messages/chat.vue:324", "消息已存在，不重复添加");
+                formatAppLog("log", "at pages/messages/chat.vue:331", "消息已存在，不重复添加");
               }
             } else {
-              formatAppLog("log", "at pages/messages/chat.vue:327", "忽略自己发送的消息");
+              formatAppLog("log", "at pages/messages/chat.vue:334", "忽略自己发送的消息");
             }
           }
         } catch (error) {
-          formatAppLog("error", "at pages/messages/chat.vue:331", "处理WebSocket消息失败:", error);
+          formatAppLog("error", "at pages/messages/chat.vue:338", "处理WebSocket消息失败:", error);
         }
       };
       vue.watch(() => messageStore.chatList, (newChatList) => {
         const currentChat = newChatList.find((chat) => chat.id === chatInfo.id);
         if (currentChat) {
-          formatAppLog("log", "at pages/messages/chat.vue:338", "聊天列表更新，重新加载消息");
+          formatAppLog("log", "at pages/messages/chat.vue:345", "聊天列表更新，重新加载消息");
           loadMessages();
         }
       }, { deep: true });
@@ -9090,14 +9187,14 @@ This will fail in production if not fixed.`);
             scrollToBottom();
           }
         } catch (error) {
-          formatAppLog("error", "at pages/messages/chat.vue:351", "加载消息失败:", error);
+          formatAppLog("error", "at pages/messages/chat.vue:358", "加载消息失败:", error);
         }
       };
       const handleSend = async () => {
         if (!inputText.value.trim())
           return;
         if (!isSocketConnected()) {
-          formatAppLog("error", "at pages/messages/chat.vue:359", "WebSocket未连接，无法发送消息");
+          formatAppLog("error", "at pages/messages/chat.vue:366", "WebSocket未连接，无法发送消息");
           uni.showToast({
             title: "WebSocket未连接，正在重连...",
             icon: "none",
@@ -9110,7 +9207,7 @@ This will fail in production if not fixed.`);
           content: inputText.value,
           content_type: 0
         };
-        formatAppLog("log", "at pages/messages/chat.vue:374", "发送消息:", messageData);
+        formatAppLog("log", "at pages/messages/chat.vue:381", "发送消息:", messageData);
         try {
           await messageStore.sendMessage(chatInfo.id, messageData);
           const optimisticMessage = {
@@ -9122,35 +9219,35 @@ This will fail in production if not fixed.`);
           messages.value.push(optimisticMessage);
           inputText.value = "";
           scrollToBottom();
-          formatAppLog("log", "at pages/messages/chat.vue:387", "消息发送成功");
+          formatAppLog("log", "at pages/messages/chat.vue:394", "消息发送成功");
         } catch (error) {
-          formatAppLog("error", "at pages/messages/chat.vue:389", "发送失败:", error);
+          formatAppLog("error", "at pages/messages/chat.vue:396", "发送失败:", error);
           uni.showToast({ title: "发送失败", icon: "none" });
         }
       };
       const handleNewMessage = (data) => {
-        formatAppLog("log", "at pages/messages/chat.vue:395", "收到新消息回调:", data);
+        formatAppLog("log", "at pages/messages/chat.vue:402", "收到新消息回调:", data);
         if (data.chat_id == chatInfo.id) {
-          formatAppLog("log", "at pages/messages/chat.vue:397", "处理当前会话消息:", data.message);
+          formatAppLog("log", "at pages/messages/chat.vue:404", "处理当前会话消息:", data.message);
           if (data.message.sender_id !== userStore.userInfo.id) {
             messageStore.markChatAsRead(chatInfo.id);
             const existingMsg = messages.value.find((msg) => msg.id === data.message.id);
             if (!existingMsg) {
               messages.value.push(data.message);
               scrollToBottom();
-              formatAppLog("log", "at pages/messages/chat.vue:404", "对方消息已添加到列表，当前消息数:", messages.value.length);
+              formatAppLog("log", "at pages/messages/chat.vue:411", "对方消息已添加到列表，当前消息数:", messages.value.length);
             } else {
-              formatAppLog("log", "at pages/messages/chat.vue:406", "消息已存在，不重复添加");
+              formatAppLog("log", "at pages/messages/chat.vue:413", "消息已存在，不重复添加");
             }
           } else {
-            formatAppLog("log", "at pages/messages/chat.vue:409", "忽略自己发送的消息");
+            formatAppLog("log", "at pages/messages/chat.vue:416", "忽略自己发送的消息");
           }
         } else {
-          formatAppLog("log", "at pages/messages/chat.vue:412", "非当前会话消息，忽略");
+          formatAppLog("log", "at pages/messages/chat.vue:419", "非当前会话消息，忽略");
         }
       };
       const initRecorder = () => {
-        formatAppLog("log", "at pages/messages/chat.vue:419", "语音识别初始化完成");
+        formatAppLog("log", "at pages/messages/chat.vue:426", "语音识别初始化完成");
       };
       const toggleInputMode = () => {
         inputMode.value = inputMode.value === "text" ? "voice" : "text";
@@ -9158,22 +9255,22 @@ This will fail in production if not fixed.`);
       const ontStart = () => {
         title.value = "...倾听中...";
         result.value = "";
-        formatAppLog("log", "at pages/messages/chat.vue:430", "Event: start");
+        formatAppLog("log", "at pages/messages/chat.vue:437", "Event: start");
         isRecording.value = true;
       };
       const onVolumeChange = (e) => {
         valueWidth.value = 100 * e.volume + "px";
-        formatAppLog("log", "at pages/messages/chat.vue:436", "Event: volumeChange " + valueWidth.value);
+        formatAppLog("log", "at pages/messages/chat.vue:443", "Event: volumeChange " + valueWidth.value);
       };
       const onRecognizing = (e) => {
         partialResult.value = e.partialResult;
-        formatAppLog("log", "at pages/messages/chat.vue:441", "Event: recognizing");
+        formatAppLog("log", "at pages/messages/chat.vue:448", "Event: recognizing");
       };
       const onRecognition = (e) => {
         result.value += e.result;
         result.value ? result.value += " " : result.value = "";
         partialResult.value = e.result;
-        formatAppLog("log", "at pages/messages/chat.vue:448", "Event: recognition");
+        formatAppLog("log", "at pages/messages/chat.vue:455", "Event: recognition");
       };
       const onEnd = () => {
         if (!result.value || result.value == "") {
@@ -9190,26 +9287,26 @@ This will fail in production if not fixed.`);
         isRecording.value = false;
       };
       const startRecord = () => {
-        formatAppLog("log", "at pages/messages/chat.vue:469", "startRecognize");
+        formatAppLog("log", "at pages/messages/chat.vue:476", "startRecognize");
         isRecording.value = true;
         title.value = "...倾听中...";
         result.value = "";
         var options = {
           engine: "baidu"
         };
-        formatAppLog("log", "at pages/messages/chat.vue:478", "开始语音识别：");
+        formatAppLog("log", "at pages/messages/chat.vue:485", "开始语音识别：");
         plus.speech.startRecognize(options, function(s) {
-          formatAppLog("log", "at pages/messages/chat.vue:480", "识别结果:", s);
+          formatAppLog("log", "at pages/messages/chat.vue:487", "识别结果:", s);
           result.value += s;
         }, function(e) {
-          formatAppLog("log", "at pages/messages/chat.vue:483", "语音识别失败：" + JSON.stringify(e));
+          formatAppLog("log", "at pages/messages/chat.vue:490", "语音识别失败：" + JSON.stringify(e));
           uni.showToast({ title: "语音识别失败", icon: "none" });
           isRecording.value = false;
           title.value = "未开始";
         });
       };
       const handleVoiceEnd = () => {
-        formatAppLog("log", "at pages/messages/chat.vue:492", "endRecognize");
+        formatAppLog("log", "at pages/messages/chat.vue:499", "endRecognize");
         plus.speech.stopRecognize();
         if (result.value && result.value.trim()) {
           inputText.value = result.value.trim();
@@ -9228,7 +9325,7 @@ This will fail in production if not fixed.`);
         });
       };
       const loadMore = () => {
-        formatAppLog("log", "at pages/messages/chat.vue:519", "触发加载更多");
+        formatAppLog("log", "at pages/messages/chat.vue:526", "触发加载更多");
       };
       const shouldShowTime = (message, index) => {
         if (index === 0)
@@ -9262,11 +9359,11 @@ This will fail in production if not fixed.`);
           return;
         }
         try {
-          if (!chatInfo.projectId) {
+          if (!chatInfo.projectId || !chatInfo.bidId || Number(chatInfo.bidId) === 0) {
             let message = "该聊天未关联具体投标，无法创建订单。";
             if (!chatInfo.projectId) {
               message += "\n缺少项目信息。";
-            } else if (!chatInfo.bidId || chatInfo.bidId === 0) {
+            } else {
               message += "\n请在项目详情页选择投标并联系投标人，这样才能创建订单。";
             }
             uni.showModal({
@@ -9275,7 +9372,7 @@ This will fail in production if not fixed.`);
               showCancel: false,
               confirmText: "我知道了"
             });
-            formatAppLog("error", "at pages/messages/chat.vue:574", "缺少必要信息:", {
+            formatAppLog("error", "at pages/messages/chat.vue:581", "缺少必要信息:", {
               projectId: chatInfo.projectId,
               bidId: chatInfo.bidId,
               targetUserId: chatInfo.targetUserId
@@ -9289,20 +9386,40 @@ This will fail in production if not fixed.`);
             });
             return;
           }
+          const currentUserId = userStore.userInfo && userStore.userInfo.id;
+          if (!currentUserId) {
+            uni.showToast({ title: "登录状态失效，请重新登录", icon: "none" });
+            return;
+          }
+          try {
+            const projectDetail = await getProjectDetail(chatInfo.projectId);
+            const publisherId = projectDetail && (projectDetail.publisher_id || projectDetail.publisher && projectDetail.publisher.id);
+            if (publisherId && Number(publisherId) !== Number(currentUserId)) {
+              uni.showModal({
+                title: "无法创建订单",
+                content: "只有项目发布者才能创建订单。您是该项目的投标人，请等待发布者接受投标后下单。",
+                showCancel: false,
+                confirmText: "我知道了"
+              });
+              return;
+            }
+          } catch (e) {
+            formatAppLog("warn", "at pages/messages/chat.vue:618", "获取项目信息失败:", e);
+          }
           const orderData = {
-            project_id: chatInfo.projectId,
-            bid_id: 35,
-            // 使用真实的bidId
-            publisher_id: 24,
-            // 当前用户是发布者
-            bidder_id: chatInfo.targetUserId,
+            project_id: Number(chatInfo.projectId),
+            bid_id: Number(chatInfo.bidId),
+            // 当前聊天关联的投标ID
+            publisher_id: Number(currentUserId),
+            // 当前登录用户（须为项目发布者）
+            bidder_id: Number(chatInfo.targetUserId),
             // 对方是投标人
             amount: parseFloat(orderForm.amount)
             // 金额转为数字
           };
-          formatAppLog("log", "at pages/messages/chat.vue:599", "准备创建订单，数据:", orderData);
+          formatAppLog("log", "at pages/messages/chat.vue:630", "准备创建订单，数据:", orderData);
           const orderResult = await orderStore.createOrder(orderData);
-          formatAppLog("log", "at pages/messages/chat.vue:603", "订单创建成功:", orderResult);
+          formatAppLog("log", "at pages/messages/chat.vue:634", "订单创建成功:", orderResult);
           orderContractGenerated.value = true;
           hideOrderModal();
           uni.showToast({
@@ -9323,26 +9440,29 @@ This will fail in production if not fixed.`);
           }
           scrollToBottom();
         } catch (error) {
-          formatAppLog("error", "at pages/messages/chat.vue:631", "创建订单失败:", error);
-          uni.showToast({
-            title: "创建订单失败，请重试",
-            icon: "none"
+          formatAppLog("error", "at pages/messages/chat.vue:662", "创建订单失败:", error);
+          const errMsg = error && error.message ? error.message : "创建订单失败，请重试";
+          uni.showModal({
+            title: "创建订单失败",
+            content: errMsg,
+            showCancel: false,
+            confirmText: "我知道了"
           });
         }
       };
       const initiateWeChatPay = async (orderId, amount) => {
         try {
-          formatAppLog("log", "at pages/messages/chat.vue:642", "发起微信支付，订单ID:", orderId, "金额:", amount);
+          formatAppLog("log", "at pages/messages/chat.vue:677", "发起微信支付，订单ID:", orderId, "金额:", amount);
           const response = await wechatPay({
             order_id: orderId,
             user_id: userStore.userInfo.id,
             // 添加用户ID
             amount: parseFloat(amount)
           });
-          formatAppLog("log", "at pages/messages/chat.vue:651", "微信支付接口响应:", response);
+          formatAppLog("log", "at pages/messages/chat.vue:686", "微信支付接口响应:", response);
           if (response) {
             const payData = response;
-            formatAppLog("log", "at pages/messages/chat.vue:656", "支付参数详情:", {
+            formatAppLog("log", "at pages/messages/chat.vue:691", "支付参数详情:", {
               appId: payData.appId,
               partnerId: payData.partnerId,
               prepayId: payData.prepayId,
@@ -9352,7 +9472,7 @@ This will fail in production if not fixed.`);
               sign长度: payData.sign ? payData.sign.length : 0
             });
             if (!payData.appId || !payData.partnerId || !payData.prepayId || !payData.package || !payData.nonceStr || !payData.timeStamp || !payData.sign) {
-              formatAppLog("error", "at pages/messages/chat.vue:669", "支付参数不完整:", payData);
+              formatAppLog("error", "at pages/messages/chat.vue:704", "支付参数不完整:", payData);
               uni.showToast({
                 title: "支付参数不完整",
                 icon: "none"
@@ -9371,7 +9491,7 @@ This will fail in production if not fixed.`);
                 sign: payData.sign
               },
               success: function(res) {
-                formatAppLog("log", "at pages/messages/chat.vue:691", "微信支付成功:", res);
+                formatAppLog("log", "at pages/messages/chat.vue:726", "微信支付成功:", res);
                 uni.showToast({
                   title: "支付成功",
                   icon: "success"
@@ -9383,7 +9503,7 @@ This will fail in production if not fixed.`);
                 scrollToBottom();
               },
               fail: function(err) {
-                formatAppLog("error", "at pages/messages/chat.vue:704", "微信支付失败:", err);
+                formatAppLog("error", "at pages/messages/chat.vue:739", "微信支付失败:", err);
                 uni.showToast({
                   title: "支付失败: " + (err.errMsg || "未知错误"),
                   icon: "none",
@@ -9391,7 +9511,7 @@ This will fail in production if not fixed.`);
                 });
               },
               complete: function() {
-                formatAppLog("log", "at pages/messages/chat.vue:712", "支付流程结束");
+                formatAppLog("log", "at pages/messages/chat.vue:747", "支付流程结束");
               }
             });
           } else {
@@ -9401,7 +9521,7 @@ This will fail in production if not fixed.`);
             });
           }
         } catch (error) {
-          formatAppLog("error", "at pages/messages/chat.vue:754", "发起微信支付失败:", error);
+          formatAppLog("error", "at pages/messages/chat.vue:789", "发起微信支付失败:", error);
           uni.showToast({
             title: "发起支付失败，请重试",
             icon: "none"
@@ -9457,6 +9577,8 @@ This will fail in production if not fixed.`);
         return onNewMessage;
       }, get wechatPay() {
         return wechatPay;
+      }, get getProjectDetail() {
+        return getProjectDetail;
       } };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
@@ -9470,13 +9592,25 @@ This will fail in production if not fixed.`);
             class: "back-icon",
             onClick: _cache[0] || (_cache[0] = ($event) => uni.navigateBack())
           }, "‹"),
-          vue.createElementVNode(
-            "text",
-            { class: "header-title" },
-            vue.toDisplayString($setup.chatInfo.targetUsername || "聊天"),
-            1
-            /* TEXT */
-          ),
+          vue.createElementVNode("view", { class: "header-title-wrapper" }, [
+            vue.createElementVNode(
+              "text",
+              { class: "header-title" },
+              vue.toDisplayString($setup.chatInfo.targetUsername || "聊天"),
+              1
+              /* TEXT */
+            ),
+            $setup.chatInfo.projectTitle ? (vue.openBlock(), vue.createElementBlock(
+              "text",
+              {
+                key: 0,
+                class: "header-subtitle"
+              },
+              vue.toDisplayString($setup.chatInfo.projectTitle),
+              1
+              /* TEXT */
+            )) : vue.createCommentVNode("v-if", true)
+          ]),
           vue.createElementVNode("text", {
             class: "options-icon",
             onClick: $setup.showOptions

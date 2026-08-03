@@ -48,6 +48,22 @@
 	align-items: center;
 	margin-bottom: 0.3125rem;
 }
+.project-tag[data-v-72739596] {
+	margin-bottom: 0.25rem;
+}
+.project-tag-text[data-v-72739596] {
+	font-size: 0.6875rem;
+	color: rgba(255, 255, 255, 0.9);
+	background: rgba(255, 255, 255, 0.15);
+	padding: 0.125rem 0.4375rem;
+	border-radius: 0.25rem;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	max-width: 12.5rem;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	display: inline-block;
+}
 .username[data-v-72739596] {
 	font-size: 1rem;
 	font-weight: 500;

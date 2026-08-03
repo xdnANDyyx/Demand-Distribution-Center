@@ -639,7 +639,12 @@ const handleSelectedDocument = async (filePath) => {
 	} catch (error) {
 		uni.hideLoading();
 		console.error('上传PDF失败:', error);
-		uni.showToast({ title: '上传失败', icon: 'none' });
+		uni.showModal({
+			title: '上传失败',
+			content: (error && error.message) ? error.message : 'PDF上传失败，请重试',
+			showCancel: false,
+			confirmText: '我知道了'
+		});
 	}
 };
 
